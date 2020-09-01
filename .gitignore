@@ -1,0 +1,34 @@
+# This is a gitignore file. Any items in this file will be "ignored" by git.
+
+# Individual Idea File
+
+/.idea/workspace.xml
+
+# Coverage Files, Bundled Files, Dependencies
+
+client/dist/
+*/node_modules/
+*/package-lock.json
+
+# Generated Java Files
+
+server/dependency-reduced-pom.xml
+server/.m2/repository/
+target/
+# This is a gitignore file. Any items in this file will be "ignored" by git.
+
+# Individual Idea File
+
+/.idea/workspace.xml
+
+# Coverage Files, Bundled Files, Dependencies
+
+client/dist/
+*/node_modules/
+*/package-lock.json
+
+# Generated Java Files
+
+server/dependency-reduced-pom.xml
+server/.m2/repository/
+target/
