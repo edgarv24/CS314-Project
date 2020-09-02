@@ -39,9 +39,9 @@ The solution should clearly identify the team that created the product and a lit
 
 | Statistic | # Planned | # Completed |
 | --- | ---: | ---: |
-| Epics | *count* | *count* |
-| Tasks |  *count*   | *count* | 
-| Story Points |  *count*  | *count* | 
+| Epics | *5* | *count* |
+| Tasks |  *13*   | *count* | 
+| Story Points |  *19*  | *count* | 
 
 
 ## Scrums
