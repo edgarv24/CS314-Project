@@ -28,7 +28,7 @@ The solution should clearly identify the team that created the product and a lit
   * The goal of this epic is to allow the user the ability to view server capabilities so that they view which server they're on and know its features. This epic will have a feature that allows the user to click on server information in the footer and see its information, an icon in the footer that shows the current connection status, and an icon in the footer that signifies that more information is available.
 
 * Team Identification
- * The goal of this epic is to allow our team to be identifiable to the rest of the organization. This will allow our team name to be set and seen on the client browser tab, server, and the client application for easier identification and correlation to our group.
+  * The goal of this epic is to allow our team to be identifiable to the rest of the organization. This will allow our team name to be set and seen on the client browser tab, server, and the client application for easier identification and correlation to our group.
 
 * About
   * The goal of this epic is to provide information to the user about the team and its members. This includes a team mission statement, where the purpose and foundation of our efforts will be defined. Additionally, a name, image, and biography will be provided to give an overview of the minds behind this project. Consistency across style, format, and voice will be important to highlight the cohesiveness of the team.
