@@ -10,3 +10,7 @@
 | Harter | Darin | darinh | darin3 | darinh@rams.colostate.edu |
 | Powell | Mikayla | cessna17 | cessna17 | cessna17@rams.colostate.edu |
 | Varela | Edgar | edvarela | edgarv24 | edvarela@rams.colostate.edu |
+
+## Team Preferences 
+  The team’s expectations for what will be accomplished this semester are: work efficiently, understand the tools introduced in the course, help each other with any questions or tasks, and have fun. The goals of the team for this semester are to be individually dependable, evenly divide responsibility and maintain an understanding and dialog concerning the process and project, and reach out and accept help when needed. Obstacles that the team might encounter while attempting to reach their goals could be time management, communicating effectively as a team while remote, reaching out for help, and quickly learning new technologies. The team’s position on how to handle some people wanting an “A” while others think a “B” is acceptable is to talk with each other and aim for achieving an “A”. However, the team will be realistic with their goals of achieving an “A” when time limits are concerned.
+  
