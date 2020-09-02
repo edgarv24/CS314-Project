@@ -30,6 +30,8 @@ The solution should clearly identify the team that created the product and a lit
 * Where Am I?
   * The goal of this epic is to display the user’s current location. This can be done when the app starts or can allow the user to return to their location after they have changed their map view. To implement this feature, a distinct marker will be created to mark their current location to distinguish it from other points on the map. 
 
+* About
+  * The goal of this epic is to provide information to the user about the team and its members. This includes a team mission statement, where the purpose and foundation of our efforts will be defined. Additionally, a name, image, and biography will be provided to give an overview of the minds behind this project. Consistency across style, format, and voice will be important to highlight the cohesiveness of the team.
 
 * Where Is?
   * The goal of this epic is to allow the user the ability to see a location on a map using latitude and longitude. The user will be able to type or paste a string with a latitude and longitude that was obtained with another tool. The team will handle validating and converting the user’s latitude and longitude from different formats. 
