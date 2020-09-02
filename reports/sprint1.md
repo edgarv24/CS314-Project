@@ -1,4 +1,4 @@
-# Sprint # - *your team number* - *your team name*
+# Sprint 1 - *T14* - *The Fourteeners*
 
 ## Goal
 ### Who is the development team?
@@ -24,6 +24,11 @@ The solution should clearly identify the team that created the product and a lit
 
 
 ## Planned Epics
+* V1 Protocol
+  * The goal of this epic is to allow the user the ability to view server capabilities so that they view which server they're on and know its features. This epic will have a feature that allows the user to click on server information in the footer and see its information, an icon in the footer that shows the current connection status, and an icon in the footer that signifies that more information is available.
+
+* Where Is?
+  * The goal of this epic is to allow the user the ability to see a location on a map using latitude and longitude. The user will be able to type or paste a string with a latitude and longitude that was obtained with another tool. The team will handle validating and converting the user’s latitude and longitude from different formats. 
 
 
 ## Metrics
