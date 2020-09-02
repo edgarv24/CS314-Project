@@ -27,6 +27,10 @@ The solution should clearly identify the team that created the product and a lit
 * V1 Protocol
   * The goal of this epic is to allow the user the ability to view server capabilities so that they view which server they're on and know its features. This epic will have a feature that allows the user to click on server information in the footer and see its information, an icon in the footer that shows the current connection status, and an icon in the footer that signifies that more information is available.
 
+* Where Am I?
+  * The goal of this epic is to display the user’s current location. This can be done when the app starts or can allow the user to return to their location after they have changed their map view. To implement this feature, a distinct marker will be created to mark their current location to distinguish it from other points on the map. 
+
+
 * Where Is?
   * The goal of this epic is to allow the user the ability to see a location on a map using latitude and longitude. The user will be able to type or paste a string with a latitude and longitude that was obtained with another tool. The team will handle validating and converting the user’s latitude and longitude from different formats. 
 
