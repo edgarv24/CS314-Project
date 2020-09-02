@@ -27,11 +27,14 @@ The solution should clearly identify the team that created the product and a lit
 * V1 Protocol
   * The goal of this epic is to allow the user the ability to view server capabilities so that they view which server they're on and know its features. This epic will have a feature that allows the user to click on server information in the footer and see its information, an icon in the footer that shows the current connection status, and an icon in the footer that signifies that more information is available.
 
-* Where Am I?
-  * The goal of this epic is to display the user’s current location. This can be done when the app starts or can allow the user to return to their location after they have changed their map view. To implement this feature, a distinct marker will be created to mark their current location to distinguish it from other points on the map. 
+* Team Identification
+  * The goal of this epic is to allow our team to be identifiable to the rest of the organization. This will allow our team name to be set and seen on the client browser tab, server, and the client application for easier identification and correlation to our group.
 
 * About
   * The goal of this epic is to provide information to the user about the team and its members. This includes a team mission statement, where the purpose and foundation of our efforts will be defined. Additionally, a name, image, and biography will be provided to give an overview of the minds behind this project. Consistency across style, format, and voice will be important to highlight the cohesiveness of the team.
+
+* Where Am I?
+  * The goal of this epic is to display the user’s current location. This can be done when the app starts or can allow the user to return to their location after they have changed their map view. To implement this feature, a distinct marker will be created to mark their current location to distinguish it from other points on the map. 
 
 * Where Is?
   * The goal of this epic is to allow the user the ability to see a location on a map using latitude and longitude. The user will be able to type or paste a string with a latitude and longitude that was obtained with another tool. The team will handle validating and converting the user’s latitude and longitude from different formats. 
