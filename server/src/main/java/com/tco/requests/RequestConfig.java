@@ -16,7 +16,7 @@ public class RequestConfig extends RequestHeader {
 
   @Override
   public void buildResponse() {
-    this.serverName = "t## team name";
+    this.serverName = "t14 team name";
     log.trace("buildResponse -> {}", this);
   }
 
