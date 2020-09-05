@@ -35,8 +35,11 @@ export default class ServerSettings extends Component {
         return (
             <ModalBody>
                 <Row className="m-2">
-                    <Col>
-                        Name: {currentServerName}
+                    <Col xs={2}>
+                        Name:
+                    </Col>
+                    <Col xs={10}>
+                        {currentServerName}
                     </Col>
                 </Row>
                 <Row className="m-2">

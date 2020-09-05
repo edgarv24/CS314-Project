@@ -99,7 +99,7 @@ function mockConfigResponse() {
             'placeAttributes': ["latitude", "longitude", "name"],
             'requestType': "config",
             'requestVersion': 1,
-            'serverName': "t00"
+            'serverName': "t14 The Fourteeners"
         }));
 }
 
