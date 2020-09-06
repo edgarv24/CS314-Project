@@ -3,8 +3,9 @@ import { Container } from "reactstrap";
 
 import ServerSettings from "./ServerSettings";
 
-const UNICODE_LINK_SYMBOL = "\uD83D\uDD17";
-const UNICODE_WARNING_SIGN = "\u26A0";
+import LinkIcon from '@material-ui/icons/Link';
+import WarningIcon from '@material-ui/icons/Warning';
+
 const UNKNOWN_SERVER_NAME = "Unknown";
 
 export default class Footer extends Component {
@@ -41,7 +42,7 @@ export default class Footer extends Component {
     }
 
     getSymbolFromConnectionStatus() {
-        return this.connectedToValidServer() ? UNICODE_LINK_SYMBOL : UNICODE_WARNING_SIGN;
+        return this.connectedToValidServer() ? <LinkIcon /> : <WarningIcon />
     }
 
     getServerNameFromConnectionStatus() {
