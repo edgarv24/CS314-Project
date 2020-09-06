@@ -44,7 +44,7 @@ export default class ServerSettings extends Component {
                 </Row>
                 <Row className="m-2">
                     <Col xs={3}>
-                        Request Type:
+                        Type:
                     </Col>
                     <Col xs={9}>
                         {this.getRequestType()}
@@ -52,9 +52,9 @@ export default class ServerSettings extends Component {
                 </Row>
                 <Row className="m-2">
                 <Col xs={3}>
-                    Request Version:
+                    Version:
                 </Col>
-                <Col auto>
+                <Col xs={9}>
                     {this.getRequestVersion()}
                 </Col>
                 </Row>
