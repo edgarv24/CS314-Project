@@ -42,7 +42,7 @@ export default class Footer extends Component {
     }
 
     getSymbolFromConnectionStatus() {
-        return this.connectedToValidServer() ? <LinkIcon /> : <WarningIcon />
+        return this.connectedToValidServer() ? <LinkIcon /> : <WarningIcon />;
     }
 
     getServerNameFromConnectionStatus() {
