@@ -48,7 +48,7 @@ export default class About extends Component {
                 </Media>
                   <Media body>
                     <Media heading>
-                      Edgar Valera
+                      Edgar Varela
                     </Media>
                       This is Edgar's bio.
                   </Media>
