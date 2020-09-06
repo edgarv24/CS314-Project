@@ -44,6 +44,22 @@ export default class ServerSettings extends Component {
                 </Row>
                 <Row className="m-2">
                     <Col xs={2}>
+                        Request Type:
+                    </Col>
+                    <Col xs={10}>
+                        {this.getRequestType()}
+                    </Col>
+                </Row>
+                <Row className="m-2">
+                <Col xs={2}>
+                    Request Version:
+                </Col>
+                <Col xs={10}>
+                    {this.getRequestVersion()}
+                </Col>
+                </Row>
+                <Row className="m-2">
+                    <Col xs={2}>
                         URL:
                     </Col>
                     <Col xs={10}>
@@ -91,6 +107,14 @@ export default class ServerSettings extends Component {
             currentServerName = this.state.config.serverName;
         }
         return currentServerName;
+    }
+
+    getRequestType() {
+        return configSchema.properties.requestType.pattern;
+    }
+
+    getRequestVersion() {
+        return configSchema.properties.requestVersion.minimum;
     }
 
     updateInput(value) {
