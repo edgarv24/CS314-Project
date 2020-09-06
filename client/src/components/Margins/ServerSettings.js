@@ -35,34 +35,34 @@ export default class ServerSettings extends Component {
         return (
             <ModalBody>
                 <Row className="m-2">
-                    <Col xs={2}>
+                    <Col xs={3}>
                         Name:
                     </Col>
-                    <Col xs={10}>
+                    <Col xs={9}>
                         {currentServerName}
                     </Col>
                 </Row>
                 <Row className="m-2">
-                    <Col xs={2}>
+                    <Col xs={3}>
                         Request Type:
                     </Col>
-                    <Col xs={10}>
+                    <Col xs={9}>
                         {this.getRequestType()}
                     </Col>
                 </Row>
                 <Row className="m-2">
-                <Col xs={2}>
+                <Col xs={3}>
                     Request Version:
                 </Col>
-                <Col xs={10}>
+                <Col auto>
                     {this.getRequestVersion()}
                 </Col>
                 </Row>
                 <Row className="m-2">
-                    <Col xs={2}>
+                    <Col xs={3}>
                         URL:
                     </Col>
-                    <Col xs={10}>
+                    <Col xs={9}>
                         {this.renderInputField()}
                     </Col>
                 </Row>
@@ -110,7 +110,7 @@ export default class ServerSettings extends Component {
     }
 
     getRequestType() {
-        return configSchema.properties.requestType.pattern;
+        return configSchema.properties.requestType.pattern.slice(1,-1);
     }
 
     getRequestVersion() {
