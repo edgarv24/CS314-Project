@@ -33,9 +33,9 @@ public class TestRequestConfig {
   }
 
   @Test
-  @DisplayName("Team name is t14 team name")
+  @DisplayName("Team name is t14 The Fourteeners")
   public void testServerName() {
     String name = conf.getServerName();
-    assertEquals("t14 team name", name);
+    assertEquals("t14 The Fourteeners", name);
   }
 }
