@@ -22,7 +22,7 @@ export default class About extends Component {
             <Col>
               <h4>Mission Statement</h4>
                 <p>
-                  Our goal is to construct large complex software systems that will utlize clean code, configuration management, continuous integration, testing, project mangement and teamwork to create a cohesive web development project in five 3-week sprints.
+                  Our goal is to construct large complex software systems that will utlize clean code, configuration management, continuous integration, testing, project management and teamwork to create a cohesive web development project in five 3-week sprints.
                 </p>
             </Col>
           </Row>
