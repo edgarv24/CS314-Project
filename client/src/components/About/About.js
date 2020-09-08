@@ -22,7 +22,7 @@ export default class About extends Component {
             <Col>
               <h4>Mission Statement</h4>
                 <p>
-                  Our mission statement is ...
+                  Our goal is to apply large complex software systems that will utlize clean code, configuration management, continuous integration, testing, project mangement adn teamwork to create a cohesive web development project in five 3-week sprints.
                 </p>
             </Col>
           </Row>
