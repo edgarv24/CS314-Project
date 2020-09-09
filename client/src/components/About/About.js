@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 
-import {Container, Row, Col, Button, Media} from 'reactstrap';
+import {Container, Row, Col, Button, Card, CardDeck, CardBody, CardImg, CardTitle, CardText} from 'reactstrap';
 
 import {CLIENT_TEAM_NAME} from "../../utils/constants";
+
+import RyliePicture from "../../static/images/RyliePic.jpg"
 
 export default class About extends Component {
     render() {
@@ -22,59 +24,47 @@ export default class About extends Component {
             <Col>
               <h4>Mission Statement</h4>
                 <p>
-                  Our goal is to construct large complex software systems that will utlize clean code, configuration management, continuous integration, testing, project management and teamwork to create a cohesive web development project in five 3-week sprints.
+                  Our goal is to construct large complex software systems that will utilize clean code, configuration management, continuous integration, testing, project management and teamwork to create a cohesive web development project in five 3-week sprints.
                 </p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <Media heading>
-                Team Members
-              </Media>
-              <Media>
-                  <Media left href="#">
-                    <Media object src="" alt="Rylie's image" />
-                  </Media>
-                  <Media body>
-                      <Media heading>
-                          Rylie Denehan
-                      </Media>
-                        This is Rylie's bio.
-                  </Media>
-              </Media>
-              <Media>
-                <Media left href="#">
-                  <Media object src="" alt="Edgar's image" />
-                </Media>
-                  <Media body>
-                    <Media heading>
-                      Edgar Varela
-                    </Media>
-                      This is Edgar's bio.
-                  </Media>
-                </Media>
-              <Media>
-                <Media left href="#">
-                  <Media object src="" alt="Mikayla's image" />
-                </Media>
-                  <Media body>
-                    <Media heading>
-                      Mikayla Powell
-                    </Media>
-                      This is Mikayla's bio.
-                  </Media>
-                </Media>
-                <Media>
-                  <Media left href="#">
-                    <Media object src="" alt="Darin's image" />
-                  </Media>
-                    <Media body>
-                      <Media heading>
-                        Darin Harter
-                      </Media>
-                        This is Darin's bio.
-                    </Media>
-                </Media>
+              <h4>Team Members</h4>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="12">
+              <CardDeck>
+                <Card>
+                  <CardImg top src={RyliePicture} alt="Rylie's Image" />
+                  <CardBody>
+                    <CardTitle className="font-weight-bold">Rylie Denehan</CardTitle>
+                    <CardText className="text-sm-left">bio. </CardText>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardImg top width="100%" src="" alt="Edgar's Image" />
+                  <CardBody>
+                    <CardTitle className="font-weight-bold">Edgar Varela</CardTitle>
+                    <CardText className="text-sm-left">bio.</CardText>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardImg top width="100%" src="" alt="Mikayla's Image" />
+                  <CardBody>
+                    <CardTitle className="font-weight-bold">Mikayla Powell</CardTitle>
+                    <CardText className="text-sm-left">bio.</CardText>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardImg top width="100%" src="" alt="Darin's Image" />
+                  <CardBody>
+                    <CardTitle className="font-weight-bold">Darin Harter</CardTitle>
+                    <CardText className="text-sm-left">bio.</CardText>
+                  </CardBody>
+                </Card>
+              </CardDeck>
             </Col>
           </Row>
         </Container>
