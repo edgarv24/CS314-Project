@@ -6,7 +6,7 @@ import {CLIENT_TEAM_NAME} from "../../utils/constants";
 
 import RyliePicture from "../../static/images/RyliePic.jpg";
 import DarinPicture from "../../static/images/Darin.png";
-import EdgarPicture from "../../static/images/edgar-pic.png";
+import EdgarPicture from "../../static/images/edgar-pic2.png";
 
 const DarinBio = "Darin is a third year student at Colorado State University, where he is studying computer science with" +
     " a minor in math. He was born and raised in Fort Collins, Colorado, so he knows the area well. Programming is one" +
