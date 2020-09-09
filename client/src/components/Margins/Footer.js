@@ -5,6 +5,7 @@ import ServerSettings from "./ServerSettings";
 
 import LinkIcon from '@material-ui/icons/Link';
 import WarningIcon from '@material-ui/icons/Warning';
+import InfoIcon from '@material-ui/icons/Info';
 
 const UNKNOWN_SERVER_NAME = "Unknown";
 
