@@ -47,7 +47,7 @@ export default class About extends Component {
                   <CardImg top width="100%" src="" alt="Edgar's Image" />
                   <CardBody>
                     <CardTitle className="font-weight-bold">Edgar Varela</CardTitle>
-                    <CardText className="text-sm-left">bio.</CardText>
+                    <CardText className="text-sm-left">Edgar is a senior CS student at Colorado State University. He is currently focused on finishing his senior year and is building on the skills needed to embark on a career in Software Development. Edgar enjoys running the trails in Fort Collins, hiking the mountains in Colorado, and cultivating focus with yoga.</CardText>
                   </CardBody>
                 </Card>
                 <Card>
