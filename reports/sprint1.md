@@ -54,6 +54,7 @@ The solution should clearly identify the team that created the product and a lit
 | Date | Tasks closed  | Tasks in progress | Impediments |
 | :--- | :--- | :--- | :--- |
 | *09-05-2020* | *#26, #25, #24* | *#28,#29,#21,#23* | *none* | 
+| *09-09-2020* | *#28, #29, #30, #21, #23* | *#32, #34, #33* | *none* |
 
 
 ## Review
