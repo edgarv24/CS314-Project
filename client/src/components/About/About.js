@@ -47,21 +47,21 @@ export default class About extends Component {
                   <CardImg top width="100%" src="" alt="Edgar's Image" />
                   <CardBody>
                     <CardTitle className="font-weight-bold">Edgar Varela</CardTitle>
-                    <CardText>bio.</CardText>
+                    <CardText className="text-sm-left">bio.</CardText>
                   </CardBody>
                 </Card>
                 <Card>
                   <CardImg top width="100%" src="" alt="Mikayla's Image" />
                   <CardBody>
-                    <CardTitle className="font-weight-bold">Mikayal Powell</CardTitle>
-                    <CardText>bio.</CardText>
+                    <CardTitle className="font-weight-bold">Mikayla Powell</CardTitle>
+                    <CardText className="text-sm-left">bio.</CardText>
                   </CardBody>
                 </Card>
                 <Card>
                   <CardImg top width="100%" src="" alt="Darin's Image" />
                   <CardBody>
                     <CardTitle className="font-weight-bold">Darin Harter</CardTitle>
-                    <CardText>bio.</CardText>
+                    <CardText className="text-sm-left">bio.</CardText>
                   </CardBody>
                 </Card>
               </CardDeck>
