@@ -110,7 +110,7 @@ export default class ServerSettings extends Component {
     }
 
     getRequestType() {
-        return configSchema.properties.requestType.pattern.slice(1,-1);
+        return configSchema.title;
     }
 
     getRequestVersion() {
