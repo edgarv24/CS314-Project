@@ -24,6 +24,22 @@ const EdgarBio = "Edgar is a senior student at Colorado State University, majori
     " When he is not studying, he is out running the trails of Fort Collins, hiking the mountains here in Colorado, or" +
     " developing his yoga practice."
 
+const RylieBio = "Rylie is a fifth year Computer Science student at Colorado State University. She has lived in Colorado" +
+    " for the last six years and loves to hike in the summer and ski in the winter. She is interested in cybersecurity" +
+    " and currently has a full-time position as an Information Systems Security Engineer in Colorado Springs. Along with" +
+    " learning cybersecurity tools, she enjoys watching movies and shows with friends, listening to music, and baking." +
+    " Her twin sister graduated from CSU last spring with a BS in Conservation Biology and her older brother is currently" +
+    " earning his EMT certification. Rylie enjoys helping and learning with others and works well in a team environment. A" +
+    " goal that she has is to do penetration testing work sometime in the near future.";
+
+const MikBio = "Mikayla is a fourth year student at Colorado State University with a major in Applied Computing Technology" +
+    " with a minor in Technical & Science Communication. Originally from Englewood, CO, she is excited to be finishing up" + 
+    " her final year here at CSU and is hoping to pursue a career in Web Design and Development. She currently works as a Student" +
+    " Technician for CSU Housing and Dining Tech Services and enjoys gaining experience working in IT. On top of her studies she's" +
+    " also very involved in the FSL community and a four-year member of the Colorado State University Marching Band as a member of the" +
+    " Sousaphone section.";
+
+
 export default class About extends Component {
     render() {
         return (
@@ -54,9 +70,9 @@ export default class About extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <BioCard first="Rylie" last="Denehan" bio={"Bio here."} imageURL={RyliePicture} />
                     <BioCard first="Edgar" last="Varela" bio={EdgarBio} imageURL={EdgarPicture} />
-                    <BioCard first="Mikayla" last="Powell" bio={"Bio here."} imageURL={""} />
+                    <BioCard first="Rylie" last="Denehan" bio={RylieBio} imageURL={RyliePicture} />
+                    <BioCard first="Mikayla" last="Powell" bio={MikBio} imageURL={""} />
                     <BioCard first="Darin" last="Harter" bio={DarinBio} imageURL={DarinPicture} />
                 </Row>
             </Container>
