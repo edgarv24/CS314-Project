@@ -6,6 +6,7 @@ import {CLIENT_TEAM_NAME} from "../../utils/constants";
 
 import RyliePicture from "../../static/images/RyliePic.jpg";
 import DarinPicture from "../../static/images/Darin.png";
+import EdgarPicture from "../../static/images/edgar-pic2.png";
 
 const DarinBio = "Darin is a third year student at Colorado State University, where he is studying computer science with" +
     " a minor in math. He was born and raised in Fort Collins, Colorado, so he knows the area well. Programming is one" +
@@ -16,6 +17,12 @@ const DarinBio = "Darin is a third year student at Colorado State University, wh
     " to help others. He has a brown Shorkie dog named Lily and one brother who is a CSU alumni currently seeking a" +
     " Masters in CS at Georgia Tech. A goal for his future is to travel and explore the world, since he hasn’t been" +
     " more than a few states away from home.";
+
+const EdgarBio = "Edgar is a senior student at Colorado State University, majoring in Computer Science. Edgar is a first" +
+    " generation university student, with his parents coming to the United States from Chihuahua, Mexico. He is currently" +
+    " focused on his finishing out his senior year and gaining the skills needed to embark on a career in Software Development." +
+    " When he is not studying, he is out running the trails of Fort Collins, hiking the mountains here in Colorado, or" +
+    " developing his yoga practice."
 
 const RylieBio = "Rylie is a fifth year Computer Science student at Colorado State University. She has lived in Colorado" +
     " for the last six years and loves to hike in the summer and ski in the winter. She is interested in cybersecurity" +
@@ -63,8 +70,8 @@ export default class About extends Component {
                     </Col>
                 </Row>
                 <Row>
+                    <BioCard first="Edgar" last="Varela" bio={EdgarBio} imageURL={EdgarPicture} />
                     <BioCard first="Rylie" last="Denehan" bio={RylieBio} imageURL={RyliePicture} />
-                    <BioCard first="Edgar" last="Varela" bio={"Bio here."} imageURL={""} />
                     <BioCard first="Mikayla" last="Powell" bio={MikBio} imageURL={""} />
                     <BioCard first="Darin" last="Harter" bio={DarinBio} imageURL={DarinPicture} />
                 </Row>
