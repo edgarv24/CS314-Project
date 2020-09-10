@@ -25,6 +25,14 @@ const RylieBio = "Rylie is a fifth year Computer Science student at Colorado Sta
     " earning his EMT certification. Rylie enjoys helping and learning with others and works well in a team environment. A" +
     " goal that she has is to do penetration testing work sometime in the near future.";
 
+const MikBio = "Mikayla is a fourth year student at Colorado State University with a major in Applied Computing Technology" +
+    " with a minor in Technical & Science Communication. Originally from Englewood, CO, she is excited to be finishing up" + 
+    " her final year here at CSU and is hoping to pursue a career in Web Design and Development. She currently works as a Student" +
+    " Technician for CSU Housing and Dining Tech Services and enjoys gaining experience working in IT. On top of her studies she's" +
+    " also very involved in the FSL community and a four-year member of the Colorado State University Marching Band as a member of the" +
+    " Sousaphone section.";
+
+
 export default class About extends Component {
     render() {
         return (
@@ -57,7 +65,7 @@ export default class About extends Component {
                 <Row>
                     <BioCard first="Rylie" last="Denehan" bio={RylieBio} imageURL={RyliePicture} />
                     <BioCard first="Edgar" last="Varela" bio={"Bio here."} imageURL={""} />
-                    <BioCard first="Mikayla" last="Powell" bio={"Bio here."} imageURL={""} />
+                    <BioCard first="Mikayla" last="Powell" bio={MikBio} imageURL={""} />
                     <BioCard first="Darin" last="Harter" bio={DarinBio} imageURL={DarinPicture} />
                 </Row>
             </Container>
