@@ -5,6 +5,7 @@ import ServerSettings from "./ServerSettings";
 
 import LinkIcon from '@material-ui/icons/Link';
 import WarningIcon from '@material-ui/icons/Warning';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 const UNKNOWN_SERVER_NAME = "Unknown";
 
@@ -32,7 +33,7 @@ export default class Footer extends Component {
                     <div className="centered">
                         {linkStatusSymbol} Connected to {serverName} &nbsp;
                         <a className="tco-text" onClick={() => this.setState({serverSettingsOpen: true})}>
-                            ({this.props.serverSettings.serverPort}).
+                            {<InfoOutlinedIcon />}
                         </a>
                     {this.renderServerSettings()}
                     </div>
