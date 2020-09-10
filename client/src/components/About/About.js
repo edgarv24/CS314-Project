@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 
-import {Container, Row, Col, Button, Card, CardBody, CardImg, CardTitle, CardText} from 'reactstrap';
+import {Container, Row, Col, Button, Card, CardBody, CardHeader, CardImg, CardTitle, CardText} from 'reactstrap';
 
 import {CLIENT_TEAM_NAME} from "../../utils/constants";
 
 import RyliePicture from "../../static/images/RyliePic.jpg";
 import DarinPicture from "../../static/images/Darin.png";
-import EdgarPicture from "../../static/images/edgar-pic2.png";
+import EdgarPicture from "../../static/images/edgar-pic.png";
 
 const DarinBio = "Darin is a third year student at Colorado State University, where he is studying computer science with" +
     " a minor in math. He was born and raised in Fort Collins, Colorado, so he knows the area well. Programming is one" +
@@ -54,19 +54,25 @@ export default class About extends Component {
                         </Button>
                     </Col>
                 </Row>
+                <br />
                 <Row>
                     <Col>
-                        <h4>Mission Statement</h4>
-                        <p>
-                            Our goal is to construct large complex software systems that will utilize clean code,
-                            configuration management, continuous integration, testing, project management and teamwork
-                            to create a cohesive web development project in five 3-week sprints.
-                        </p>
+                        <Card>
+                            <CardHeader><strong>Mission Statement</strong></CardHeader>
+                            <CardBody>
+                                <CardText>
+                                    Our goal is to construct large complex software systems that will utilize clean code,
+                                    configuration management, continuous integration, testing, project management and teamwork
+                                    to create a cohesive web development project in five 3-week sprints.
+                                </CardText>
+                            </CardBody>
+                        </Card>
                     </Col>
                 </Row>
+                <br />
                 <Row>
                     <Col>
-                        <h4>Team Members</h4>
+                        <h4><strong>Members</strong></h4>
                     </Col>
                 </Row>
                 <Row>
