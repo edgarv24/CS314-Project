@@ -6,7 +6,7 @@ import {CLIENT_TEAM_NAME} from "../../utils/constants";
 
 import RyliePicture from "../../static/images/RyliePic.jpg";
 import DarinPicture from "../../static/images/Darin.png";
-import MikPicture from "../../static/images.MikPic.jpg";
+import MikPicture from "../../static/images/MikPic.jpg";
 import EdgarPicture from "../../static/images/edgar-pic.png";
 
 const DarinBio = "Darin is a third year student at Colorado State University, where he is studying computer science with" +
