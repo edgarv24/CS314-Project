@@ -84,7 +84,7 @@ The solution should clearly identify the team that created the product and a lit
 
 
 #### What went well
-* Spring goal was main focus and was met on time
+* Sprint goal was main focus and was met on time
 * Communication between the team was constant
   * Regular Microsoft Teams meetings for scrums on lecture days
   * Many chat sessions on Slack to work towards completing tasks and epics
@@ -119,7 +119,7 @@ The solution should clearly identify the team that created the product and a lit
   * Planning and executing
   * Scrum meetings were quick and helped get team on same page
 * Tools
-  * Github integration into intellij helped us be more efficient
+  * Github integration into Intellij helped us be more efficient
   * Slack was invaluable for keeping in touch with team members
   * ZenHub planning and task delegation
 
