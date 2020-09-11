@@ -71,16 +71,16 @@ The solution should clearly identify the team that created the product and a lit
 * V1 Protocol
   *  Goal: To allow the user the ability to view server capabilities so that they view which server they’re on and know some of the server settings. To accomplish this feature we replaced the server name with an information icon that pops open the server settings such as server name, request type and the request version. The connection icon was also replaced to the material-ui icon to signify the connection status. These features were implemented to achieve the goal of the epic, and now users are able to view the server capabilities.
 * Team Identification
-  * Goal: identify our team name and number in multiple key places on the website. We accomplished this by changing the text in the tab, header, footer, and server to “t14 The Fourteeners”. Now visitors will be able to identify the team behind this project.
+  * Goal: Identify our team name and number in multiple key places on the website. We accomplished this by changing the text in the tab, header, footer, and server to “t14 The Fourteeners”. Now visitors will be able to identify the team behind this project.
 * About
-  * Goal: add information about the team, including a mission statement and biographies for each member. To implement this, we used Reactstrap card components with images, titles, and biography descriptions. In order to reduce code repetition, we wrote a BioCard React component that returns a card with specific passed-in properties. A mission statement card was included at the top.
+  * Goal: Add information about the team, including a mission statement and biographies for each member. To implement this, we used Reactstrap card components with images, titles, and biography descriptions. In order to reduce code repetition, we wrote a BioCard React component that returns a card with specific passed-in properties. A mission statement card was included at the top.
 
 #### Epics not done 
 * Where Is?
-  * Goal: to display the user’s current location. This epic was not a part of the sprint goal and was chosen to be worked on if we had extra time. The team chose to focus on implementing the work needed to complete the sprint as best as possible instead of overextending to finish extra epics. 
+  * Goal: To display the user’s current location. This epic was not a part of the sprint goal and was chosen to be worked on if we had extra time. The team chose to focus on implementing the work needed to complete the sprint as best as possible instead of overextending to finish extra epics. 
 
 * Where Am I?
-  * Goal: to show the user a location on the map by validating and allowing input of the latitude and longitude. This was not completed due to minimal details on the requirements and a shortage of time for our team.
+  * Goal: To show the user a location on the map by validating and allowing input of the latitude and longitude. This was not completed due to minimal details on the requirements and a shortage of time for our team.
 
 
 #### What went well
