@@ -54,7 +54,7 @@ The solution should clearly identify the team that created the product and a lit
 | --- | ---: | ---: |
 | Epics | *5* | *3* |
 | Tasks |  *13*   | *12* | 
-| Story Points |  *19*  | *16* | 
+| Story Points |  *19*  | *51* | 
 
 
 ## Scrums
