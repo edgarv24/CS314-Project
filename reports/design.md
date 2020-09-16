@@ -115,6 +115,23 @@ Often there are several related classes but we've listed only one to simplify th
 * The user interface has a popup that shows the server settings with labels name, type, version, and url.
 
 # Sprint 2
+### User Interface
+Changes made to the UI include four new components named Where Am I, Where Is, Find Distance and Find Places. They will be placed underneath the leaflet map.
+
+* Where Is Component: Open a popup when clicked which will have two input fields for latitude and longitude and a button to submit the inputs, then display a marker in the location that the user entered.
+
+* Find Distance Component: Open a popup when clicked, which will have input fields for the latitude and longitude of both locations and a submit button which, when pressed, will reveal the distance and then display markers for both locations with a line between them.
+
+* Find Places Component: Open a popup when clicked, which will have an input field for the user to search for a name of a location and a list of matching locations will appear. The user can click on one to display a marker for the location. 
+
+### Component Hierarchy
+Modifications to the component hierarchy are being made to integrate new functionality. Components will be made for the Find Places, Find Distance, and Where Is epics. This will allow the user to input coordinates or locations to shift and update the Leaflet map in the Atlas component. These components will lift state up to the Atlas component so that the map is synced with the current request and location data.
+* Atlas renders the Find Places, Find Distance, and Where Is popup components when they are requested and enabled.
+* These three components might be combined into a single dynamic component with a dropdown select for the current method of input.
+
+### Class Diagram
+The changes to the class diagram were minor. The Microserver is now interacting with RequestDistance.java and RequestFind.java, two classes that we have to implement that will extend RequestHeader.java. This is done to support the v2 protocol and enable the server to determine what kind of request to build.
+
 # Sprint 3
 # Sprint 4 
 # Sprint 5
