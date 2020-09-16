@@ -63,7 +63,7 @@
 | --- | ---: | ---: |
 | Epics | 5 | *count* |
 | Tasks |  17  | *count* | 
-| Story Points |  24  | *sum* | 
+| Story Points |  26  | *sum* | 
 
 * Our team feels confident that a majority of the planned tasks/story points can be completed within Sprint 2. During the last sprint, the team was able to complete all of the Sprint goals and a majority of the planned story points successfully and on time. There is some concern for the lack of experience working with the tools and codebase. Also, there is concern with keeping the burndown chart linear since last time it wasn’t as linear as it could have been. However, the team is confident that they can communicate, work together, and learn in order to complete the Sprint 2 tasks and story points as planned.
 
