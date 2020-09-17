@@ -2,7 +2,7 @@
   "$id": "https://example.com/address.schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "find",
-  "description": "find request/response",
+  "description": "find response",
   "type": "object",
   "properties": {
     "requestVersion": {
