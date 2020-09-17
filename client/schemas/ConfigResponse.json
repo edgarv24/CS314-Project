@@ -1,0 +1,34 @@
+{
+  "$id": "https://example.com/address.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "config",
+  "description": "config response",
+  "type": "object",
+  "properties": {
+    "requestVersion": {
+      "description":"the TIP protocol version",
+      "type":"integer",
+      "minimum": 2
+    },
+    "requestType": {
+      "description":"the TIP object type should be config",
+      "type":"string",
+      "pattern":"^config$"
+    },
+    "serverName": {
+      "description":"identify the server instance",
+      "type":"string",
+      "minLength":3
+    },
+    "supportedRequests": {
+      "description": "a list of supported request types",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["config","distance","find"]
+      }
+    },
+  },
+  "required":["requestVersion","requestType","serverName","supportedRequests"],
+  "additionalProperties": false
+}
