@@ -2,6 +2,7 @@ package com.tco.server;
 
 import com.tco.misc.BadRequestException;
 import com.tco.misc.JSONValidator;
+import com.tco.requests.RequestDistance;
 import com.tco.requests.RequestConfig;
 import com.tco.requests.RequestHeader;
 
@@ -36,6 +37,7 @@ class MicroServer {
     path("/api", () -> {
       before("/*", (req, res) -> logRequest(req));
       post("/config", (req, res) -> processHttpRequest(req, res, RequestConfig.class));
+      post("/distance", (req, res) -> processHttpRequest(req, res, RequestDistance.class));
     });
   }
 
