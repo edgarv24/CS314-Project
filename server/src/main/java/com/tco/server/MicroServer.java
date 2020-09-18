@@ -3,6 +3,7 @@ package com.tco.server;
 import com.tco.misc.BadRequestException;
 import com.tco.misc.JSONValidator;
 import com.tco.requests.RequestConfig;
+import com.tco.requests.RequestFind;
 import com.tco.requests.RequestHeader;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ class MicroServer {
     path("/api", () -> {
       before("/*", (req, res) -> logRequest(req));
       post("/config", (req, res) -> processHttpRequest(req, res, RequestConfig.class));
+      post("/find", (req, res) -> processHttpRequest(req, res, RequestFind.class));
     });
   }
 
@@ -61,7 +63,7 @@ class MicroServer {
     response.type("application/json");
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-    response.status(200);
+    response.status(HTTP_OK);
   }
 
   private String buildJSONResponse(RequestHeader request) throws BadRequestException {
