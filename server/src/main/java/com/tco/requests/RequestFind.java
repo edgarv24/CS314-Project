@@ -19,6 +19,14 @@ public class RequestFind extends RequestHeader {
     this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;
   }
 
+  public RequestFind(String match, Integer limit) {
+    this();
+    this.match = match;
+    this.limit = limit;
+    this.found = null;
+    this.places = null;
+  }
+
   @Override
   public void buildResponse() {
     log.trace("buildResponse -> {}", this);
