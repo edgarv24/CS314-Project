@@ -27,7 +27,7 @@
         "type": "string",
         "enum": ["config","distance","find"]
       }
-    },
+    }
   },
   "required":["requestVersion","requestType","serverName","supportedRequests"],
   "additionalProperties": false
