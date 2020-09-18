@@ -3,6 +3,7 @@ package com.tco.requests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,14 @@ public class RequestFind extends RequestHeader {
   public RequestFind() {
     this.requestType = "find";
     this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;
+    this.found = 0;
+    this.places = new ArrayList<>();
+  }
+
+  public RequestFind(String match, Integer limit) {
+    this();
+    this.match = match;
+    this.limit = limit;
   }
 
   @Override
