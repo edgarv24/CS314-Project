@@ -8,7 +8,7 @@
     "requestVersion": {
       "description":"the TIP protocol version",
       "type":"integer",
-      "minimum": 5
+      "minimum": 2
     },
     "requestType": {
       "description":"the TIP object type should be locations",
