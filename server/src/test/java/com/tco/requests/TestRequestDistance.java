@@ -32,17 +32,4 @@ public class TestRequestDistance {
         assertEquals(2, version);
     }
 
-    @Test
-    @DisplayName("Team name is t14 The Fourteeners")
-    public void testServerName() {
-        String name = dist.getServerName();
-        assertEquals("t14 The Fourteeners", name);
-    }
-
-    @Test
-    @DisplayName("Earth radius is 6371.0")
-    public void testEarthRadius() {
-        double radius = dist.getEarthRadius();
-        assertEquals(6371.0, radius);
-    }
 }
