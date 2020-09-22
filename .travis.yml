@@ -12,6 +12,10 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 
+  # Setup mysql "test" database
+  - mysql -u root -e 'CREATE DATABASE cs314;'
+  - for SQL in server/src/test/resources/*.sql; do mysql cs314 < $SQL; done
+
 install:
   - npm install --prefix client
   - mvn -f server --global-settings server/.m2/settings.xml compile
@@ -38,3 +42,6 @@ after_script:
   - ./cc-test-reporter format-coverage -t clover target/coverage/client/clover.xml --output "codeclimate.js.json"
   - ./cc-test-reporter sum-coverage --output "codeclimate.combined.json" codeclimate.*.json
   - ./cc-test-reporter upload-coverage --input "codeclimate.combined.json"
+
+addons:
+  mariadb: 10.2

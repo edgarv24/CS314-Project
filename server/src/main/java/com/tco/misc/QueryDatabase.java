@@ -13,10 +13,11 @@ public class QueryDatabase {
 
     private final transient Logger log = LoggerFactory.getLogger(QueryDatabase.class);
 
+    String isTravis = System.getenv("TRAVIS");
     private final String useTunnel = System.getenv("CS314_USE_DATABASE_TUNNEL");
     private String DB_URL = null;
-    private final static String DB_USER = "cs314-db";
-    private final static String DB_PASSWORD = "eiK5liet1uej";
+    private static String DB_USER = null;
+    private static String DB_PASSWORD = null;
 
     private static String userInputValue = null;
     private final static String COLUMN = "name";
@@ -28,16 +29,25 @@ public class QueryDatabase {
         userInputValue = userInput;
         QUERY = "SELECT " + COLUMN + " FROM world WHERE " + COLUMN + " LIKE \"%" + userInputValue + "%\"";
         resultsArr = new ArrayList<String>();
-        checkIfOffCampus();
+        checkIfTravis();
         ResultSet results = makeQuery();
         addResultsToArray(results);
     }
 
-    public void checkIfOffCampus() {
-        if (useTunnel != null && useTunnel.equals("true"))
-            this.DB_URL = "jdbc:mariadb://127.0.0.1:56247/cs314";
-        else
-            this.DB_URL = "jdbc:mysql://faure.cs.colostate.edu/cs314";
+    public void checkIfTravis() {
+        if (isTravis != null && isTravis.equals("true")) {
+            DB_URL = "jdbc:mysql://127.0.0.1/cs314";
+            DB_USER = "root";
+            DB_PASSWORD = null;
+        } else if (useTunnel != null && useTunnel.equals("true")) {
+            DB_URL = "jdbc:mysql://127.0.0.1:56247/cs314";
+            DB_USER = "cs314-db";
+            DB_PASSWORD = "eiK5liet1uej";
+        } else {
+            DB_URL = "jdbc:mysql://faure.cs.colostate.edu/cs314";
+            DB_USER = "cs314-db";
+            DB_PASSWORD = "eiK5liet1uej";
+        }
     }
 
     public ResultSet makeQuery() throws SQLException {

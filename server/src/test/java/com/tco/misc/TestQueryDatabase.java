@@ -18,7 +18,7 @@ public class TestQueryDatabase {
 
     @BeforeEach
     public void createConfigurationForTestCases() throws SQLException {
-        db = new QueryDatabase("Dave");
+        db = new QueryDatabase("Denver");
         conn = null;
     }
 
@@ -51,23 +51,23 @@ public class TestQueryDatabase {
     }
 
     @Test
-    @DisplayName("User input should be Dave")
+    @DisplayName("User input should be Denver")
     public void testGetUserInputValue() {
         String input = db.getUserInputValue();
-        assertEquals("Dave", input);
+        assertEquals("Denver", input);
     }
 
     @Test
-    @DisplayName("resultsArr length should be 16")
+    @DisplayName("resultsArr length should be 7")
     public void testGetResultsSize() {
         int resultsSize = db.getResultsSize();
-        assertEquals(16, resultsSize);
+        assertEquals(7, resultsSize);
     }
 
     @Test
-    @DisplayName("results list length should be 16")
+    @DisplayName("results list length should be 7")
     public void testReturnResults() {
         List<Map<String, String>> results = db.returnResults();
-        assertEquals(16, results.size());
+        assertEquals(7, results.size());
     }
 }
