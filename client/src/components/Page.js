@@ -13,7 +13,7 @@ import { getOriginalServerPort, isJsonResponseValid, sendServerRequest } from ".
 
 export default class Page extends Component {
 
-	constructor(props) {
+	constructor(props){
 		super(props);
 
 		this.state = {

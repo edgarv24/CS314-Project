@@ -17,7 +17,7 @@ public class TestQueryDatabase {
 
     @BeforeEach
     public void createConfigurationForTestCases(){
-        db = new QueryDatabase("denver");
+        db = new QueryDatabase("Denver");
         conn = null;
     }
 
@@ -50,9 +50,16 @@ public class TestQueryDatabase {
     }
 
     @Test
-    @DisplayName("User input should be denver")
+    @DisplayName("User input should be Denver")
     public void testGetUserInputValue() {
         String input = db.getUserinputvalue();
-        assertEquals("denver", input);
+        assertEquals("Denver", input);
+    }
+
+    @Test
+    @DisplayName("resultsArr length should be 26")
+    public void testGetResultsSize(){
+        int resultsSize = db.getResultsSize();
+        assertEquals(26, resultsSize);
     }
 }
