@@ -30,10 +30,10 @@ public class TestQueryDatabase {
     }
 
     @Test
-    @DisplayName("DB_URL should be jdbc:mariadb://127.0.0.1:56247/cs314")
+    @DisplayName("DB_URL should be jdbc:mysql://127.0.0.1:56247/cs314")
     public void testGetDB_URL() {
         String url = db.getDbUrl();
-        assertEquals("jdbc:mariadb://127.0.0.1:56247/cs314", url);
+        assertEquals("jdbc:mysql://127.0.0.1:56247/cs314", url);
     }
 
     @Test
