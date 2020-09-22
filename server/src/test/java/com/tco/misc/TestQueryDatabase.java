@@ -1,6 +1,5 @@
 package com.tco.misc;
 
-import com.tco.requests.RequestConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestQueryDatabase {
     Connection conn;
@@ -27,7 +26,7 @@ public class TestQueryDatabase {
     @DisplayName("Connection successful")
     public void testConnection() throws SQLException {
         conn = DriverManager.getConnection(db.getDbUrl(), db.getDbUser(), db.getDbPassword());
-        assertEquals(conn != null,  true);
+        assertNotNull(conn);
     }
 
     @Test
@@ -52,14 +51,14 @@ public class TestQueryDatabase {
     }
 
     @Test
-    @DisplayName("User input should be Denver")
+    @DisplayName("User input should be Dave")
     public void testGetUserInputValue() {
-        String input = db.getUserinputvalue();
+        String input = db.getUserInputValue();
         assertEquals("Dave", input);
     }
 
     @Test
-    @DisplayName("resultsArr length should be 26")
+    @DisplayName("resultsArr length should be 16")
     public void testGetResultsSize() {
         int resultsSize = db.getResultsSize();
         assertEquals(16, resultsSize);

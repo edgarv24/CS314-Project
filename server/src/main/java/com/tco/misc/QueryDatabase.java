@@ -13,28 +13,37 @@ public class QueryDatabase {
 
     private final transient Logger log = LoggerFactory.getLogger(QueryDatabase.class);
 
-    private final static String DB_URL = "jdbc:mariadb://127.0.0.1:56247/cs314";
+    private final String useTunnel = System.getenv("CS314_USE_DATABASE_TUNNEL");
+    private String DB_URL = null;
     private final static String DB_USER = "cs314-db";
     private final static String DB_PASSWORD = "eiK5liet1uej";
 
-    private static String Userinputvalue = null;
+    private static String userInputValue = null;
     private final static String COLUMN = "name";
     private static String QUERY;
 
-    private ArrayList<String> resultsArr = new ArrayList<String>();
+    private final ArrayList<String> resultsArr;
 
     QueryDatabase(String userInput) throws SQLException {
-        this.Userinputvalue = userInput;
-        this.QUERY = "SELECT " + COLUMN + " FROM world WHERE " + COLUMN + " LIKE \"%" + Userinputvalue + "%\"";
+        userInputValue = userInput;
+        QUERY = "SELECT " + COLUMN + " FROM world WHERE " + COLUMN + " LIKE \"%" + userInputValue + "%\"";
+        resultsArr = new ArrayList<String>();
+        checkIfOffCampus();
         ResultSet results = makeQuery();
         addResultsToArray(results);
+    }
+
+    public void checkIfOffCampus() {
+        if (useTunnel != null && useTunnel.equals("true"))
+            this.DB_URL = "jdbc:mariadb://127.0.0.1:56247/cs314";
+        else
+            this.DB_URL = "jdbc:mysql://faure.cs.colostate.edu/cs314";
     }
 
     public ResultSet makeQuery() throws SQLException {
         Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         Statement query = conn.createStatement();
-        ResultSet results = query.executeQuery(QUERY);
-        return results;
+        return query.executeQuery(QUERY);
     }
 
     public void addResultsToArray(ResultSet results) throws SQLException {
@@ -55,17 +64,10 @@ public class QueryDatabase {
         return results;
     }
 
-    public String getDbUrl() {
-        return this.DB_URL;
-    }
-    public String getDbUser() {
-        return this.DB_USER;
-    }
-    public String getDbPassword() {
-        return this.DB_PASSWORD;
-    }
-    public String getUserinputvalue() {return this.Userinputvalue;}
-
-    public int getResultsSize() {return this.resultsArr.size();}
+    public String getDbUrl() { return this.DB_URL; }
+    public String getDbUser() { return DB_USER; }
+    public String getDbPassword() { return DB_PASSWORD; }
+    public String getUserInputValue() { return userInputValue; }
+    public int getResultsSize() { return resultsArr.size(); }
 
 }
