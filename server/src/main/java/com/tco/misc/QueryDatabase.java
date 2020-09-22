@@ -11,9 +11,15 @@ public class QueryDatabase {
 
     private final static String DB_USER = "cs314-db";
     private final static String DB_PASSWORD = "eiK5liet1uej";
+    private static String Userinputvalue = null;
 
-    private final static String COLUMN = "id";
-    private final static String QUERY = "SELECT DISTINCT "+ COLUMN +" FROM world ORDER BY "+ COLUMN +" ASC;";
+    QueryDatabase(String userInput) {
+        this.Userinputvalue = userInput;
+    }
+
+    private final static String COLUMN = "name, municipality";
+    private final static String QUERY = "SELECT DISTINCT "  + COLUMN + " FROM world WHERE name LIKE " + Userinputvalue + " OR WHERE municipality LIKE " + Userinputvalue + " ORDER BY " + COLUMN + ";";
+
 
     public static void main(String[] args) {
         try (
@@ -42,5 +48,6 @@ public class QueryDatabase {
     public String getDbPassword() {
         return this.DB_PASSWORD;
     }
+    public String getUserinputvalue() {return this.Userinputvalue;}
 
 }
