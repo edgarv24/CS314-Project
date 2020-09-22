@@ -72,7 +72,8 @@
 | Date | Tasks closed  | Tasks in progress | Impediments |
 | :--- | :--- | :--- | :--- |
 | 9-16-2020 | none | #78, #82, #79, #102 | internet connection issues  | 
-| 9-18-2020 | #82, #102, #79 | #108, #107 | none | 
+| 9-18-2020 | #82, #102, #79 | #108, #107, #78 | none | 
+| 9-18-2020 | none | #108, #107, #78 | none | 
 
 ## Review
 
