@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,8 +18,8 @@ public class TestQueryDatabase {
     private QueryDatabase db;
 
     @BeforeEach
-    public void createConfigurationForTestCases(){
-        db = new QueryDatabase("Denver");
+    public void createConfigurationForTestCases() throws SQLException {
+        db = new QueryDatabase("Dave");
         conn = null;
     }
 
@@ -53,13 +55,20 @@ public class TestQueryDatabase {
     @DisplayName("User input should be Denver")
     public void testGetUserInputValue() {
         String input = db.getUserinputvalue();
-        assertEquals("Denver", input);
+        assertEquals("Dave", input);
     }
 
     @Test
     @DisplayName("resultsArr length should be 26")
-    public void testGetResultsSize(){
+    public void testGetResultsSize() {
         int resultsSize = db.getResultsSize();
-        assertEquals(26, resultsSize);
+        assertEquals(16, resultsSize);
+    }
+
+    @Test
+    @DisplayName("results list length should be 16")
+    public void testReturnResults() {
+        List<Map<String, String>> results = db.returnResults();
+        assertEquals(16, results.size());
     }
 }
