@@ -1,30 +1,62 @@
 package com.tco.requests;
 
-import com.tco.misc.BadRequestException;
 import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RequestDistance extends RequestHeader {
 
-    private Integer distance;
-    private Map<String, String> place1, place2;
-    private Float earthRadius;
+  private Integer distance;
+  private Float earthRadius;
+  private Map<String, String> place1, place2;
 
-    private final transient Logger log = LoggerFactory.getLogger(RequestDistance.class);
+  private final transient Logger log = LoggerFactory.getLogger(RequestDistance.class);
 
-    public RequestDistance() {
-        this.requestType = "distance";
-        this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;
-    }
+  public RequestDistance() {
+    this.requestType = "distance";
+    this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;
+  }
 
-    @Override
-    public void buildResponse() {
-        this.distance = 0;
-        log.trace("buildResponse -> {}", this);
-    }
+  public RequestDistance(Float earthRadius, String lat1, String long1, String lat2, String long2) {
+    this();
+    this.distance = null;
+    this.earthRadius = earthRadius;
+    this.place1 = new HashMap<>();
+    this.place1.put("latitude", lat1);
+    this.place1.put("longitude", long1);
+    this.place2 = new HashMap<>();
+    this.place2.put("latitude", lat2);
+    this.place2.put("longitude", long2);
+  }
 
-    public Integer getDistance() {
-        return distance;
-    }
+  @Override
+  public void buildResponse() {
+    this.distance = 0;
+    log.trace("buildResponse -> {}", this);
+  }
+
+  public Integer getDistance() {
+    return distance;
+  }
+
+  public String getLatitude1() {
+    return place1.getOrDefault("latitude", null);
+  }
+
+  public String getLongitude1() {
+    return place1.getOrDefault("longitude", null);
+  }
+
+  public String getLatitude2() {
+    return place2.getOrDefault("latitude", null);
+  }
+
+  public String getLongitude2() {
+    return place2.getOrDefault("longitude", null);
+  }
+
+  public Float getEarthRadius() {
+    return earthRadius;
+  }
 }
