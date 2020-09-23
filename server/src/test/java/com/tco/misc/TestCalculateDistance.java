@@ -68,4 +68,22 @@ public class TestCalculateDistance {
     double dist = calcDist.distBetween(locWest, locEast);
     assertEquals(13343.391197, dist, DELTA);
   }
+
+  @Test
+  @DisplayName("Invalid longitude")
+  public void testInvalidLongitude() {
+    double[] locA = {0.0, 181.0};
+    double[] locB = {0.0, 0.0};
+    double dist = calcDist.distBetween(locA, locB);
+    assertEquals(-1, dist, DELTA);
+  }
+
+  @Test
+  @DisplayName("Invalid latitude")
+  public void testInvalidLatitude() {
+    double[] locA = {0.0, 0.0};
+    double[] locB = {-91.0, 0.0};
+    double dist = calcDist.distBetween(locA, locB);
+    assertEquals(-1, dist, DELTA);
+  }
 }
