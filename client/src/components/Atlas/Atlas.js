@@ -20,12 +20,20 @@ export default class Atlas extends Component {
 
   constructor(props) {
     super(props);
-
     this.setMarker = this.setMarker.bind(this);
-
     this.state = {
       markerPosition: null,
+      mapCenter: MAP_CENTER_DEFAULT
     };
+  }
+
+  componentWillMount() {
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.setState({markerPosition: {lat: position.coords.latitude, lng: position.coords.longitude}})
+        this.setState({mapCenter:[position.coords.latitude, position.coords.longitude]})
+      });
+    }
   }
 
   render() {
@@ -52,7 +60,7 @@ export default class Atlas extends Component {
             minZoom={MAP_MIN_ZOOM}
             maxZoom={MAP_MAX_ZOOM}
             maxBounds={MAP_BOUNDS}
-            center={MAP_CENTER_DEFAULT}
+            center={this.state.mapCenter}
             onClick={this.setMarker}
         >
           <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
@@ -84,4 +92,6 @@ export default class Atlas extends Component {
   getStringMarkerPosition() {
     return this.state.markerPosition.lat.toFixed(2) + ', ' + this.state.markerPosition.lng.toFixed(2);
   }
+
 }
+
