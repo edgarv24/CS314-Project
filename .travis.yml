@@ -2,6 +2,9 @@ os: linux
 
 language: java
 
+addons:
+  mariadb: 10.2
+
 before_script:
   # Install NPM
   - nvm install --lts
@@ -11,6 +14,10 @@ before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
+
+  # Setup mysql "test" database
+  - mysql -u root -e 'CREATE DATABASE cs314;'
+  - for SQL in server/src/test/resources/world.sql; do mysql cs314 < $SQL; done
 
 install:
   - npm install --prefix client
@@ -38,3 +45,4 @@ after_script:
   - ./cc-test-reporter format-coverage -t clover target/coverage/client/clover.xml --output "codeclimate.js.json"
   - ./cc-test-reporter sum-coverage --output "codeclimate.combined.json" codeclimate.*.json
   - ./cc-test-reporter upload-coverage --input "codeclimate.combined.json"
+
