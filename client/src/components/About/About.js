@@ -6,6 +6,7 @@ import {CLIENT_TEAM_NAME} from "../../utils/constants";
 
 import RyliePicture from "../../static/images/RyliePic.jpg";
 import DarinPicture from "../../static/images/Darin.png";
+import MikPicture from "../../static/images/MikPic.jpg";
 import EdgarPicture from "../../static/images/edgar-pic.png";
 
 const DarinBio = "Darin is a third year student at Colorado State University, where he is studying computer science with" +
@@ -78,7 +79,7 @@ export default class About extends Component {
                 <Row>
                     <BioCard first="Edgar" last="Varela" bio={EdgarBio} imageURL={EdgarPicture} />
                     <BioCard first="Rylie" last="Denehan" bio={RylieBio} imageURL={RyliePicture} />
-                    <BioCard first="Mikayla" last="Powell" bio={MikBio} imageURL={""} />
+                    <BioCard first="Mikayla" last="Powell" bio={MikBio} imageURL={MikPicture} />
                     <BioCard first="Darin" last="Harter" bio={DarinBio} imageURL={DarinPicture} />
                 </Row>
             </Container>
