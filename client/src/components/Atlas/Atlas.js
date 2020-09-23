@@ -27,7 +27,7 @@ export default class Atlas extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         this.setState({markerPosition: {lat: position.coords.latitude, lng: position.coords.longitude}})
