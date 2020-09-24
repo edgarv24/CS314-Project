@@ -37,9 +37,17 @@ public class TestRequestFind {
     assertEquals(2, version);
   }
 
-  @Test@DisplayName("returnResults is equal to 7")
+  @Test
+  @DisplayName("returnResults is equal to 7")
   public void testReturnResults() {
     List<Map<String, String>> results = db.returnResults();
     assertEquals(7, results.size());
+  }
+
+  @Test
+  @DisplayName("Exception is equal to null")
+  public void testPlaces() {
+    List<Map<String, String>> place = requestFind.getPlaces();
+    assertEquals(7, place.size());
   }
 }

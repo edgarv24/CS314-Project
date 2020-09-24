@@ -4,6 +4,7 @@ import com.tco.misc.QueryDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,16 +16,21 @@ public class RequestFind extends RequestHeader {
   private Integer found;
   private List<Map<String, String>> places;
   private final transient Logger log = LoggerFactory.getLogger(RequestFind.class);
-  private QueryDatabase db;
+  private QueryDatabase db = new QueryDatabase("Denver");
 
-  public RequestFind() {
-    this.requestType = "find";
-    this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;
-    this.found = 0;
-    this.places = db.returnResults();
+  public RequestFind() throws SQLException {
+    try {
+      this.requestType = "find";
+      this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;
+      this.found = 0;
+      this.places = db.returnResults();
+    } catch (Exception e) {
+      this.places = null;
+      e.printStackTrace();
+    }
   }
 
-  public RequestFind(String match, Integer limit) {
+  public RequestFind(String match, Integer limit) throws SQLException {
     this();
     this.match = match;
     this.limit = limit;
@@ -33,6 +39,7 @@ public class RequestFind extends RequestHeader {
   @Override
   public void buildResponse() {
     log.trace("buildResponse -> {}", this);
+    this.places = db.returnResults();
   }
 
   public String getMatch() { return match; }
