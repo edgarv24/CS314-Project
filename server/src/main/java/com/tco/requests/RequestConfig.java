@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class RequestConfig extends RequestHeader {
 
-  private String serverName;\
+  private String serverName;
   private final ArrayList<String> supportedRequests = new ArrayList<>();
   private final transient Logger log = LoggerFactory.getLogger(RequestConfig.class);
 
