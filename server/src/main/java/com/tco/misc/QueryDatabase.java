@@ -25,7 +25,7 @@ public class QueryDatabase {
 
     private final ArrayList<String> resultsArr;
 
-    QueryDatabase(String userInput) throws SQLException {
+    public QueryDatabase(String userInput) throws SQLException {
         userInputValue = userInput;
         QUERY = "SELECT " + COLUMN + " FROM world WHERE " + COLUMN + " LIKE \"%" + userInputValue + "%\"";
         resultsArr = new ArrayList<String>();
