@@ -38,4 +38,10 @@ public class TestRequestConfig {
     String name = conf.getServerName();
     assertEquals("t14 The Fourteeners", name);
   }
+  @Test
+  @DisplayName("3 supportedRequests")
+  public void testSupportedRequests(){
+    int size = conf.getSupportedRequests().size();
+    assertEquals(3, size);
+  }
 }
