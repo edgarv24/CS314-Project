@@ -45,7 +45,7 @@ public class TestRequestFind {
   }
 
   @Test
-  @DisplayName("Exception is equal to null")
+  @DisplayName("Exception is equal to 7")
   public void testPlaces() {
     List<Map<String, String>> place = requestFind.getPlaces();
     assertEquals(7, place.size());
