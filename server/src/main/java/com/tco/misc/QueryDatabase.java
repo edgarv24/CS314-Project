@@ -28,7 +28,7 @@ public class QueryDatabase {
     public QueryDatabase(String userInput) throws SQLException {
         userInputValue = userInput;
         QUERY = "SELECT " + COLUMN + " FROM world WHERE " + COLUMN + " LIKE \"%" + userInputValue + "%\"";
-        resultsArr = new ArrayList<String>();
+        resultsArr = new ArrayList<>();
         checkIfTravis();
         ResultSet results = makeQuery();
         addResultsToArray(results);
