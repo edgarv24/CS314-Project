@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Col, Container, Row} from 'reactstrap';
+import {Button, Col, Container, Row} from 'reactstrap';
 
 import {Map, Marker, Popup, TileLayer} from 'react-leaflet';
 
@@ -21,17 +21,24 @@ export default class Atlas extends Component {
   constructor(props) {
     super(props);
     this.setMarker = this.setMarker.bind(this);
+    this.setMapToHome = this.setMapToHome.bind(this);
+    this.getHomePosition = this.getHomePosition.bind(this);
     this.state = {
+      userPosition: null,
       markerPosition: null,
       mapCenter: MAP_CENTER_DEFAULT
     };
   }
 
   componentDidMount() {
-    if(navigator.geolocation) {
+    // request user location once after first render
+    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        this.setState({markerPosition: {lat: position.coords.latitude, lng: position.coords.longitude}})
-        this.setState({mapCenter:[position.coords.latitude, position.coords.longitude]})
+        this.setState({
+          markerPosition: { lat: position.coords.latitude, lng: position.coords.longitude },
+          mapCenter: [position.coords.latitude, position.coords.longitude],
+          userPosition: [position.coords.latitude, position.coords.longitude]
+        })
       });
     }
   }
@@ -43,6 +50,13 @@ export default class Atlas extends Component {
             <Row>
               <Col sm={12} md={{size: 10, offset: 1}}>
                 {this.renderLeafletMap()}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={12} md={{size: 10, offset: 1}}>
+                <Button color="primary" onClick={this.setMapToHome}>
+                  Where am I?
+                </Button>
               </Col>
             </Row>
           </Container>
@@ -60,7 +74,9 @@ export default class Atlas extends Component {
             minZoom={MAP_MIN_ZOOM}
             maxZoom={MAP_MAX_ZOOM}
             maxBounds={MAP_BOUNDS}
-            center={this.state.mapCenter}
+            viewport={{
+              center: this.state.mapCenter
+            }}
             onClick={this.setMarker}
         >
           <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
@@ -70,7 +86,10 @@ export default class Atlas extends Component {
   }
 
   setMarker(mapClickInfo) {
-    this.setState({markerPosition: mapClickInfo.latlng});
+    this.setState({
+      markerPosition: mapClickInfo.latlng,
+      mapCenter: mapClickInfo.latlng
+    });
   }
 
   getMarker() {
@@ -93,5 +112,18 @@ export default class Atlas extends Component {
     return this.state.markerPosition.lat.toFixed(2) + ', ' + this.state.markerPosition.lng.toFixed(2);
   }
 
-}
+  setMapToHome() {
+    let homePos = this.getHomePosition();
 
+    this.setState({
+      markerPosition: { lat: homePos[0], lng: homePos[1] },
+      mapCenter: homePos
+    });
+  }
+
+  getHomePosition() {
+    if (this.state.userPosition)
+      return this.state.userPosition;
+    return MAP_CENTER_DEFAULT;
+  }
+}
