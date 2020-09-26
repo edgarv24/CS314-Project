@@ -21,7 +21,6 @@ function testInitialAtlasState() {
 
 test("Testing Atlas's Initial State", testInitialAtlasState);
 
-
 function testMarkerIsRenderedOnClick() {
 
   const atlas = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
@@ -38,9 +37,31 @@ function testMarkerIsRenderedOnClick() {
   // expect(atlas.find('Marker')).toEqual(1); ??
 }
 
+test("Testing Marker Rendered on Click", testMarkerIsRenderedOnClick);
+
 function simulateOnClickEvent(reactWrapper, event) {
   reactWrapper.find('Map').at(0).simulate('click', event);
   reactWrapper.update();
 }
 
-test("Testing Atlas's Initial State", testMarkerIsRenderedOnClick);
+function testWhereAmIButtonNoGeolocation() {
+  const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+  const atlas = atlasWrapper.instance();
+
+  let actualMarkerPosition = atlas.state.markerPosition;
+  let expectedMarkerPosition = null;
+
+  expect(actualMarkerPosition).toEqual(expectedMarkerPosition);
+
+  let latlng = {lat: 0, lng: 0};
+  simulateOnClickEvent(atlasWrapper, {latlng: latlng});
+  atlas.setMapToHome();
+
+  let home = atlas.getHomePosition();
+  let homeLatLong = {lat: home[0], lng: home[1]};
+
+  expect(atlas.state.markerPosition).toEqual(homeLatLong);
+  expect(atlas.state.mapCenter).toEqual(home);
+}
+
+test("Testing Where am I Button (no geolocation)", testWhereAmIButtonNoGeolocation);
