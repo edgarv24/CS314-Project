@@ -53,7 +53,7 @@ export default class Atlas extends Component {
               </Col>
             </Row>
             <Row>
-              <Col sm={12} md={{size: 10, offset: 1}}>
+              <Col className="my-3" xs={{size: 10, offset: 5}}>
                 <Button color="primary" onClick={this.setMapToHome}>
                   Where am I?
                 </Button>
