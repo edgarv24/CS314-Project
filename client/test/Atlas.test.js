@@ -65,3 +65,5 @@ function testWhereAmIButtonNoGeolocation() {
 }
 
 test("Testing Where am I Button (no geolocation)", testWhereAmIButtonNoGeolocation);
+
+

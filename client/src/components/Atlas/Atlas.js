@@ -11,6 +11,11 @@ import 'leaflet/dist/leaflet.css';
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = [40.5734, -105.0865];
 const MARKER_ICON = L.icon({ iconUrl: icon, shadowUrl: iconShadow, iconAnchor: [12, 40] });
+const DISTINCT_MARKER = new L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+  shadowUrl: icon,
+  iconAnchor: [12, 40],
+});
 const MAP_LAYER_ATTRIBUTION = "&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors";
 const MAP_LAYER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const MAP_MIN_ZOOM = 1;
@@ -23,6 +28,7 @@ export default class Atlas extends Component {
     this.setMarker = this.setMarker.bind(this);
     this.setMapToHome = this.setMapToHome.bind(this);
     this.getHomePosition = this.getHomePosition.bind(this);
+    this.getUserMarker = this.getUserMarker.bind(this);
     this.state = {
       userPosition: null,
       markerPosition: null,
@@ -81,6 +87,7 @@ export default class Atlas extends Component {
         >
           <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
           {this.getMarker()}
+          {this.getUserMarker()}
         </Map>
     );
   }
@@ -108,6 +115,7 @@ export default class Atlas extends Component {
     }
   }
 
+
   getStringMarkerPosition() {
     return this.state.markerPosition.lat.toFixed(2) + ', ' + this.state.markerPosition.lng.toFixed(2);
   }
@@ -125,5 +133,15 @@ export default class Atlas extends Component {
     if (this.state.userPosition)
       return this.state.userPosition;
     return MAP_CENTER_DEFAULT;
+  }
+
+  getUserMarker() {
+    if (this.state.userPosition) {
+      return (
+          <Marker position={this.state.userPosition} icon={DISTINCT_MARKER}>
+            <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition()}</Popup>
+          </Marker>
+      );
+    }
   }
 }
