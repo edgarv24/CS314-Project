@@ -28,7 +28,7 @@ export default class Atlas extends Component {
     this.setMarker = this.setMarker.bind(this);
     this.setMapToHome = this.setMapToHome.bind(this);
     this.getHomePosition = this.getHomePosition.bind(this);
-    this.setUserMarker = this.setUserMarker.bind(this);
+    this.getUserMarker = this.getUserMarker.bind(this);
     this.state = {
       userPosition: null,
       markerPosition: null,
@@ -87,7 +87,7 @@ export default class Atlas extends Component {
         >
           <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
           {this.getMarker()}
-          {this.setUserMarker()}
+          {this.getUserMarker()}
         </Map>
     );
   }
@@ -135,7 +135,7 @@ export default class Atlas extends Component {
     return MAP_CENTER_DEFAULT;
   }
 
-  setUserMarker() {
+  getUserMarker() {
     if (this.state.userPosition) {
       return (
           <Marker position={this.state.userPosition} icon={DISTINCT_MARKER}>
