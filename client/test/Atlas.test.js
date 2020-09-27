@@ -1,13 +1,9 @@
 import './jestConfig/enzyme.config.js';
 
 import React from 'react';
-import {shallow, mount} from 'enzyme';
-import {Marker} from 'react-leaflet';
+import {shallow} from 'enzyme';
 
 import Atlas from '../src/components/Atlas/Atlas';
-import {describe, it} from "@jest/globals";
-
-import {MARKER_ICON} from '../src/components/Atlas/Atlas';
 
 const startProperties = {
   createSnackBar: jest.fn()
@@ -70,8 +66,4 @@ function testWhereAmIButtonNoGeolocation() {
 
 test("Testing Where am I Button (no geolocation)", testWhereAmIButtonNoGeolocation);
 
-function testDistinctMarker() {
-  const atlas = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
-  expect()
-}
 

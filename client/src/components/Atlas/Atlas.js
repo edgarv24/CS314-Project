@@ -86,8 +86,8 @@ export default class Atlas extends Component {
             onClick={this.setMarker}
         >
           <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
-          {this.setUserMarker()}
           {this.getMarker()}
+          {this.setUserMarker()}
         </Map>
     );
   }
@@ -136,15 +136,9 @@ export default class Atlas extends Component {
   }
 
   setUserMarker() {
-    const initMarker = ref => {
-      if (ref) {
-        ref.leafletElement.openPopup()
-      }
-    };
-
     if (this.state.userPosition) {
       return (
-          <Marker ref={initMarker} position={this.state.userPosition} icon={DISTINCT_MARKER}>
+          <Marker position={this.state.userPosition} icon={DISTINCT_MARKER}>
             <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition()}</Popup>
           </Marker>
       );
