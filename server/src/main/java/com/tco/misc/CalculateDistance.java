@@ -5,27 +5,27 @@ import java.util.Map;
 import static java.lang.Math.*;
 
 public class CalculateDistance {
-  private double earthRadiusKm;
+  private double earthRadius;
 
-  public CalculateDistance() {}
+  private CalculateDistance() {}
 
-  public static CalculateDistance usingRadius(double earthRadiusKm) {
+  public static CalculateDistance usingRadius(double earthRadius) {
     CalculateDistance cd = new CalculateDistance();
-    cd.earthRadiusKm = earthRadiusKm;
+    cd.earthRadius = earthRadius;
     return cd;
   }
 
-  public int distBetween(Map<String, String> latLong1, Map<String, String> latLong2) {
+  public long distBetween(Map<String, String> latLong1, Map<String, String> latLong2) {
     double lat1 = Double.parseDouble(latLong1.get("latitude"));
     double long1 = Double.parseDouble(latLong1.get("longitude"));
     double lat2 = Double.parseDouble(latLong2.get("latitude"));
     double long2 = Double.parseDouble(latLong2.get("longitude"));
 
-    return (int) Math.round(distBetween(lat1, long1, lat2, long2));
+    return Math.round(distBetween(lat1, long1, lat2, long2));
   }
 
-  public double distBetween(double[] latLong1, double[] latLong2) {
-    return distBetween(latLong1[0], latLong1[1], latLong2[0], latLong2[1]);
+  public long distBetween(double[] latLong1, double[] latLong2) {
+    return Math.round(distBetween(latLong1[0], latLong1[1], latLong2[0], latLong2[1]));
   }
 
   public double distBetween(double lat1, double long1, double lat2, double long2) {
@@ -37,7 +37,7 @@ public class CalculateDistance {
 
     double centralAngleRadians = calculateCentralAngle(rLat1, rLat2, rLongDiff);
 
-    return centralAngleRadians * earthRadiusKm;
+    return centralAngleRadians * earthRadius;
   }
 
   private double calculateCentralAngle(double rLat1, double rLat2, double rLongDiff) {
