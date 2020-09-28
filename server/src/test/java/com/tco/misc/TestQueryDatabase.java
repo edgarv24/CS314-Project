@@ -85,18 +85,9 @@ public class TestQueryDatabase {
   }
 
   @Test
-  @DisplayName("Query with \"Dave\" should return 16 results")
-  public void testResultsSizeOfDave() throws SQLException {
-    db = new QueryDatabase("Dave");
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(16, results.size());
-  }
-
-  @Test
-  @DisplayName("Airport \"Dave's Aerodrome\" should be in \"Dave\" query")
-  public void testAirportInQueryDave() throws SQLException {
-    db = new QueryDatabase("Dave");
-    assertTrue(db.getNamesList().contains("Dave's Aerodrome"));
+  @DisplayName("Airport \"Denver International Airport\" should be in \"Denver\" query")
+  public void testDenverQueryForDIA() {
+    assertTrue(db.getNamesList().contains("Denver International Airport"));
   }
 
   @Test
