@@ -45,70 +45,70 @@ export default class About extends Component {
     render() {
         return (
             <Container id="about">
-                <PageHeader closePage={this.props.closePage}/>
+                {this.renderPageHeader()}
                 <br/>
-                <MissionStatement/>
+                {this.renderMissionStatement()}
                 <br/>
-                <MembersHeader/>
-                <BiographyCards/>
+                {this.renderMembersHeader()}
+                {this.renderBiographyCards()}
             </Container>
         );
     }
-}
 
-function PageHeader(props) {
-    return (
-        <Row>
-            <Col>
-                <h2>{CLIENT_TEAM_NAME}</h2>
-            </Col>
-            <Col id="closeAbout" xs='auto'>
-                <Button color="primary" onClick={props.closePage} xs={1}>
-                    Close
-                </Button>
-            </Col>
-        </Row>
-    );
-}
+    renderPageHeader() {
+        return (
+            <Row>
+                <Col>
+                    <h2>{CLIENT_TEAM_NAME}</h2>
+                </Col>
+                <Col id="closeAbout" xs='auto'>
+                    <Button color="primary" onClick={this.props.closePage} xs={1}>
+                        Close
+                    </Button>
+                </Col>
+            </Row>
+        );
+    }
 
-function MissionStatement() {
-    return (
-        <Row>
-            <Col>
-                <Card>
-                    <CardHeader><strong>Mission Statement</strong></CardHeader>
-                    <CardBody>
-                        <CardText>
-                            Our goal is to construct large complex software systems that will utilize clean code,
-                            configuration management, continuous integration, testing, project management and teamwork
-                            to create a cohesive web development project in five 3-week sprints.
-                        </CardText>
-                    </CardBody>
-                </Card>
-            </Col>
-        </Row>
-    );
-}
+    renderMissionStatement() {
+        return (
+            <Row>
+                <Col>
+                    <Card>
+                        <CardHeader><strong>Mission Statement</strong></CardHeader>
+                        <CardBody>
+                            <CardText>
+                                Our goal is to construct large complex software systems that will utilize clean code,
+                                configuration management, continuous integration, testing, project management and teamwork
+                                to create a cohesive web development project in five 3-week sprints.
+                            </CardText>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+        );
+    }
 
-function MembersHeader() {
-    return (
-        <Row>
-            <Col>
-                <h4><strong>Members</strong></h4>
-            </Col>
-        </Row>
-    );
-}
+    renderMembersHeader() {
+        return (
+            <Row>
+                <Col>
+                    <h4><strong>Members</strong></h4>
+                </Col>
+            </Row>
+        );
+    }
 
-function BiographyCards() {
-    return (
-        <Row>
-            <BioCard first="Edgar" last="Varela" bio={EdgarBio} imageURL={EdgarPicture}/>
-            <BioCard first="Rylie" last="Denehan" bio={RylieBio} imageURL={RyliePicture}/>
-            <BioCard first="Mikayla" last="Powell" bio={MikBio} imageURL={MikPicture}/>
-            <BioCard first="Darin" last="Harter" bio={DarinBio} imageURL={DarinPicture}/>
-        </Row>
-    );
+    renderBiographyCards() {
+        return (
+            <Row>
+                <BioCard first="Edgar" last="Varela" bio={EdgarBio} imageURL={EdgarPicture}/>
+                <BioCard first="Rylie" last="Denehan" bio={RylieBio} imageURL={RyliePicture}/>
+                <BioCard first="Mikayla" last="Powell" bio={MikBio} imageURL={MikPicture}/>
+                <BioCard first="Darin" last="Harter" bio={DarinBio} imageURL={DarinPicture}/>
+            </Row>
+        );
+    }
 }
 
 class BioCard extends React.Component {
