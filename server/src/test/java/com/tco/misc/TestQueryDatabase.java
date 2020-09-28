@@ -1,5 +1,6 @@
 package com.tco.misc;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,85 +14,96 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestQueryDatabase {
-    Connection conn;
-    private QueryDatabase db;
-    String isTravis = System.getenv("TRAVIS");
-    private final String useTunnel = System.getenv("CS314_USE_DATABASE_TUNNEL");
-    private String expectedUserName;
-    private String expectedPassword;
-    private String expectedURL;
+  private static final String isTravis = System.getenv("TRAVIS");
+  private static final String useTunnel = System.getenv("CS314_USE_DATABASE_TUNNEL");
+  private static String expectedURL;
+  private static String expectedUsername;
+  private static String expectedPassword;
 
-    @BeforeEach
-    public void createConfigurationForTestCases() throws SQLException {
-        db = new QueryDatabase("Denver");
-        conn = null;
-    }
+  private QueryDatabase db;
+  private Connection conn;
 
-    @Test
-    @DisplayName("Connection successful")
-    public void testConnection() throws SQLException {
-        conn = DriverManager.getConnection(db.getDbUrl(), db.getDbUser(), db.getDbPassword());
-        assertNotNull(conn);
+  @BeforeAll
+  public static void init() {
+    if (isTravis != null && isTravis.equals("true")) {
+      expectedURL = "jdbc:mysql://127.0.0.1/cs314";
+      expectedUsername = "root";
+      expectedPassword = null;
+    } else if (useTunnel != null && useTunnel.equals("true")) {
+      expectedURL = "jdbc:mysql://127.0.0.1:56247/cs314";
+      expectedUsername = "cs314-db";
+      expectedPassword = "eiK5liet1uej";
+    } else {
+      expectedURL = "jdbc:mysql://faure.cs.colostate.edu/cs314";
+      expectedUsername = "cs314-db";
+      expectedPassword = "eiK5liet1uej";
     }
+  }
 
-    @Test
-    @DisplayName("DB_URL will depend on environment")
-    public void testGetDB_URL() {
-        checkIfTravis();
-        String url = db.getDbUrl();
-        assertEquals(expectedURL, url);
-    }
+  @BeforeEach
+  public void createConfigurationForTestCases() throws SQLException {
+    db = new QueryDatabase("Denver");
+    conn = null;
+  }
 
-    @Test
-    @DisplayName("DB_User should be cs314-db or root")
-    public void testGetDB_User() {
-        checkIfTravis();
-        String user = db.getDbUser();
-        assertEquals(expectedUserName, user);
-    }
+  @Test
+  @DisplayName("Connection successful")
+  public void testConnection() throws SQLException {
+    conn = DriverManager.getConnection(db.getDbUrl(), db.getDbUser(), db.getDbPassword());
+    assertNotNull(conn);
+  }
 
-    @Test
-    @DisplayName("DB_Password should be eiK5liet1uej or null if on travis")
-    public void testGetDB_Password() {
-        checkIfTravis();
-        String password = db.getDbPassword();
-        assertEquals(expectedPassword, password);
-    }
+  @Test
+  @DisplayName("DB_URL will depend on environment")
+  public void testGetDB_URL() {
+    QueryDatabase.configServerUsingLocation();
+    String url = db.getDbUrl();
+    assertEquals(expectedURL, url);
+  }
 
-    @Test
-    @DisplayName("User input should be Denver")
-    public void testGetUserInputValue() {
-        String input = db.getUserInputValue();
-        assertEquals("Denver", input);
-    }
+  @Test
+  @DisplayName("DB_User should be cs314-db or root")
+  public void testGetDB_User() {
+    QueryDatabase.configServerUsingLocation();
+    String username = db.getDbUser();
+    assertEquals(expectedUsername, username);
+  }
 
-    @Test
-    @DisplayName("resultsArr length should be 7")
-    public void testGetResultsSize() {
-        int resultsSize = db.getResultsSize();
-        assertEquals(7, resultsSize);
-    }
+  @Test
+  @DisplayName("DB_Password should be eiK5liet1uej or null if on travis")
+  public void testGetDB_Password() {
+    QueryDatabase.configServerUsingLocation();
+    String password = db.getDbPassword();
+    assertEquals(expectedPassword, password);
+  }
 
-    @Test
-    @DisplayName("results list length should be 7")
-    public void testReturnResults() {
-        List<Map<String, String>> results = db.returnResults();
-        assertEquals(7, results.size());
-    }
+  @Test
+  @DisplayName("Query with \"Denver\" should return 7 results")
+  public void testReturnResults() {
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(7, results.size());
+  }
 
-    public void checkIfTravis() {
-        if (isTravis != null && isTravis.equals("true")) {
-            expectedURL = "jdbc:mysql://127.0.0.1/cs314";
-            expectedUserName = "root";
-            expectedPassword = null;
-        } else if (useTunnel != null && useTunnel.equals("true")) {
-            expectedURL = "jdbc:mysql://127.0.0.1:56247/cs314";
-            expectedUserName = "cs314-db";
-            expectedPassword = "eiK5liet1uej";
-        } else {
-            expectedURL = "jdbc:mysql://faure.cs.colostate.edu/cs314";
-            expectedUserName = "cs314-db";
-            expectedPassword = "eiK5liet1uej";
-        }
-    }
+  @Test
+  @DisplayName("Query with \"Dave\" should return 16 results")
+  public void testResultsSizeOfDave() throws SQLException {
+    db = new QueryDatabase("Dave");
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(16, results.size());
+  }
+
+  @Test
+  @DisplayName("Airport \"Dave's Aerodrome\" should be in \"Dave\" query")
+  public void testAirportInQueryDave() throws SQLException {
+    db = new QueryDatabase("Dave");
+    assertTrue(db.getNamesList().contains("Dave's Aerodrome"));
+  }
+
+  @Test
+  @DisplayName("Query with \"Squid\" should return 0 results")
+  public void testResultsSizeOfSquid() throws SQLException {
+    db = new QueryDatabase("Squid");
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(0, results.size());
+  }
 }
