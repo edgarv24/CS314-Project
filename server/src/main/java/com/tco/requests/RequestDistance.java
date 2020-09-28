@@ -2,6 +2,7 @@ package com.tco.requests;
 
 import java.util.*;
 
+import com.tco.misc.CalculateDistance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ public class RequestDistance extends RequestHeader {
 
   public RequestDistance(Float earthRadius, String lat1, String long1, String lat2, String long2) {
     this();
-    this.distance = null;
+    this.distance = 0;
     this.earthRadius = earthRadius;
     this.place1 = new HashMap<>();
     this.place1.put("latitude", lat1);
@@ -32,7 +33,11 @@ public class RequestDistance extends RequestHeader {
 
   @Override
   public void buildResponse() {
-    this.distance = 0;
+    CalculateDistance cd = CalculateDistance.usingRadius(earthRadius);
+    this.distance = cd.distBetween(place1, place2);
+    if (this.distance == -1){
+      this.distance = null;
+    }
     log.trace("buildResponse -> {}", this);
   }
 
