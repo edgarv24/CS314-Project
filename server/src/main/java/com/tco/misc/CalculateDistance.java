@@ -1,8 +1,5 @@
 package com.tco.misc;
 
-import org.apache.commons.beanutils.locale.converters.DoubleLocaleConverter;
-import org.mariadb.jdbc.internal.com.send.parameters.DoubleParameter;
-
 import java.util.Map;
 
 import static java.lang.Math.*;
@@ -18,18 +15,19 @@ public class CalculateDistance {
     return cd;
   }
 
-  public double distBetween(double[] latLong1, double[] latLong2) {
-    return distBetween(latLong1[0], latLong1[1], latLong2[0], latLong2[1]);
-  }
-
   public int distBetween(Map<String, String> latLong1, Map<String, String> latLong2) {
     double lat1 = Double.parseDouble(latLong1.get("latitude"));
     double long1 = Double.parseDouble(latLong1.get("longitude"));
     double lat2 = Double.parseDouble(latLong2.get("latitude"));
     double long2 = Double.parseDouble(latLong2.get("longitude"));
 
-    return (int)Math.round(distBetween(lat1, long1, lat2, long2));
+    return (int) Math.round(distBetween(lat1, long1, lat2, long2));
   }
+
+  public double distBetween(double[] latLong1, double[] latLong2) {
+    return distBetween(latLong1[0], latLong1[1], latLong2[0], latLong2[1]);
+  }
+
   public double distBetween(double lat1, double long1, double lat2, double long2) {
     if (!validCoordinates(lat1, long1, lat2, long2)) return -1;
 
@@ -66,6 +64,4 @@ public class CalculateDistance {
   private boolean validLongitude(double longitude) {
     return longitude >= -180 && longitude <= 180;
   }
-
-
 }

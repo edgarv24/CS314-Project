@@ -14,7 +14,6 @@ const startProperties = {
 };
 
 function testRender() {
-
     const footer = mount(
         <Footer
             serverSettings={startProperties.serverSettings}
@@ -28,7 +27,6 @@ test("Settings component should be rendered inside Footer", testRender);
 
 
 function testRenderInput() {
-
     const settings = mount(
         <ServerSettings
             isOpen={startProperties.isOpen}
@@ -44,7 +42,6 @@ test('An Input field should be rendered inside the Settings', testRenderInput);
 
 
 function testUpdateInputText() {
-
     const settings = shallow(
         <ServerSettings
             isOpen={startProperties.isOpen}
