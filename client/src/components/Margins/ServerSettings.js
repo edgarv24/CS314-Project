@@ -34,39 +34,24 @@ export default class ServerSettings extends Component {
     renderSettings(currentServerName) {
         return (
             <ModalBody>
-                <Row className="m-2">
-                    <Col xs={3}>
-                        Name:
-                    </Col>
-                    <Col xs={9}>
-                        {currentServerName}
-                    </Col>
-                </Row>
-                <Row className="m-2">
-                    <Col xs={3}>
-                        Type:
-                    </Col>
-                    <Col xs={9}>
-                        {this.getRequestType()}
-                    </Col>
-                </Row>
-                <Row className="m-2">
+                {this.renderSettingsRow("Name:", currentServerName)}
+                {this.renderSettingsRow("Type:", this.getRequestType())}
+                {this.renderSettingsRow("Version:", this.getRequestVersion())}
+                {this.renderSettingsRow("URL:", this.renderInputField())}
+            </ModalBody>
+        );
+    }
+
+    renderSettingsRow(label, value) {
+        return (
+            <Row className="m-2">
                 <Col xs={3}>
-                    Version:
+                    {label}
                 </Col>
                 <Col xs={9}>
-                    {this.getRequestVersion()}
+                    {value}
                 </Col>
-                </Row>
-                <Row className="m-2">
-                    <Col xs={3}>
-                        URL:
-                    </Col>
-                    <Col xs={9}>
-                        {this.renderInputField()}
-                    </Col>
-                </Row>
-            </ModalBody>
+            </Row>
         );
     }
 
