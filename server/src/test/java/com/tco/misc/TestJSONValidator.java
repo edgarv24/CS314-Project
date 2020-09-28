@@ -13,30 +13,30 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class TestJSONValidator {
 
-    private void test(String request, Type type, boolean valid) {
-        try {
-            JSONValidator.validate(request, type);
-            assertTrue(valid);
-        } catch ( Exception e ) {
-            assertFalse(valid);
-        }
+  private void test(String request, Type type, boolean valid) {
+    try {
+      JSONValidator.validate(request, type);
+      assertTrue(valid);
+    } catch (Exception e) {
+      assertFalse(valid);
     }
+  }
 
-    @Test
-    @DisplayName("Config request should fail schema validation")
-    public void testRequestConfigFail() {
-        test("{}", RequestConfig.class, false);
-    }
+  @Test
+  @DisplayName("Config request should fail schema validation")
+  public void testRequestConfigFail() {
+    test("{}", RequestConfig.class, false);
+  }
 
-    @Test
-    @DisplayName("Config request should pass schema validation")
-    public void testRequestConfigPass() {
-        test("{\"requestType\":\"config\",\"requestVersion\":1}", RequestConfig.class, true);
-    }
+  @Test
+  @DisplayName("Config request should pass schema validation")
+  public void testRequestConfigPass() {
+    test("{\"requestType\":\"config\",\"requestVersion\":1}", RequestConfig.class, true);
+  }
 
-    @Test
-    @DisplayName("There should be no schema for the JSONValidator class")
-    public void testMissingSchema() {
-        test("", JSONValidator.class, false);
-    }
+  @Test
+  @DisplayName("There should be no schema for the JSONValidator class")
+  public void testMissingSchema() {
+    test("", JSONValidator.class, false);
+  }
 }

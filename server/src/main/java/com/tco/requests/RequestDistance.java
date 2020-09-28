@@ -35,7 +35,7 @@ public class RequestDistance extends RequestHeader {
   public void buildResponse() {
     CalculateDistance cd = CalculateDistance.usingRadius(earthRadius);
     this.distance = cd.distBetween(place1, place2);
-    if (this.distance == -1){
+    if (this.distance == -1) {
       this.distance = null;
     }
     log.trace("buildResponse -> {}", this);

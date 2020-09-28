@@ -1,6 +1,5 @@
 package com.tco.requests;
 
-import com.tco.misc.QueryDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ public class TestRequestFind {
   private RequestFind requestFind;
 
   @BeforeEach
-  public void createConfigurationForTestCases() throws SQLException{
+  public void createConfigurationForTestCases() throws SQLException {
     requestFind = new RequestFind("Denver", 0);
     requestFind.buildResponse();
   }
@@ -37,7 +36,7 @@ public class TestRequestFind {
 
   @Test
   @DisplayName("returnResults is equal to 7")
-  public void testReturnResults() throws SQLException {
+  public void testReturnResults() {
     List<Map<String, String>> results = requestFind.getPlaces();
     assertEquals(7, results.size());
   }

@@ -28,5 +28,8 @@ public class RequestConfig extends RequestHeader {
   public String getServerName() {
     return serverName;
   }
-  public ArrayList<String> getSupportedRequests(){return supportedRequests;}
+
+  public ArrayList<String> getSupportedRequests() {
+    return supportedRequests;
+  }
 }
