@@ -13,33 +13,28 @@ public class QueryDatabase {
 
     private final transient Logger log = LoggerFactory.getLogger(QueryDatabase.class);
 
-    String isTravis = System.getenv("TRAVIS");
-    private final String useTunnel = System.getenv("CS314_USE_DATABASE_TUNNEL");
-    private String DB_URL = null;
-    private static String DB_USER = null;
-    private static String DB_PASSWORD = null;
+    private static String DB_URL;
+    private static String DB_USER;
+    private static String DB_PASSWORD;
 
-    private static String userInputValue = null;
     private final static String COLUMN = "name";
-    private static String QUERY;
+    private final String QUERY;
+    private List<Map<String, String>> queryResults;
 
-    private final ArrayList<String> resultsArr;
+    public QueryDatabase(String placeName) throws SQLException {
+        configServerUsingLocation();
 
-    public QueryDatabase(String userInput) throws SQLException {
-        userInputValue = userInput;
-        QUERY = "SELECT " + COLUMN + " FROM world WHERE " + COLUMN + " LIKE \"%" + userInputValue + "%\"";
-        resultsArr = new ArrayList<>();
-        checkIfTravis();
-        ResultSet results = makeQuery();
-        addResultsToArray(results);
+        QUERY = "SELECT " + COLUMN + " FROM world WHERE " + COLUMN + " LIKE \"%" + placeName + "%\"";
+        ResultSet resultSet = makeQuery();
+        convertResultsToListOfMaps(resultSet);
     }
 
-    public void checkIfTravis() {
-        if (isTravis != null && isTravis.equals("true")) {
+    public static void configServerUsingLocation() {
+        if (onTravis()) {
             DB_URL = "jdbc:mysql://127.0.0.1/cs314";
             DB_USER = "root";
             DB_PASSWORD = null;
-        } else if (useTunnel != null && useTunnel.equals("true")) {
+        } else if (usingTunnel()) {
             DB_URL = "jdbc:mysql://127.0.0.1:56247/cs314";
             DB_USER = "cs314-db";
             DB_PASSWORD = "eiK5liet1uej";
@@ -50,34 +45,46 @@ public class QueryDatabase {
         }
     }
 
-    public ResultSet makeQuery() throws SQLException {
+    private ResultSet makeQuery() throws SQLException {
         Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         Statement query = conn.createStatement();
         return query.executeQuery(QUERY);
     }
 
-    public void addResultsToArray(ResultSet results) throws SQLException {
-        results.beforeFirst();
-        while (results.next()) {
-            log.trace("Adding result");
-            resultsArr.add(results.getString("name"));
+    private void convertResultsToListOfMaps(ResultSet resultSet) throws SQLException {
+        queryResults = new ArrayList<>();
+
+        resultSet.beforeFirst();
+        while (resultSet.next()) {
+            String nextResult = resultSet.getString("name");
+            log.trace(String.format("Adding result %s", nextResult));
+
+            Map<String, String> map = new HashMap<>();
+            map.put("name", nextResult);
+            queryResults.add(map);
         }
     }
 
-    public List<Map<String, String>> returnResults() {
-        List<Map<String, String>> results = new ArrayList<>();
-        for (String place : resultsArr) {
-            Map map = new HashMap();
-            map.put("name", place);
-            results.add(map);
-        }
-        return results;
+    public List<Map<String, String>> getQueryResults() { return queryResults; }
+
+    public ArrayList<String> getNamesList() {
+        ArrayList<String> names = new ArrayList<>();
+        for (Map<String, String> result : queryResults)
+            names.add(result.getOrDefault("name", ""));
+        return names;
     }
 
-    public String getDbUrl() { return this.DB_URL; }
+    public String getDbUrl() { return DB_URL; }
     public String getDbUser() { return DB_USER; }
     public String getDbPassword() { return DB_PASSWORD; }
-    public String getUserInputValue() { return userInputValue; }
-    public int getResultsSize() { return resultsArr.size(); }
 
+    public static boolean onTravis() {
+        String var = System.getenv("TRAVIS");
+        return var != null && var.equals("true");
+    }
+
+    public static boolean usingTunnel() {
+        String var = System.getenv("CS314_USE_DATABASE_TUNNEL");
+        return var != null && var.equals("true");
+    }
 }

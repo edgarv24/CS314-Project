@@ -1,8 +1,9 @@
-import React, { Component } from "react";
-import { Container } from "reactstrap";
+import React, {Component} from "react";
+import {Container} from "reactstrap";
 
 import ServerSettings from "./ServerSettings";
 
+import {IconButton} from '@material-ui/core'
 import LinkIcon from '@material-ui/icons/Link';
 import WarningIcon from '@material-ui/icons/Warning';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
@@ -32,10 +33,10 @@ export default class Footer extends Component {
                 <Container>
                     <div className="centered">
                         {linkStatusSymbol} Connected to {serverName} &nbsp;
-                        <a className="tco-text" onClick={() => this.setState({serverSettingsOpen: true})}>
-                            {<InfoOutlinedIcon />}
-                        </a>
-                    {this.renderServerSettings()}
+                        <IconButton onClick={() => this.setState({serverSettingsOpen: true})} color='inherit' style={{outline: 0}}>
+                            {<InfoOutlinedIcon/>}
+                        </IconButton>
+                        {this.renderServerSettings()}
                     </div>
                 </Container>
             </div>
@@ -43,7 +44,7 @@ export default class Footer extends Component {
     }
 
     getSymbolFromConnectionStatus() {
-        return this.connectedToValidServer() ? <LinkIcon /> : <WarningIcon />;
+        return this.connectedToValidServer() ? <LinkIcon/> : <WarningIcon/>;
     }
 
     getServerNameFromConnectionStatus() {
