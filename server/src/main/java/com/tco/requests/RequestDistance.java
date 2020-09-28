@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 public class RequestDistance extends RequestHeader {
 
-  private Integer distance;
-  private Float earthRadius;
+  private Long distance;
+  private Double earthRadius;
   private Map<String, String> place1, place2;
 
   private final transient Logger log = LoggerFactory.getLogger(RequestDistance.class);
@@ -19,7 +19,7 @@ public class RequestDistance extends RequestHeader {
     this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;
   }
 
-  public RequestDistance(Float earthRadius, String lat1, String long1, String lat2, String long2) {
+  public RequestDistance(Double earthRadius, String lat1, String long1, String lat2, String long2) {
     this();
     this.distance = null;
     this.earthRadius = earthRadius;
@@ -41,7 +41,7 @@ public class RequestDistance extends RequestHeader {
     log.trace("buildResponse -> {}", this);
   }
 
-  public Integer getDistance() {
+  public Long getDistance() {
     return distance;
   }
 
@@ -61,7 +61,7 @@ public class RequestDistance extends RequestHeader {
     return place2.getOrDefault("longitude", null);
   }
 
-  public Float getEarthRadius() {
+  public Double getEarthRadius() {
     return earthRadius;
   }
 }
