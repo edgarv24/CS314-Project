@@ -1,5 +1,6 @@
 package com.tco.requests;
 
+import com.tco.misc.BadRequestException;
 import com.tco.misc.QueryDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,22 +29,23 @@ public class RequestFind extends RequestHeader {
     this();
     this.match = match;
     this.limit = limit;
-  }
-
-  @Override
-  public void buildResponse() {
-    this.places = getDataBaseResults();
-    log.trace("buildResponse -> {}", this);
-  }
-
-  public List<Map<String, String>> getDataBaseResults() {
     try {
-      QueryDatabase db = new QueryDatabase(match);
-      return db.getQueryResults();
+      QueryDatabase db = new QueryDatabase(match, limit);
     } catch (SQLException e) {
       log.error(e.getMessage());
     }
-    return null;
+  }
+
+  @Override
+  public void buildResponse() throws BadRequestException {
+    try {
+      QueryDatabase db = new QueryDatabase(match, limit);
+      this.places = db.getQueryResults();
+      this.found = places.size();
+    } catch (SQLException e) {
+      throw new BadRequestException();
+    }
+    log.trace("buildResponse -> {}", this);
   }
 
   public String getMatch() {

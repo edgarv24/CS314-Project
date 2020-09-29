@@ -1,5 +1,6 @@
 package com.tco.requests;
 
+import com.tco.misc.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ public class TestRequestFind {
   private RequestFind requestFind;
 
   @BeforeEach
-  public void createConfigurationForTestCases() throws SQLException {
+  public void createConfigurationForTestCases() throws BadRequestException {
     requestFind = new RequestFind("Denver", 0);
     requestFind.buildResponse();
   }

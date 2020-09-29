@@ -28,8 +28,9 @@ public class QueryDatabase {
   private final String QUERY;
   private List<Map<String, String>> queryResults;
 
-  public QueryDatabase(String placeName) throws SQLException {
+  public QueryDatabase(String placeName, Integer limit) throws SQLException {
     configServerUsingLocation();
+    if (limit == 0) limit = 100;
 
     QUERY =
         "SELECT "
@@ -48,7 +49,8 @@ public class QueryDatabase {
             + "%\" OR "
             + WHERECLAUSE4
             + placeName
-            + "%\") ORDER BY name";
+            + "%\") ORDER BY name LIMIT "
+            + limit;
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
   }
