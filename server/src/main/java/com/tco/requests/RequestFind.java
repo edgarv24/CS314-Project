@@ -15,7 +15,7 @@ public class RequestFind extends RequestHeader {
   private Integer found;
   private List<Map<String, String>> places;
   private final transient Logger log = LoggerFactory.getLogger(RequestFind.class);
-  private QueryDatabase db;
+  // private QueryDatabase db;
 
   public RequestFind() {
     this.requestType = "find";
@@ -24,23 +24,26 @@ public class RequestFind extends RequestHeader {
     this.places = null;
   }
 
-  public RequestFind(String match, Integer limit) throws SQLException {
+  public RequestFind(String match, Integer limit) {
     this();
     this.match = match;
     this.limit = limit;
-    db = new QueryDatabase(match);
   }
 
   @Override
   public void buildResponse() {
-    try {
-      db = new QueryDatabase(match);
-      this.places = db.getQueryResults();
-    } catch (SQLException e) {
-      this.places = null;
-      this.found = null;
-    }
+    this.places = getDataBaseResults();
     log.trace("buildResponse -> {}", this);
+  }
+
+  public List<Map<String, String>> getDataBaseResults() {
+    try {
+      QueryDatabase db = new QueryDatabase(match);
+      return db.getQueryResults();
+    } catch (SQLException e) {
+      log.error(e.getMessage());
+    }
+    return null;
   }
 
   public String getMatch() {
