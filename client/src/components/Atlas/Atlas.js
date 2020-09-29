@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Col, Container, Row} from 'reactstrap';
 
-import {Map, Marker, Popup, TileLayer} from 'react-leaflet';
+import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -32,6 +32,7 @@ export default class Atlas extends Component {
         this.state = {
             userPosition: null,
             markerPosition: null,
+            secondMarkerPosition: null,
             mapCenter: MAP_CENTER_DEFAULT
         };
     }
@@ -86,20 +87,37 @@ export default class Atlas extends Component {
                 onClick={this.setMarker}
             >
                 <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
-                {this.getMarker()}
+                {this.getFirstMarker()}
+                {this.getSecondMarker()}
                 {this.getUserMarker()}
+                {this.renderPolyline()}
             </Map>
         );
     }
 
     setMarker(mapClickInfo) {
-        this.setState({
-            markerPosition: mapClickInfo.latlng,
-            mapCenter: mapClickInfo.latlng
-        });
+        if(!this.state.markerPosition) {
+            this.setState({
+                markerPosition: mapClickInfo.latlng,
+                mapCenter: mapClickInfo.latlng
+            });
+        }
+        else if (!this.state.secondMarkerPosition) {
+            this.setState( {
+                secondMarkerPosition: mapClickInfo.latlng,
+                mapCenter: mapClickInfo.latlng
+            });
+        }
+        else {
+            this.setState({
+                markerPosition: this.state.secondMarkerPosition,
+                secondMarkerPosition: mapClickInfo.latlng,
+                mapCenter: mapClickInfo.latlng
+            });
+        }
     }
 
-    getMarker() {
+    getFirstMarker() {
         const initMarker = ref => {
             if (ref) {
                 ref.leafletElement.openPopup()
@@ -115,6 +133,21 @@ export default class Atlas extends Component {
         }
     }
 
+    getSecondMarker() {
+        const initMarker = ref => {
+            if (ref) {
+                ref.leafletElement.openPopup()
+            }
+        };
+
+        if (this.state.secondMarkerPosition) {
+            return (
+                <Marker ref={initMarker} position={this.state.secondMarkerPosition} icon={MARKER_ICON}>
+                    <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition()}</Popup>
+                </Marker>
+            );
+        }
+    }
 
     getStringMarkerPosition() {
         return this.state.markerPosition.lat.toFixed(2) + ', ' + this.state.markerPosition.lng.toFixed(2);
@@ -122,9 +155,8 @@ export default class Atlas extends Component {
 
     setMapToHome() {
         let homePos = this.getHomePosition();
-
         this.setState({
-            markerPosition: {lat: homePos[0], lng: homePos[1]},
+            secondMarkerPosition: {lat: homePos[0], lng: homePos[1]},
             mapCenter: homePos
         });
     }
@@ -141,6 +173,16 @@ export default class Atlas extends Component {
                 <Marker position={this.state.userPosition} icon={DISTINCT_MARKER}>
                     <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition()}</Popup>
                 </Marker>
+            );
+        }
+    }
+    renderPolyline() {
+        if (this.state.markerPosition && this.state.secondMarkerPosition) {
+            return (
+                <Polyline color={'red'} positions={
+                    [[this.state.markerPosition.lat, this.state.markerPosition.lng],
+                    [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
+                </Polyline>
             );
         }
     }

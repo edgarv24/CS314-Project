@@ -4,6 +4,7 @@ import React from 'react';
 import {shallow} from 'enzyme';
 
 import Atlas from '../src/components/Atlas/Atlas';
+import {Polyline} from "react-leaflet";
 
 const startProperties = {
     createSnackBar: jest.fn()
@@ -58,10 +59,45 @@ function testWhereAmIButtonNoGeolocation() {
     let home = atlas.getHomePosition();
     let homeLatLong = {lat: home[0], lng: home[1]};
 
-    expect(atlas.state.markerPosition).toEqual(homeLatLong);
+    expect(atlas.state.secondMarkerPosition).toEqual(homeLatLong);
     expect(atlas.state.mapCenter).toEqual(home);
 }
 
 test("Testing Where am I Button (no geolocation)", testWhereAmIButtonNoGeolocation);
 
+function testSecondMarkerRender() {
+    const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
 
+    expect(atlasWrapper.state().secondMarkerPosition).toEqual(null);
+
+    let firstClick = {lat: 0, lng: 0};
+    let secondClick = {lat: 1, lng: 1};
+    simulateOnClickEvent(atlasWrapper, {latlng: firstClick});
+    simulateOnClickEvent(atlasWrapper, {latlng: secondClick});
+
+    expect(atlasWrapper.state().markerPosition).toEqual(firstClick);
+    expect(atlasWrapper.state().secondMarkerPosition).toEqual(secondClick);
+
+    simulateOnClickEvent(atlasWrapper, {latlng: firstClick});
+
+    expect(atlasWrapper.state().secondMarkerPosition).toEqual(firstClick);
+}
+
+test("Testing that the second marker renders correctly", testSecondMarkerRender);
+
+function testPolyLineRender() {
+    const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+    let firstClick = {lat: 0, lng: 0};
+    let secondClick = {lat: 10, lng: 10};
+
+    simulateOnClickEvent(atlasWrapper, {latlng: firstClick});
+    simulateOnClickEvent(atlasWrapper, {latlng: secondClick});
+
+    expect(atlasWrapper.containsMatchingElement(<Polyline />)).toEqual(true);
+
+    let polyline = atlasWrapper.find(Polyline);
+
+    expect(polyline.props().positions).toEqual([[firstClick.lat, firstClick.lng], [secondClick.lat, secondClick.lng]]);
+}
+
+test("Testing Polyline Render", testPolyLineRender);
