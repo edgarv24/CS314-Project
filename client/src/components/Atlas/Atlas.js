@@ -90,6 +90,7 @@ export default class Atlas extends Component {
                 {this.getFirstMarker()}
                 {this.getSecondMarker()}
                 {this.getUserMarker()}
+                {this.renderPolyline()}
             </Map>
         );
     }
@@ -173,6 +174,16 @@ export default class Atlas extends Component {
                 <Marker position={this.state.userPosition} icon={DISTINCT_MARKER}>
                     <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition()}</Popup>
                 </Marker>
+            );
+        }
+    }
+    renderPolyline() {
+        if (this.state.markerPosition && this.state.secondMarkerPosition) {
+            return (
+                <Polyline color={'red'} positions={
+                    [[this.state.markerPosition.lat, this.state.markerPosition.lng],
+                    [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
+                </Polyline>
             );
         }
     }
