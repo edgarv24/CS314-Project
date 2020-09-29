@@ -50,7 +50,8 @@ public class QueryDatabase {
             + WHERECLAUSE4
             + placeName
             + "%\") ORDER BY name LIMIT "
-            + limit;
+            + limit
+            + ";";
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
   }
