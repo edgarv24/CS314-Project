@@ -35,17 +35,20 @@ class MicroServer {
   /* Configure MicroServices Here. */
 
   private void processRestfulAPIrequests() {
-    path("/api", () -> {
-      before("/*", (req, res) -> logRequest(req));
-      post("/config", (req, res) -> processHttpRequest(req, res, RequestConfig.class));
-      post("/distance", (req, res) -> processHttpRequest(req, res, RequestDistance.class));
-      post("/find", (req, res) -> processHttpRequest(req, res, RequestFind.class));
-    });
+    path(
+        "/api",
+        () -> {
+          before("/*", (req, res) -> logRequest(req));
+          post("/config", (req, res) -> processHttpRequest(req, res, RequestConfig.class));
+          post("/distance", (req, res) -> processHttpRequest(req, res, RequestDistance.class));
+          post("/find", (req, res) -> processHttpRequest(req, res, RequestFind.class));
+        });
   }
 
   /* You shouldn't need to change what is found below. */
 
-  private String processHttpRequest(spark.Request httpRequest, spark.Response httpResponse, Type type) {
+  private String processHttpRequest(
+      spark.Request httpRequest, spark.Response httpResponse, Type type) {
     setupResponse(httpResponse);
     String jsonString = httpRequest.body();
     try {
@@ -76,13 +79,23 @@ class MicroServer {
   }
 
   private void logRequest(spark.Request request) {
-    String message = "Request - "
-            + "[" + dateTimeFormat.format(LocalDateTime.now()) + "] "
-            + request.ip() + " "
-            + "\"" + request.requestMethod() + " "
-            + request.pathInfo() + " "
-            + request.protocol() + "\" "
-            + "[" + request.body() + "]";
+    String message =
+        "Request - "
+            + "["
+            + dateTimeFormat.format(LocalDateTime.now())
+            + "] "
+            + request.ip()
+            + " "
+            + "\""
+            + request.requestMethod()
+            + " "
+            + request.pathInfo()
+            + " "
+            + request.protocol()
+            + "\" "
+            + "["
+            + request.body()
+            + "]";
     log.info(message);
   }
 

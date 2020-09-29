@@ -1,5 +1,6 @@
 package com.tco.requests;
 
+import com.tco.misc.BadRequestException;
 import com.tco.misc.QueryDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ public class RequestFind extends RequestHeader {
   private Integer found;
   private List<Map<String, String>> places;
   private final transient Logger log = LoggerFactory.getLogger(RequestFind.class);
-  private QueryDatabase db;
 
   public RequestFind() {
     this.requestType = "find";
@@ -24,21 +24,25 @@ public class RequestFind extends RequestHeader {
     this.places = null;
   }
 
-  public RequestFind(String match, Integer limit) throws SQLException {
+  public RequestFind(String match, Integer limit) {
     this();
     this.match = match;
     this.limit = limit;
-    db = new QueryDatabase(match);
+    try {
+      QueryDatabase db = new QueryDatabase(match, limit);
+    } catch (SQLException e) {
+      log.error(e.getMessage());
+    }
   }
 
   @Override
-  public void buildResponse() {
+  public void buildResponse() throws BadRequestException {
     try {
-      db = new QueryDatabase(match);
+      QueryDatabase db = new QueryDatabase(match, limit);
       this.places = db.getQueryResults();
+      this.found = places.size();
     } catch (SQLException e) {
-      this.places = null;
-      this.found = null;
+      throw new BadRequestException();
     }
     log.trace("buildResponse -> {}", this);
   }

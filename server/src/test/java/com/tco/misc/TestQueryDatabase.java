@@ -42,7 +42,7 @@ public class TestQueryDatabase {
 
   @BeforeEach
   public void createConfigurationForTestCases() throws SQLException {
-    db = new QueryDatabase("Denver");
+    db = new QueryDatabase("Denver", 0);
     conn = null;
   }
 
@@ -81,7 +81,7 @@ public class TestQueryDatabase {
   @DisplayName("Query with \"Denver\" should return 7 results")
   public void testReturnResults() {
     List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(7, results.size());
+    assertEquals(30, results.size());
   }
 
   @Test
@@ -93,8 +93,16 @@ public class TestQueryDatabase {
   @Test
   @DisplayName("Query with \"Squid\" should return 0 results")
   public void testResultsSizeOfSquid() throws SQLException {
-    db = new QueryDatabase("Squid");
+    db = new QueryDatabase("Squid", 10);
     List<Map<String, String>> results = db.getQueryResults();
     assertEquals(0, results.size());
+  }
+
+  @Test
+  @DisplayName("Query with no limit should return 100 results")
+  public void testQueryWithNoLimit() throws SQLException {
+    db = new QueryDatabase("Airport", 0);
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(100, results.size());
   }
 }
