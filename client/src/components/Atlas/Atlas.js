@@ -157,7 +157,7 @@ export default class Atlas extends Component {
         let homePos = this.getHomePosition();
 
         this.setState({
-            markerPosition: {lat: homePos[0], lng: homePos[1]},
+            secondMarkerPosition: {lat: homePos[0], lng: homePos[1]},
             mapCenter: homePos
         });
     }
