@@ -16,7 +16,6 @@ public class RequestFind extends RequestHeader {
   private Integer found;
   private List<Map<String, String>> places;
   private final transient Logger log = LoggerFactory.getLogger(RequestFind.class);
-  // private QueryDatabase db;
 
   public RequestFind() {
     this.requestType = "find";
