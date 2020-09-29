@@ -30,7 +30,7 @@ public class QueryDatabase {
 
   public QueryDatabase(String placeName, Integer limit) throws SQLException {
     configServerUsingLocation();
-    if (limit == 0) limit = 100;
+    if (limit == 0 || limit > 100) limit = 100;
 
     QUERY =
         "SELECT "
