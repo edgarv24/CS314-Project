@@ -1,7 +1,7 @@
 import './jestConfig/enzyme.config.js';
 
 import React from 'react';
-import {shallow, mount} from 'enzyme';
+import {shallow} from 'enzyme';
 
 import Atlas from '../src/components/Atlas/Atlas';
 import {Polyline} from "react-leaflet";
@@ -88,8 +88,8 @@ test("Testing that the second marker renders correctly", testSecondMarkerRender)
 function testPolyLineRender() {
     const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
     let firstClick = {lat: 0, lng: 0};
-
     let secondClick = {lat: 10, lng: 10};
+
     simulateOnClickEvent(atlasWrapper, {latlng: firstClick});
     simulateOnClickEvent(atlasWrapper, {latlng: secondClick});
 
@@ -98,7 +98,6 @@ function testPolyLineRender() {
     let polyline = atlasWrapper.find(Polyline);
 
     expect(polyline.props().positions).toEqual([[firstClick.lat, firstClick.lng], [secondClick.lat, secondClick.lng]]);
-
 }
 
 test("Testing Polyline Render", testPolyLineRender);
