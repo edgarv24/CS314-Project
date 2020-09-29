@@ -81,7 +81,7 @@ public class TestQueryDatabase {
   @DisplayName("Query with \"Denver\" should return 7 results")
   public void testReturnResults() {
     List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(7, results.size());
+    assertEquals(30, results.size());
   }
 
   @Test

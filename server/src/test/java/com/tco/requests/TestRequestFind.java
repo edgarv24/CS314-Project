@@ -38,6 +38,6 @@ public class TestRequestFind {
   @DisplayName("returnResults is equal to 7")
   public void testReturnResults() {
     List<Map<String, String>> results = requestFind.getPlaces();
-    assertEquals(7, results.size());
+    assertEquals(30, results.size());
   }
 }
