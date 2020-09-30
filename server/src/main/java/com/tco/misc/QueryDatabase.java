@@ -66,7 +66,7 @@ public class QueryDatabase {
     }
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
-    this.resultsFound = (limit == 1) ? 1 : queryResults.size();
+    this.resultsFound = (placeName == null) ? 1 : queryResults.size();
     trimResultsToLimit(limit);
   }
 
