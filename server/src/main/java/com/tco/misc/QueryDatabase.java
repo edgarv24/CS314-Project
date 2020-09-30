@@ -41,10 +41,7 @@ public class QueryDatabase {
     WHERECLAUSE3 = "world.name LIKE \"%";
     WHERECLAUSE4 = "world.municipality LIKE \"%";
 
-    if (placeName == null) {
-      limit = 1;
-      QUERY = "SELECT * FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
-    } else {
+    if (placeName != null) {
       QUERY =
           "SELECT "
               + COLUMNS
@@ -63,10 +60,13 @@ public class QueryDatabase {
               + WHERECLAUSE4
               + placeName
               + "%\") ORDER BY name;";
+    } else {
+      limit = 1;
+      QUERY = "SELECT * FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
     }
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
-    this.resultsFound = (limit == 1) ? 1 : queryResults.size();
+    this.resultsFound = (placeName == null) ? 1 : queryResults.size();
     trimResultsToLimit(limit);
   }
 
