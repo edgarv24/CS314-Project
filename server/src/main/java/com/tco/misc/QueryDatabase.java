@@ -41,7 +41,7 @@ public class QueryDatabase {
     WHERECLAUSE3 = "world.name LIKE \"%";
     WHERECLAUSE4 = "world.municipality LIKE \"%";
 
-    if (placeName != null && !placeName.equals("")) {
+    if (placeName != null) {
       QUERY =
           "SELECT "
               + COLUMNS
@@ -66,7 +66,7 @@ public class QueryDatabase {
     }
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
-    this.resultsFound = (placeName == null || placeName.equals("")) ? 1 : queryResults.size();
+    this.resultsFound = (placeName == null) ? 1 : queryResults.size();
     trimResultsToLimit(limit);
   }
 
