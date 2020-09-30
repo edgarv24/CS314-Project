@@ -2,6 +2,7 @@ package com.tco.requests;
 
 import java.util.*;
 
+import com.tco.misc.BadRequestException;
 import com.tco.misc.CalculateDistance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +33,11 @@ public class RequestDistance extends RequestHeader {
   }
 
   @Override
-  public void buildResponse() {
+  public void buildResponse() throws BadRequestException {
     CalculateDistance cd = CalculateDistance.usingRadius(earthRadius);
     this.distance = cd.distBetween(place1, place2);
     if (this.distance == -1) {
-      this.distance = null;
+        throw new BadRequestException();
     }
     log.trace("buildResponse -> {}", this);
   }
