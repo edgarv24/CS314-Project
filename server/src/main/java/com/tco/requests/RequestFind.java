@@ -28,11 +28,6 @@ public class RequestFind extends RequestHeader {
     this();
     this.match = match;
     this.limit = limit;
-    try {
-      QueryDatabase db = new QueryDatabase(match, limit);
-    } catch (SQLException e) {
-      log.error(e.getMessage());
-    }
   }
 
   @Override
@@ -40,7 +35,7 @@ public class RequestFind extends RequestHeader {
     try {
       QueryDatabase db = new QueryDatabase(match, limit);
       this.places = db.getQueryResults();
-      this.found = places.size();
+      this.found = db.getTotalResultsFound();
     } catch (SQLException e) {
       throw new BadRequestException();
     }
