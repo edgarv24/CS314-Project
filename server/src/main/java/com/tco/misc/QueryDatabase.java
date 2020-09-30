@@ -20,9 +20,9 @@ public class QueryDatabase {
   private static final String COLUMNS =
       "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
   private final String TABLES =
-      "world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id";
+      "world INNER JOIN Region ON world.iso_region = Region.id INNER JOIN country ON world.iso_country = country.id";
   private final String WHERECLAUSE1 = "country.name LIKE \"%";
-  private final String WHERECLAUSE2 = "region.name LIKE \"%";
+  private final String WHERECLAUSE2 = "Region.name LIKE \"%";
   private final String WHERECLAUSE3 = "world.name LIKE \"%";
   private final String WHERECLAUSE4 = "world.municipality LIKE \"%";
   private final String QUERY;
