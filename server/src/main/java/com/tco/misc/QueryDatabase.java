@@ -17,14 +17,12 @@ public class QueryDatabase {
   private static String DB_USER;
   private static String DB_PASSWORD;
 
-  private static final String COLUMNS =
-      "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
-  private final String TABLES =
-      "world INNER JOIN Region ON world.iso_region = Region.id INNER JOIN country ON world.iso_country = country.id";
-  private final String WHERECLAUSE1 = "country.name LIKE \"%";
-  private final String WHERECLAUSE2 = "Region.name LIKE \"%";
-  private final String WHERECLAUSE3 = "world.name LIKE \"%";
-  private final String WHERECLAUSE4 = "world.municipality LIKE \"%";
+  private final String COLUMNS;
+  private final String TABLES;
+  private final String WHERECLAUSE1;
+  private final String WHERECLAUSE2;
+  private final String WHERECLAUSE3;
+  private final String WHERECLAUSE4;
   private final String QUERY;
   private List<Map<String, String>> queryResults;
 
@@ -32,6 +30,14 @@ public class QueryDatabase {
     configServerUsingLocation();
     if (limit == 0 || limit > 100) limit = 100;
 
+    COLUMNS =
+            "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
+    TABLES =
+            "world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id";
+    WHERECLAUSE1 = "country.name LIKE \"%";
+    WHERECLAUSE2 = "region.name LIKE \"%";
+    WHERECLAUSE3 = "world.name LIKE \"%";
+    WHERECLAUSE4 = "world.municipality LIKE \"%";
     QUERY =
         "SELECT "
             + COLUMNS
@@ -50,7 +56,7 @@ public class QueryDatabase {
             + WHERECLAUSE4
             + placeName
             + "%\") ORDER BY name LIMIT "
-            + limit.toString()
+            + limit
             + ";";
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
