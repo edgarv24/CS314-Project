@@ -7,7 +7,7 @@ import Footer from "./Margins/Footer";
 import About from "./About/About";
 import Atlas from "./Atlas/Atlas";
 
-import { LOG } from "../utils/constants";
+import {LOG, PROTOCOL_VERSION} from "../utils/constants";
 import * as configSchema from "../../schemas/ConfigResponse";
 import { getOriginalServerPort, isJsonResponseValid, sendServerRequest } from "../utils/restfulAPI";
 
@@ -24,7 +24,7 @@ export default class Page extends Component {
 		this.toggleAbout = this.toggleAbout.bind(this);
 		this.processServerConfigSuccess = this.processServerConfigSuccess.bind(this);
 
-		sendServerRequest({requestType: "config", requestVersion: 2}, this.state.serverSettings.serverPort)
+		sendServerRequest({requestType: "config", requestVersion: PROTOCOL_VERSION}, this.state.serverSettings.serverPort)
 			.then(config => {
 				if (config) { this.processConfigResponse(config.data); }
 				else { this.props.createSnackBar("The Request To The Server Failed. Please Try Again Later."); }

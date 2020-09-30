@@ -9,7 +9,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
-const MAP_CENTER_DEFAULT = [40.5734, -105.0865];
+const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
 const MARKER_ICON = L.icon({iconUrl: icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
 const DISTINCT_MARKER = new L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -28,7 +28,7 @@ export default class Atlas extends Component {
         this.setMarker = this.setMarker.bind(this);
         this.setMapToHome = this.setMapToHome.bind(this);
         this.getHomePosition = this.getHomePosition.bind(this);
-        this.getUserMarker = this.getUserMarker.bind(this);
+
         this.state = {
             userPosition: null,
             markerPosition: null,
@@ -42,9 +42,9 @@ export default class Atlas extends Component {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 this.setState({
+                    userPosition: {lat: position.coords.latitude, lng: position.coords.longitude},
                     markerPosition: {lat: position.coords.latitude, lng: position.coords.longitude},
-                    mapCenter: [position.coords.latitude, position.coords.longitude],
-                    userPosition: [position.coords.latitude, position.coords.longitude]
+                    mapCenter: {lat: position.coords.latitude, lng: position.coords.longitude}
                 })
             });
         }
@@ -87,28 +87,26 @@ export default class Atlas extends Component {
                 onClick={this.setMarker}
             >
                 <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
-                {this.getFirstMarker()}
-                {this.getSecondMarker()}
-                {this.getUserMarker()}
+                {this.getMarker(this.state.markerPosition, MARKER_ICON, true)}
+                {this.getMarker(this.state.secondMarkerPosition, MARKER_ICON, true)}
+                {this.getMarker(this.state.userPosition, DISTINCT_MARKER, false)}
                 {this.renderPolyline()}
             </Map>
         );
     }
 
     setMarker(mapClickInfo) {
-        if(!this.state.markerPosition) {
+        if (!this.state.markerPosition) {
             this.setState({
                 markerPosition: mapClickInfo.latlng,
                 mapCenter: mapClickInfo.latlng
             });
-        }
-        else if (!this.state.secondMarkerPosition) {
-            this.setState( {
+        } else if (!this.state.secondMarkerPosition) {
+            this.setState({
                 secondMarkerPosition: mapClickInfo.latlng,
                 mapCenter: mapClickInfo.latlng
             });
-        }
-        else {
+        } else {
             this.setState({
                 markerPosition: this.state.secondMarkerPosition,
                 secondMarkerPosition: mapClickInfo.latlng,
@@ -117,47 +115,32 @@ export default class Atlas extends Component {
         }
     }
 
-    getFirstMarker() {
+    getMarker(position, iconStyle, usePopup) {
         const initMarker = ref => {
-            if (ref) {
+            if (ref && usePopup) {
                 ref.leafletElement.openPopup()
             }
         };
 
-        if (this.state.markerPosition) {
+        if (position) {
             return (
-                <Marker ref={initMarker} position={this.state.markerPosition} icon={MARKER_ICON}>
-                    <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition()}</Popup>
+                <Marker ref={initMarker} position={position} icon={iconStyle}>
+                    <Popup offset={[0, -18]}
+                           className="font-weight-bold">{this.getStringMarkerPosition(position)}</Popup>
                 </Marker>
             );
         }
     }
 
-    getSecondMarker() {
-        const initMarker = ref => {
-            if (ref) {
-                ref.leafletElement.openPopup()
-            }
-        };
-
-        if (this.state.secondMarkerPosition) {
-            return (
-                <Marker ref={initMarker} position={this.state.secondMarkerPosition} icon={MARKER_ICON}>
-                    <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition()}</Popup>
-                </Marker>
-            );
-        }
-    }
-
-    getStringMarkerPosition() {
-        return this.state.markerPosition.lat.toFixed(2) + ', ' + this.state.markerPosition.lng.toFixed(2);
+    getStringMarkerPosition(position) {
+        return position.lat.toFixed(2) + ', ' + position.lng.toFixed(2);
     }
 
     setMapToHome() {
         let homePos = this.getHomePosition();
         this.setState({
-            secondMarkerPosition: {lat: homePos[0], lng: homePos[1]},
-            mapCenter: homePos
+            secondMarkerPosition: {lat: homePos["lat"], lng: homePos["lng"]},
+            mapCenter: {lat: homePos["lat"], lng: homePos["lng"]}
         });
     }
 
@@ -167,21 +150,12 @@ export default class Atlas extends Component {
         return MAP_CENTER_DEFAULT;
     }
 
-    getUserMarker() {
-        if (this.state.userPosition) {
-            return (
-                <Marker position={this.state.userPosition} icon={DISTINCT_MARKER}>
-                    <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition()}</Popup>
-                </Marker>
-            );
-        }
-    }
     renderPolyline() {
         if (this.state.markerPosition && this.state.secondMarkerPosition) {
             return (
                 <Polyline color={'red'} positions={
                     [[this.state.markerPosition.lat, this.state.markerPosition.lng],
-                    [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
+                        [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
                 </Polyline>
             );
         }
