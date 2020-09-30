@@ -1,20 +1,20 @@
 package com.tco.requests;
 
+import com.tco.misc.BadRequestException;
 import com.tco.requests.RequestDistance;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRequestDistance {
 
   private RequestDistance dist;
 
   @BeforeEach
-  public void createDistanceForTestCases() {
+  public void createDistanceForTestCases() throws BadRequestException {
     dist = new RequestDistance(6371.0, "90.0", "0.0", "-90.0", "0.0");
     dist.buildResponse();
   }
@@ -76,11 +76,9 @@ public class TestRequestDistance {
   }
 
   @Test
-  @DisplayName("Distance should be null after invalid request")
+  @DisplayName("BadRequestException thrown after invalid request")
   public void testDistanceNullWhenInvalid() {
     dist = new RequestDistance(6371.0, "100f", "0f", "0f", "0f");
-    dist.buildResponse();
-    Long distance = dist.getDistance();
-    assertNull(distance);
+    assertThrows(BadRequestException.class, () -> dist.buildResponse());
   }
 }

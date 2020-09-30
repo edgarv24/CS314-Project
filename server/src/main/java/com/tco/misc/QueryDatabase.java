@@ -24,6 +24,8 @@ public class QueryDatabase {
   private final String WHERECLAUSE3;
   private final String WHERECLAUSE4;
   private final String QUERY;
+
+  private Integer resultsFound;
   private List<Map<String, String>> queryResults;
 
   public QueryDatabase(String placeName, Integer limit) throws SQLException {
@@ -31,9 +33,9 @@ public class QueryDatabase {
     if (limit == 0 || limit > 100) limit = 100;
 
     COLUMNS =
-            "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
+        "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
     TABLES =
-            "world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id";
+        "world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id";
     WHERECLAUSE1 = "country.name LIKE \"%";
     WHERECLAUSE2 = "region.name LIKE \"%";
     WHERECLAUSE3 = "world.name LIKE \"%";
@@ -55,11 +57,11 @@ public class QueryDatabase {
             + "%\" OR "
             + WHERECLAUSE4
             + placeName
-            + "%\") ORDER BY name LIMIT "
-            + limit
-            + ";";
+            + "%\") ORDER BY name;";
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
+    this.resultsFound = queryResults.size();
+    trimResultsToLimit(limit);
   }
 
   public static void configServerUsingLocation() {
@@ -120,6 +122,10 @@ public class QueryDatabase {
     return names;
   }
 
+  public void trimResultsToLimit(Integer limit) {
+    if (resultsFound > limit) this.queryResults = queryResults.subList(0, limit);
+  }
+
   public String getDbUrl() {
     return DB_URL;
   }
@@ -130,6 +136,10 @@ public class QueryDatabase {
 
   public String getDbPassword() {
     return DB_PASSWORD;
+  }
+
+  public Integer getTotalResultsFound() {
+    return resultsFound;
   }
 
   public static boolean onTravis() {
