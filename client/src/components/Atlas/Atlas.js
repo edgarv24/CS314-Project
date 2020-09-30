@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Col, Container, Modal, ModalBody, ModalHeader, ModalFooter, Row, DropdownItem, ButtonDropdown} from 'reactstrap';
+import {Button, Col, Container, Modal, ModalBody, ModalHeader, ModalFooter, Row} from 'reactstrap';
 
 import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
 
@@ -9,9 +9,8 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import {sendServerRequest} from "../../utils/restfulAPI";
 import InputGroup from "reactstrap/es/InputGroup";
-import FormControl from "@material-ui/core/FormControl";
-import DropdownToggle from "reactstrap/es/DropdownToggle";
-import DropdownMenu from "reactstrap/es/DropdownMenu";
+import InputGroupAddon from "reactstrap/es/InputGroupAddon";
+import Input from "@material-ui/core/Input";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = [40.5734, -105.0865];
@@ -35,12 +34,16 @@ export default class Atlas extends Component {
         this.getHomePosition = this.getHomePosition.bind(this);
         this.getUserMarker = this.getUserMarker.bind(this);
         this.toggleValue = this.toggleValue.bind(this);
+        this.inputLocations = this.inputLocations.bind(this);
+        this.inputFindDistance = this.inputFindDistance.bind(this);
         this.state = {
             userPosition: null,
             markerPosition: null,
             secondMarkerPosition: null,
             mapCenter: MAP_CENTER_DEFAULT,
-            modal: false
+            modal: false,
+            value1: null,
+            value2: null
         };
     }
 
@@ -79,22 +82,17 @@ export default class Atlas extends Component {
                             <Modal isOpen={this.state.modal} toggle={this.toggleValue} className={this.props.className}>
                                 <ModalHeader toggle={this.toggleValue}> Enter 2 Coordinates </ModalHeader>
                                 <ModalBody>
-                                    <InputGroup>
-                                        <FormControl placeholder="Enter first location" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-                                        <ButtonDropdown addonType="append" variant="outline-secondary" title="Units" id="unit-dropdown-miles">
-                                            <DropdownItem href="#">miles</DropdownItem>
-                                        </ButtonDropdown>
-                                    </InputGroup>
+                                    {this.inputLocations()}
+                                    <br/>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button color='primary' onClick={this.toggleValue}> Enter </Button>{' '}
+                                    <Button color='primary' onClick={this.inputFindDistance(this.state.value1, this.state.value2)}> Enter </Button>{' '}
                                     <Button color='danger' onClick={this.toggleValue}> Cancel </Button>
                                 </ModalFooter>
                             </Modal>
                         </Col>
                     </Row>
                 </Container>
-
             </div>
         );
     }
@@ -213,5 +211,29 @@ export default class Atlas extends Component {
                 </Polyline>
             );
         }
+    }
+
+    inputLocations(){
+        return (
+            <InputGroup>
+                <Row>
+                    <Col>
+                        <Input name="value1" placeholder="Enter longitude, latitude" type="text" onChange={(e) => this.onChange(`${e.target.value}`)}/>
+                        <InputGroupAddon addonType="append" >
+                        </InputGroupAddon>
+                    </Col>
+                    <Col>
+                        <Input name="value2" placeholder="Enter longitude, latitude" type="text" onChange={(e) => this.onChange(`${e.target.value}`)}/>
+                        <InputGroupAddon addonType="append">
+                        </InputGroupAddon>
+                    </Col>
+                </Row>
+
+            </InputGroup>
+        );
+    }
+
+    inputFindDistance(value1, value2){
+        //will call find requestFind and calculate distance
     }
 }
