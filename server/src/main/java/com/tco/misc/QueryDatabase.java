@@ -30,7 +30,7 @@ public class QueryDatabase {
 
   public QueryDatabase(String placeName, Integer limit) throws SQLException {
     configServerUsingLocation();
-    if (limit == 0 || limit > 100) limit = 100;
+    if (limit == null || limit == 0 || limit > 100) limit = 100;
 
     COLUMNS =
         "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
@@ -40,27 +40,33 @@ public class QueryDatabase {
     WHERECLAUSE2 = "region.name LIKE \"%";
     WHERECLAUSE3 = "world.name LIKE \"%";
     WHERECLAUSE4 = "world.municipality LIKE \"%";
-    QUERY =
-        "SELECT "
-            + COLUMNS
-            + " FROM "
-            + TABLES
-            + " WHERE ("
-            + WHERECLAUSE1
-            + placeName
-            + "%\" OR "
-            + WHERECLAUSE2
-            + placeName
-            + "%\" OR "
-            + WHERECLAUSE3
-            + placeName
-            + "%\" OR "
-            + WHERECLAUSE4
-            + placeName
-            + "%\") ORDER BY name;";
+
+    if (placeName == null) {
+      limit = 1;
+      QUERY = "SELECT * FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
+    } else {
+      QUERY =
+          "SELECT "
+              + COLUMNS
+              + " FROM "
+              + TABLES
+              + " WHERE ("
+              + WHERECLAUSE1
+              + placeName
+              + "%\" OR "
+              + WHERECLAUSE2
+              + placeName
+              + "%\" OR "
+              + WHERECLAUSE3
+              + placeName
+              + "%\" OR "
+              + WHERECLAUSE4
+              + placeName
+              + "%\") ORDER BY name;";
+    }
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
-    this.resultsFound = queryResults.size();
+    this.resultsFound = (limit == 1) ? 1 : queryResults.size();
     trimResultsToLimit(limit);
   }
 
