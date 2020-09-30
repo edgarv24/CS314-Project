@@ -57,9 +57,8 @@ function testWhereAmIButtonNoGeolocation() {
     atlas.setMapToHome();
 
     let home = atlas.getHomePosition();
-    let homeLatLong = {lat: home[0], lng: home[1]};
 
-    expect(atlas.state.secondMarkerPosition).toEqual(homeLatLong);
+    expect(atlas.state.secondMarkerPosition).toEqual(home);
     expect(atlas.state.mapCenter).toEqual(home);
 }
 

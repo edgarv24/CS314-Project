@@ -101,8 +101,12 @@ export default class Atlas extends Component {
                 markerPosition: mapClickInfo.latlng,
                 mapCenter: mapClickInfo.latlng
             });
-        }
-        else {
+        } else if (!this.state.secondMarkerPosition) {
+            this.setState({
+                secondMarkerPosition: mapClickInfo.latlng,
+                mapCenter: mapClickInfo.latlng
+            });
+        } else {
             this.setState({
                 markerPosition: this.state.secondMarkerPosition,
                 secondMarkerPosition: mapClickInfo.latlng,
@@ -121,7 +125,8 @@ export default class Atlas extends Component {
         if (position) {
             return (
                 <Marker ref={initMarker} position={position} icon={iconStyle}>
-                    <Popup offset={[0, -18]} className="font-weight-bold">{this.getStringMarkerPosition(position)}</Popup>
+                    <Popup offset={[0, -18]}
+                           className="font-weight-bold">{this.getStringMarkerPosition(position)}</Popup>
                 </Marker>
             );
         }
@@ -150,7 +155,7 @@ export default class Atlas extends Component {
             return (
                 <Polyline color={'red'} positions={
                     [[this.state.markerPosition.lat, this.state.markerPosition.lng],
-                    [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
+                        [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
                 </Polyline>
             );
         }
