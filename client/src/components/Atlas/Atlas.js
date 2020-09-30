@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Col, Container, Modal, ModalBody, ModalHeader, ModalFooter, Row} from 'reactstrap';
+import {Button, Col, Container, Modal, ModalBody, ModalHeader, ModalFooter, Row, Input} from 'reactstrap';
 
 import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
 
@@ -7,10 +7,11 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import 'leaflet/dist/leaflet.css';
-import {sendServerRequest} from "../../utils/restfulAPI";
-import InputGroup from "reactstrap/es/InputGroup";
-import InputGroupAddon from "reactstrap/es/InputGroupAddon";
-import Input from "@material-ui/core/Input";
+import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
+import * as distanceSchema from "../../../schemas/DistanceResponse.json";
+
+import LOG from "../../utils/constants"
+import Coordinates from "coordinate-parser";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = [40.5734, -105.0865];
@@ -35,17 +36,25 @@ export default class Atlas extends Component {
         this.getUserMarker = this.getUserMarker.bind(this);
         this.toggleValue = this.toggleValue.bind(this);
         this.inputLocations = this.inputLocations.bind(this);
-        this.inputFindDistance = this.inputFindDistance.bind(this);
+        this.getInput1 = this.getInput1.bind(this);
+        this.getInput2 = this.getInput2.bind(this);
+        this.requestDistanceFromServer = this.requestDistanceFromServer.bind(this);
+        this.updateInput1 = this.updateInput1.bind(this);
+        this.updateInput2 = this.updateInput2.bind(this);
+        this.submitDistanceRequest = this.submitDistanceRequest.bind(this);
         this.state = {
             userPosition: null,
             markerPosition: null,
             secondMarkerPosition: null,
             mapCenter: MAP_CENTER_DEFAULT,
             modal: false,
-            value1: null,
-            value2: null
+            input1: null,
+            input2: null,
+            distanceLabel: null
         };
     }
+
+
 
     toggleValue(){
         this.setState({modal: !this.state.modal});
@@ -74,7 +83,7 @@ export default class Atlas extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col className="my-3" xs={{size: 10, offset: 5}}>
+                        <Col className="my-3" sm="12" md={{ size: 6, offset: 5 }}>
                             <Button color="primary" onClick={this.setMapToHome}>
                                 Where am I?
                             </Button>{' '}
@@ -83,11 +92,10 @@ export default class Atlas extends Component {
                                 <ModalHeader toggle={this.toggleValue}> Enter 2 Coordinates </ModalHeader>
                                 <ModalBody>
                                     {this.inputLocations()}
-                                    <br/>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button color='primary' onClick={this.inputFindDistance(this.state.value1, this.state.value2)}> Enter </Button>{' '}
-                                    <Button color='danger' onClick={this.toggleValue}> Cancel </Button>
+                                    <Button color='primary' onClick={this.submitDistanceRequest}> Enter </Button>{' '}
+                                    <Button color='primary' onClick={this.toggleValue}> Cancel </Button>
                                 </ModalFooter>
                             </Modal>
                         </Col>
@@ -117,6 +125,7 @@ export default class Atlas extends Component {
                 {this.getSecondMarker()}
                 {this.getUserMarker()}
                 {this.renderPolyline()}
+                //add box with distance here
             </Map>
         );
     }
@@ -215,25 +224,95 @@ export default class Atlas extends Component {
 
     inputLocations(){
         return (
-            <InputGroup>
-                <Row>
-                    <Col>
-                        <Input name="value1" placeholder="Enter longitude, latitude" type="text" onChange={(e) => this.onChange(`${e.target.value}`)}/>
-                        <InputGroupAddon addonType="append" >
-                        </InputGroupAddon>
-                    </Col>
-                    <Col>
-                        <Input name="value2" placeholder="Enter longitude, latitude" type="text" onChange={(e) => this.onChange(`${e.target.value}`)}/>
-                        <InputGroupAddon addonType="append">
-                        </InputGroupAddon>
-                    </Col>
-                </Row>
-
-            </InputGroup>
+            <Row className="m-2">
+                <Col xs={12}>
+                    {this.getInput1()}
+                </Col>
+                <Col xs={12}>
+                    {this.getInput2()}
+                </Col>
+            </Row>
         );
     }
 
-    inputFindDistance(value1, value2){
-        //will call find requestFind and calculate distance
+    getInput1(){
+        return(
+            <Input placeholder="Enter first coordinates" onChange={(e) => (() => this.setState({input1: e.target.value}))}
+                   value={this.state.input1}
+            />
+        );
+    }
+
+    getInput2(){
+        return(
+            <Input placeholder="Enter second coordinates" onChange={(e) => (() => this.setState({input2: e.target.value}))}
+                   value={this.state.input2}
+            />
+        );
+    }
+
+    isValidPosition(position) {
+        let error;
+        let isValid;
+        try {
+            isValid = true;
+            new Coordinates(position);
+            return isValid;
+        } catch (error) {
+            isValid = false;
+            return isValid;
+        }
+    };
+
+    updateInput1() {
+        if(this.isValidPosition(this.state.input1)){
+            const position1 = new Coordinates(this.state.input1);
+            const coord1 = {lat: position1.getLatitude(), lng: position1.getLongitude()};
+
+            this.setState({markerPosition: coord1});
+        } else{
+            this.setState({markerPosition: {lat: 10, lng: -35}});
+        }
+
+    }
+
+    updateInput2() {
+        if(this.isValidPosition(this.state.input2)){
+            const position2 = new Coordinates(this.state.input2);
+            const coord2 = {lat: position2.getLatitude(), lng: position2.getLongitude()};
+
+            this.setState({secondMarkerPosition: coord2});
+        }else{
+            this.setState({secondMarkerPosition: {lat: -10, lng: 36}});
+        }
+
+    }
+
+    submitDistanceRequest(){
+        this.updateInput1();
+        this.updateInput2();
+
+        this.requestDistanceFromServer();
+    }
+
+    requestDistanceFromServer(){
+        let place1Pos = {latitude: this.state.markerPosition["lat"], longitude: this.state.markerPosition["lng"]};
+        let place2Pos = {latitude: this.state.secondMarkerPosition["lat"], longitude: this.state.secondMarkerPosition["lng"]};
+        let distResult = null;
+        sendServerRequest({requestType: "distance", requestVersion: 2, place1: place1Pos, place2: place2Pos, earthRadius: 3959})
+            .then(distance => {
+                if (distance) { if(this.validDistanceResponse(distance.data)){ distResult = distance;} }
+                else { this.setState({distanceLabel: null}); }
+            });
+        this.setState({distanceLabel: distResult});
+        LOG.info(distResult);
+    }
+
+    validDistanceResponse(distance) {
+        if(!isJsonResponseValid(distance, distanceSchema)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
