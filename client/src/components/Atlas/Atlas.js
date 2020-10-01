@@ -22,7 +22,7 @@ import 'leaflet/dist/leaflet.css';
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as distanceSchema from "../../../schemas/DistanceResponse.json";
 
-import LOG from "../../utils/constants"
+import {LOG} from "../../utils/constants"
 import Coordinates from "coordinate-parser";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
@@ -51,6 +51,8 @@ export default class Atlas extends Component {
         this.updateInput1 = this.updateInput1.bind(this);
         this.updateInput2 = this.updateInput2.bind(this);
         this.submitDistanceRequest = this.submitDistanceRequest.bind(this);
+
+
 
         this.state = {
             userPosition: null,
@@ -194,6 +196,7 @@ export default class Atlas extends Component {
                 secondMarkerPosition: mapClickInfo.latlng,
                 mapCenter: mapClickInfo.latlng
             });
+            this.requestDistanceFromServer();
         } else {
             this.setState({
                 markerPosition: this.state.secondMarkerPosition,
@@ -270,7 +273,7 @@ export default class Atlas extends Component {
         } else {
             this.setState({markerPosition: {lat: 10, lng: -35}});
         }
-
+        
     }
 
     updateInput2() {
@@ -300,8 +303,8 @@ export default class Atlas extends Component {
         };
         let distResult = null;
         sendServerRequest({
-            requestType: "distance",
             requestVersion: 2,
+            requestType: "distance",
             place1: place1Pos,
             place2: place2Pos,
             earthRadius: 3959.0
