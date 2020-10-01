@@ -296,10 +296,13 @@ export default class Atlas extends Component {
     }
 
     requestDistanceFromServer() {
-        let place1Pos = {latitude: this.state.markerPosition["lat"], longitude: this.state.markerPosition["lng"]};
+        LOG.info(this.state.markerPosition);
+        LOG.info(this.state.secondMarkerPosition);
+
+        let place1Pos = {latitude: this.state.markerPosition["lat"].toString(), longitude: this.state.markerPosition["lng"].toString()};
         let place2Pos = {
-            latitude: this.state.secondMarkerPosition["lat"],
-            longitude: this.state.secondMarkerPosition["lng"]
+            latitude: this.state.secondMarkerPosition["lat"].toString(),
+            longitude: this.state.secondMarkerPosition["lng"].toString()
         };
         let distResult = null;
         sendServerRequest({
@@ -307,19 +310,19 @@ export default class Atlas extends Component {
             requestType: "distance",
             place1: place1Pos,
             place2: place2Pos,
-            earthRadius: 3959.0
-        })
-            .then(distance => {
+            earthRadius: 3959.0,
+            distance: 0
+        }).then(distance => {
                 if (distance) {
                     if (this.validDistanceResponse(distance.data)) {
-                        distResult = distance;
+                        this.setState({distanceLabel: distance});
                     }
                 } else {
                     this.setState({distanceLabel: null});
                 }
             });
-        this.setState({distanceLabel: distResult});
-        LOG.info(distResult);
+        LOG.info(this.state.distanceLabel);
+
     }
 
     validDistanceResponse(distance) {
