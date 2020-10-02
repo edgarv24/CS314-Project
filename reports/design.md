@@ -118,7 +118,7 @@ Often there are several related classes but we've listed only one to simplify th
 # Sprint 2
 ### User Interface
 
-![sprint 2 user interface](../images/Sprint2UserInterface.png)
+![sprint 2 user interface](../images/Sprint2UserInterface(updated).png)
 
 Changes made to the UI include two new components which are the Where am I and Find Distance. 
 
@@ -128,7 +128,7 @@ Changes made to the UI include two new components which are the Where am I and F
 
 ### Component Hierarchy
 
-![sprint 2 component hierarchy](../images/Sprint2ComponentHierarchy.png)
+![sprint 2 component hierarchy](../images/Sprint2ComponentHierarchy(updated).png)
 
 Modifications to the component hierarchy were made that integrate new functionality. A component was made for the Find Distance inside of the Atlas Class. This allows the user to input coordinates or locations, which updates the Leaflet map in the Atlas component. This component lifts state up inside the Atlas component so that the map is synced with the current request.
 * Atlas renders the Find Distance popup components when they are requested and enabled.
