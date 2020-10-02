@@ -43,15 +43,14 @@ They will be added later in the semester.
 ### User Interface
 ![base](../images/UserInterface.png)
 
-The basic screen in black shows the view on a mobile device, with a header, footer, and map.
-The header contains a earth logo and the team name obtained from the server when the client was loaded.
-The footer contains a connection icon along with the current server name and server URL the client is connected to.
-The blue areas highlight the actions that may be performed.
+Changes made to the UI include two new components which are the Where am I and Find Distance. 
 
-Rather than buttons or icons to signify actions, we are associating actions with elements that are already on the screen to reduce the clutter.
-We are using both popups and collapsible sections in this design rather than choosing to use one exclusively.
-* Collapsible/Hidden sections are used for the map and about sections since they have a significant amount of content and we don't need to see them at the same time.
-* A popup is used for the URL change since we want to control the interaction until the operation is completed. It seemed more natural than another collapsible section.
+Where Is Component
+Open an input field that when clicked will have two text entries for latitude and longitude and a button to submit the inputs, then display a marker in the location that the user entered.
+
+Find Distance Component
+Open an input field when clicked, which will have text entries for the latitude and longitude of both locations and a submit button which, when pressed, will reveal the distance and then display markers for both locations with a line between them.
+
 
 #### Clicking on the map places a marker.
 Whenever a user clicks on the map, the client should display a marker with latitude and longitude at that location.
@@ -74,12 +73,9 @@ When the user clicks the Save button, the server connection should change and th
 
 
 ### Component Hierarchy
-The component hierarchy for the base application depicted below shows the our top level App component with four children components.
-* App renders the major components on the screen.
-* Header renders an icon and a team name in the top banner.
-* Footer renders the current server connection in the bottom footer.
-* Atlas renders a map.
-* About renders information about the team.
+
+Modifications to the component hierarchy are being made to integrate new functionality. Components will be made for the Find Distance. This will allow the user to input coordinates or locations to shift and update the Leaflet map in the Atlas component. These components will lift state up to the Atlas component so that the map is synced with the current request.
+Atlas renders the Find Distance popup components when they are requested and enabled.
 
 ![base component hierarchy](../images/ComponentHierarchy.png)
 
