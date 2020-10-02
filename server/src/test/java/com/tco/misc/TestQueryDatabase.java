@@ -78,7 +78,7 @@ public class TestQueryDatabase {
   }
 
   @Test
-  @DisplayName("Query with \"Denver\" should return 7 results")
+  @DisplayName("Query with \"Denver\" should return 30 results")
   public void testReturnResults() {
     List<Map<String, String>> results = db.getQueryResults();
     assertEquals(30, results.size());
@@ -104,5 +104,14 @@ public class TestQueryDatabase {
     db = new QueryDatabase("Airport", 0);
     List<Map<String, String>> results = db.getQueryResults();
     assertEquals(100, results.size());
+  }
+
+  @Test
+  @DisplayName("Test that query returns more results than limit")
+  public void testQueryResultsWithLowLimit() throws SQLException {
+    QueryDatabase db = new QueryDatabase("Denver", 3);
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(3, results.size());
+    assertEquals(30, db.getTotalResultsFound());
   }
 }

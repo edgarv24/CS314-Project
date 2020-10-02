@@ -51,8 +51,6 @@ export default class Atlas extends Component {
         this.updateInput2 = this.updateInput2.bind(this);
         this.submitDistanceRequest = this.submitDistanceRequest.bind(this);
 
-
-
         this.state = {
             userPosition: null,
             markerPosition: null,

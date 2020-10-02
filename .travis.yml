@@ -17,7 +17,7 @@ before_script:
 
   # Setup mysql "test" database
   - mysql -u root -e 'CREATE DATABASE cs314;'
-  - for SQL in server/src/test/resources/world.sql; do mysql cs314 < $SQL; done
+  - for SQL in server/src/test/resources/Sprint2.sql; do mysql cs314 < $SQL; done
 
 install:
   - npm install --prefix client
