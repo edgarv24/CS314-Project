@@ -22,7 +22,6 @@ import 'leaflet/dist/leaflet.css';
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as distanceSchema from "../../../schemas/DistanceResponse.json";
 
-import {LOG} from "../../utils/constants"
 import Coordinates from "coordinate-parser";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
@@ -90,6 +89,7 @@ export default class Atlas extends Component {
                     </Row>
                     {this.renderButtons()}
                     {this.renderCoordinateMenu()}
+                    <h1>Distance: {this.state.distanceLabel} miles</h1>
                 </Container>
             </div>
         );
@@ -196,13 +196,15 @@ export default class Atlas extends Component {
                 secondMarkerPosition: mapClickInfo.latlng,
                 mapCenter: mapClickInfo.latlng
             });
-            this.requestDistanceFromServer();
         } else {
             this.setState({
                 markerPosition: this.state.secondMarkerPosition,
                 secondMarkerPosition: mapClickInfo.latlng,
                 mapCenter: mapClickInfo.latlng
             });
+        }
+        if (this.state.markerPosition && this.state.secondMarkerPosition){
+            this.requestDistanceFromServer();
         }
     }
 
@@ -296,9 +298,6 @@ export default class Atlas extends Component {
     }
 
     requestDistanceFromServer() {
-        LOG.info(this.state.markerPosition);
-        LOG.info(this.state.secondMarkerPosition);
-
         let place1Pos = {latitude: this.state.markerPosition["lat"].toString(), longitude: this.state.markerPosition["lng"].toString()};
         let place2Pos = {
             latitude: this.state.secondMarkerPosition["lat"].toString(),
@@ -315,14 +314,12 @@ export default class Atlas extends Component {
         }).then(distance => {
                 if (distance) {
                     if (this.validDistanceResponse(distance.data)) {
-                        this.setState({distanceLabel: distance});
+                        this.setState({distanceLabel: distance.data.distance});
                     }
                 } else {
                     this.setState({distanceLabel: null});
                 }
             });
-        LOG.info(this.state.distanceLabel);
-
     }
 
     validDistanceResponse(distance) {
