@@ -80,6 +80,7 @@ export default class Atlas extends Component {
         return (
             <div>
                 <Container>
+                    {this.renderDistanceLabel()}
                     <Row>
                         <Col sm={12} md={{size: 10, offset: 1}}>
                             {this.renderLeafletMap()}
@@ -87,7 +88,6 @@ export default class Atlas extends Component {
                     </Row>
                     {this.renderButtons()}
                     {this.renderCoordinateMenu()}
-                    <h1>Distance: {this.state.distanceLabel} miles</h1>
                 </Container>
             </div>
         );
@@ -273,7 +273,7 @@ export default class Atlas extends Component {
         } else {
             this.setState({markerPosition: {lat: 10, lng: -35}});
         }
-        
+
     }
 
     updateInput2() {
@@ -310,17 +310,40 @@ export default class Atlas extends Component {
             earthRadius: 3959.0,
             distance: 0
         }).then(distance => {
-                if (distance) {
-                    if (this.validDistanceResponse(distance.data)) {
-                        this.setState({distanceLabel: distance.data.distance});
-                    }
-                } else {
-                    this.setState({distanceLabel: null});
+            if (distance) {
+                if (this.validDistanceResponse(distance.data)) {
+                    this.setState({distanceLabel: distance.data.distance});
                 }
-            });
+            } else {
+                this.setState({distanceLabel: null});
+            }
+        });
     }
 
     validDistanceResponse(distance) {
         return isJsonResponseValid(distance, distanceSchema);
     }
+
+    renderDistanceLabel() {
+        return (
+            <Row className="mb-3">
+                <Col sm={12} md={{size: 10, offset: 1}}>
+                    <InputGroup>
+                        <InputGroupAddon addonType="prepend">Distance</InputGroupAddon>
+                        <Input disabled={true}
+                               value={this.getDistanceLabelText()}/>
+                    </InputGroup>
+                </Col>
+            </Row>
+        );
+    }
+
+    getDistanceLabelText() {
+        if (this.state.distanceLabel === null)
+            return "N/A";
+        else if (this.state.distanceLabel === 1)
+            return "1 mile";
+        return `${this.state.distanceLabel} miles`;
+    }
+
 }
