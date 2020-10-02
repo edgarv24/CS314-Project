@@ -63,6 +63,30 @@ export default class Atlas extends Component {
         };
     }
 
+    renderLeafletMap() {
+        return (
+            <Map
+                className={'mapStyle'}
+                boxZoom={false}
+                useFlyTo={true}
+                zoom={15}
+                minZoom={MAP_MIN_ZOOM}
+                maxZoom={MAP_MAX_ZOOM}
+                maxBounds={MAP_BOUNDS}
+                viewport={{
+                    center: this.state.mapCenter
+                }}
+                onClick={this.setMarker}
+            >
+                <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
+                {this.getMarker(this.state.markerPosition, MARKER_ICON, true)}
+                {this.getMarker(this.state.secondMarkerPosition, MARKER_ICON, true)}
+                {this.getMarker(this.state.userPosition, DISTINCT_MARKER, false)}
+                {this.renderPolyline()}
+            </Map>
+        );
+    }
+
     componentDidMount() {
         // request user location once after first render
         if (navigator.geolocation) {
@@ -152,30 +176,6 @@ export default class Atlas extends Component {
                     </Col>
                 </Row>
             </div>
-        );
-    }
-
-    renderLeafletMap() {
-        return (
-            <Map
-                className={'mapStyle'}
-                boxZoom={false}
-                useFlyTo={true}
-                zoom={15}
-                minZoom={MAP_MIN_ZOOM}
-                maxZoom={MAP_MAX_ZOOM}
-                maxBounds={MAP_BOUNDS}
-                viewport={{
-                    center: this.state.mapCenter
-                }}
-                onClick={this.setMarker}
-            >
-                <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
-                {this.getMarker(this.state.markerPosition, MARKER_ICON, true)}
-                {this.getMarker(this.state.secondMarkerPosition, MARKER_ICON, true)}
-                {this.getMarker(this.state.userPosition, DISTINCT_MARKER, false)}
-                {this.renderPolyline()}
-            </Map>
         );
     }
 
