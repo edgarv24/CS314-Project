@@ -74,6 +74,7 @@ When the user clicks the Save button, the server connection should change and th
 
 
 ### Component Hierarchy
+
 The component hierarchy for the base application depicted below shows the our top level App component with four children components.
 * App renders the major components on the screen.
 * Header renders an icon and a team name in the top banner.
@@ -119,21 +120,19 @@ Often there are several related classes but we've listed only one to simplify th
 
 ![sprint 2 user interface](../images/Sprint2UserInterface.png)
 
-Changes made to the UI include four new components named Where Am I, Where Is, Find Distance and Find Places. They will be placed underneath the leaflet map.
+Changes made to the UI include two new components which are the Where am I and Find Distance. 
 
-* Where Is Component: Open a popup when clicked which will have two input fields for latitude and longitude and a button to submit the inputs, then display a marker in the location that the user entered.
+* Where Am I Component: Button, that when clicked, recenters the map back to the user’s current location marker.
 
-* Find Distance Component: Open a popup when clicked, which will have input fields for the latitude and longitude of both locations and a submit button which, when pressed, will reveal the distance and then display markers for both locations with a line between them.
-
-* Find Places Component: Open a popup when clicked, which will have an input field for the user to search for a name of a location and a list of matching locations will appear. The user can click on one to display a marker for the location. 
+* Find Distance Component: Open an input field when clicked, which will have text entries for the latitude and longitude of both locations and a submit button which, when pressed, will reveal the distance and then display markers for both locations with a line between them.
 
 ### Component Hierarchy
 
 ![sprint 2 component hierarchy](../images/Sprint2ComponentHierarchy.png)
 
-Modifications to the component hierarchy are being made to integrate new functionality. Components will be made for the Find Places, Find Distance, and Where Is epics. This will allow the user to input coordinates or locations to shift and update the Leaflet map in the Atlas component. These components will lift state up to the Atlas component so that the map is synced with the current request and location data.
-* Atlas renders the Find Places, Find Distance, and Where Is popup components when they are requested and enabled.
-* These three components might be combined into a single dynamic component with a dropdown select for the current method of input.
+Modifications to the component hierarchy were made that integrate new functionality. A component was made for the Find Distance inside of the Atlas Class. This allows the user to input coordinates or locations, which updates the Leaflet map in the Atlas component. This component lifts state up inside the Atlas component so that the map is synced with the current request.
+* Atlas renders the Find Distance popup components when they are requested and enabled.
+* Find Distance exists inside of the Atlas Class
 
 ### Class Diagram
 
