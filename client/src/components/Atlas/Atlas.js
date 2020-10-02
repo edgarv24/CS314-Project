@@ -117,6 +117,28 @@ export default class Atlas extends Component {
         );
     }
 
+    renderDistanceLabel() {
+        return (
+            <Row className="mb-3">
+                <Col sm={12} md={{size: 10, offset: 1}}>
+                    <InputGroup>
+                        <InputGroupAddon addonType="prepend">Distance</InputGroupAddon>
+                        <Input disabled={true}
+                               value={this.getDistanceLabelText()}/>
+                    </InputGroup>
+                </Col>
+            </Row>
+        );
+    }
+
+    getDistanceLabelText() {
+        if (this.state.distanceLabel === null)
+            return "N/A";
+        else if (this.state.distanceLabel === 1)
+            return "1 mile";
+        return `${this.state.distanceLabel} miles`;
+    }
+
     renderButtons() {
         return (
             <Row className="text-center">
@@ -322,28 +344,6 @@ export default class Atlas extends Component {
 
     validDistanceResponse(distance) {
         return isJsonResponseValid(distance, distanceSchema);
-    }
-
-    renderDistanceLabel() {
-        return (
-            <Row className="mb-3">
-                <Col sm={12} md={{size: 10, offset: 1}}>
-                    <InputGroup>
-                        <InputGroupAddon addonType="prepend">Distance</InputGroupAddon>
-                        <Input disabled={true}
-                               value={this.getDistanceLabelText()}/>
-                    </InputGroup>
-                </Col>
-            </Row>
-        );
-    }
-
-    getDistanceLabelText() {
-        if (this.state.distanceLabel === null)
-            return "N/A";
-        else if (this.state.distanceLabel === 1)
-            return "1 mile";
-        return `${this.state.distanceLabel} miles`;
     }
 
 }
