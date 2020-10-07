@@ -69,7 +69,7 @@ Modify trip
 
 | Date | Tasks closed  | Tasks in progress | Impediments |
 | :--- | :--- | :--- | :--- |
-| *date* | *#task, ...* | *#task, ...* |  | 
+| 10-07-2020 | none | #157, #162, #164, #165 | none | 
 
 ## Review
 
