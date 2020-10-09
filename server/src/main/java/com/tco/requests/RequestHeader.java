@@ -4,7 +4,7 @@ import com.tco.misc.BadRequestException;
 
 public abstract class RequestHeader {
 
-  protected static final int CURRENT_SUPPORTED_VERSION = 2;
+  protected static final int CURRENT_SUPPORTED_VERSION = 3;
 
   protected String requestType;
   protected Integer requestVersion;
