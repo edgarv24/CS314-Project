@@ -54,7 +54,7 @@ public class TestRequestTrip {
   @Test
   @DisplayName("Testing distance list with given CO trip")
   public void testCorrectDistanceList() throws BadRequestException {
-    List<Integer> results = Arrays.asList(29, 44, 62);
+    List<Long> results = Arrays.asList(29L, 44L, 62L);
     requestTrip.buildResponse();
     assertEquals(3, requestTrip.getDistances().size());
     assertEquals(results, requestTrip.getDistances());
@@ -73,7 +73,7 @@ public class TestRequestTrip {
     places.add(denver);
     requestTrip = new RequestTrip(options, places);
     requestTrip.buildResponse();
-    List<Integer> results = Arrays.asList(0, 0);
+    List<Long> results = Arrays.asList(0L, 0L);
     assertEquals(2, requestTrip.getDistances().size());
     assertEquals(results, requestTrip.getDistances());
   }
@@ -86,7 +86,7 @@ public class TestRequestTrip {
     options.put("earthRadius", "20902230");
     requestTrip = new RequestTrip(options, places);
     requestTrip.buildResponse();
-    List<Integer> results = Arrays.asList(156604, 234273, 329472);
+    List<Long> results = Arrays.asList(156604L, 234273L, 329472L);
 
     assertEquals(results.get(0), requestTrip.getDistances().get(0), 100.0);
     assertEquals(results.get(1), requestTrip.getDistances().get(1), 100.0);
@@ -101,7 +101,7 @@ public class TestRequestTrip {
     options.put("earthRadius", "6371008771");
     requestTrip = new RequestTrip(options, places);
     requestTrip.buildResponse();
-    List<Integer> results = Arrays.asList(47733143, 71406593, 100420000);
+    List<Long> results = Arrays.asList(47733143L, 71406593L, 100420000L);
 
     assertEquals(results.get(0), requestTrip.getDistances().get(0), 30480);
     assertEquals(results.get(1), requestTrip.getDistances().get(1), 30480);

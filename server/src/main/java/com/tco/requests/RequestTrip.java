@@ -12,7 +12,7 @@ import java.util.Map;
 public class RequestTrip extends RequestHeader {
   private Map<String, String> options;
   private List<Map<String, String>> places;
-  private List<Integer> distances;
+  private List<Long> distances;
   private CalculateDistance cd;
 
   private final transient Logger log = LoggerFactory.getLogger(RequestTrip.class);
@@ -50,7 +50,7 @@ public class RequestTrip extends RequestHeader {
         lat2 = Double.parseDouble(places.get(0).get("latitude"));
         long2 = Double.parseDouble(places.get(0).get("longitude"));
       }
-      distances.add((int) cd.distBetween(lat1, long1, lat2, long2));
+      distances.add((long) cd.distBetween(lat1, long1, lat2, long2));
     }
   }
 
@@ -62,7 +62,7 @@ public class RequestTrip extends RequestHeader {
     return this.places;
   }
 
-  public List<Integer> getDistances() {
+  public List<Long> getDistances() {
     return this.distances;
   }
 }
