@@ -107,4 +107,28 @@ public class TestRequestTrip {
     assertEquals(results.get(1), requestTrip.getDistances().get(1), 30480);
     assertEquals(results.get(2), requestTrip.getDistances().get(2), 30480);
   }
+
+  @Test
+  @DisplayName("Testing with one place provided")
+  public void testOnePlaceGiven() {
+    places.remove(2);
+    places.remove(1);
+    assertEquals(1, places.size());
+
+    requestTrip = new RequestTrip(options, places);
+    requestTrip.buildResponse();
+    List<Long> results = Arrays.asList(0L);
+    assertEquals(results, requestTrip.getDistances());
+  }
+
+  @Test
+  @DisplayName("Testing with no place provided")
+  public void testNoPlaceGiven() {
+    places.clear();
+    assertEquals(0, places.size());
+
+    requestTrip = new RequestTrip(options, places);
+    requestTrip.buildResponse();
+    assertEquals(true, requestTrip.getDistances().isEmpty());
+  }
 }
