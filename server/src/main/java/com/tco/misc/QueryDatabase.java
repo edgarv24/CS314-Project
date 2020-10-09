@@ -17,12 +17,14 @@ public class QueryDatabase {
   private static String DB_USER;
   private static String DB_PASSWORD;
 
-  private final String COLUMNS;
-  private final String TABLES;
-  private final String WHERECLAUSE1;
-  private final String WHERECLAUSE2;
-  private final String WHERECLAUSE3;
-  private final String WHERECLAUSE4;
+  private final String COLUMNS =
+      "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
+  private final String TABLES =
+      "world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id";
+  private final String WHERECLAUSE1 = "country.name LIKE \"%";
+  private final String WHERECLAUSE2 = "region.name LIKE \"%";
+  private final String WHERECLAUSE3 = "world.name LIKE \"%";
+  private final String WHERECLAUSE4 = "world.municipality LIKE \"%";
   private final String QUERY;
 
   private Integer resultsFound;
@@ -30,43 +32,11 @@ public class QueryDatabase {
 
   public QueryDatabase(String placeName, Integer limit) throws SQLException {
     configServerUsingLocation();
-    if (limit == null || limit == 0 || limit > 100) limit = 100;
-
-    COLUMNS =
-        "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
-    TABLES =
-        "world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id";
-    WHERECLAUSE1 = "country.name LIKE \"%";
-    WHERECLAUSE2 = "region.name LIKE \"%";
-    WHERECLAUSE3 = "world.name LIKE \"%";
-    WHERECLAUSE4 = "world.municipality LIKE \"%";
-
-    if (placeName != null) {
-      QUERY =
-          "SELECT "
-              + COLUMNS
-              + " FROM "
-              + TABLES
-              + " WHERE ("
-              + WHERECLAUSE1
-              + placeName
-              + "%\" OR "
-              + WHERECLAUSE2
-              + placeName
-              + "%\" OR "
-              + WHERECLAUSE3
-              + placeName
-              + "%\" OR "
-              + WHERECLAUSE4
-              + placeName
-              + "%\") ORDER BY name;";
-    } else {
-      limit = 1;
-      QUERY = "SELECT * FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
-    }
+    limit = getCorrectLimit(placeName, limit);
+    QUERY = getCorrectQuery(placeName, limit);
     ResultSet resultSet = makeQuery();
     convertResultsToListOfMaps(resultSet);
-    this.resultsFound = (placeName == null) ? 1 : queryResults.size();
+    resultsFound = (placeName == null) ? limit : queryResults.size();
     trimResultsToLimit(limit);
   }
 
@@ -83,6 +53,36 @@ public class QueryDatabase {
       DB_URL = "jdbc:mysql://faure.cs.colostate.edu/cs314";
       DB_USER = "cs314-db";
       DB_PASSWORD = "eiK5liet1uej";
+    }
+  }
+
+  public Integer getCorrectLimit(String placeName, Integer limit) {
+    if (placeName != null) return (limit != null && limit <= 100 && limit > 0) ? limit : 100;
+    else if (limit != null) return (limit <= 100 && limit > 0) ? limit : 100;
+    else return 1;
+  }
+
+  public String getCorrectQuery(String placeName, Integer limit) {
+    if (placeName != null) {
+      return "SELECT "
+          + COLUMNS
+          + " FROM "
+          + TABLES
+          + " WHERE ("
+          + WHERECLAUSE1
+          + placeName
+          + "%\" OR "
+          + WHERECLAUSE2
+          + placeName
+          + "%\" OR "
+          + WHERECLAUSE3
+          + placeName
+          + "%\" OR "
+          + WHERECLAUSE4
+          + placeName
+          + "%\") ORDER BY name;";
+    } else {
+      return "SELECT * FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
     }
   }
 

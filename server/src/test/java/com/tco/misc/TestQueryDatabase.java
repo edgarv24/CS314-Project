@@ -114,4 +114,48 @@ public class TestQueryDatabase {
     assertEquals(3, results.size());
     assertEquals(30, db.getTotalResultsFound());
   }
+
+  @Test
+  @DisplayName("Test that no match and no limit returns single result")
+  public void testNoMatchNoLimit() throws SQLException {
+    QueryDatabase db = new QueryDatabase(null, null);
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(1, results.size());
+  }
+
+  @Test
+  @DisplayName("Test that no match and limit of 5 returns 5 random results and found equals 5")
+  public void testNoMatchWithLimit() throws SQLException {
+    QueryDatabase db = new QueryDatabase(null, 5);
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(5, results.size());
+    assertEquals(5, db.getTotalResultsFound());
+  }
+
+  @Test
+  @DisplayName("Test that no match and limit of 1000 returns 100 random results and found equals 100")
+  public void testNoMatchHighLimit() throws SQLException {
+    QueryDatabase db = new QueryDatabase(null, 1000);
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(100, results.size());
+    assertEquals(100, db.getTotalResultsFound());
+  }
+
+  @Test
+  @DisplayName("Test that no match and limit of -1000 returns 100 random results and found equals 100")
+  public void testNoMatchNegLimit() throws SQLException {
+    QueryDatabase db = new QueryDatabase(null, -1000);
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(100, results.size());
+    assertEquals(100, db.getTotalResultsFound());
+  }
+
+  @Test
+  @DisplayName("Test that no match and limit of 0 returns 100 random results and found equals 100")
+  public void testNoMatchZeroLimit() throws SQLException {
+    QueryDatabase db = new QueryDatabase(null, 0);
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(100, results.size());
+    assertEquals(100, db.getTotalResultsFound());
+  }
 }
