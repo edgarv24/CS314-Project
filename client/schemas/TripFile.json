@@ -1,0 +1,65 @@
+{
+  "$id": "https://example.com/address.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "trip",
+  "description": "trip file",
+  "type": "object",
+  "properties": {
+    "requestVersion": {
+      "description":"the TIP protocol version",
+      "type":"integer",
+      "minimum": 3
+    },
+    "requestType": {
+      "description":"the TIP object type should be itinerary",
+      "type":"string",
+      "pattern":"^trip$"
+    },
+    "options": {
+      "description":"options for this request",
+      "type":"object",
+      "properties": {
+        "title": {
+          "type":"string"
+        },
+        "earthRadius": {
+          "type":"string",
+          "pattern":"(^\\+?[0-9]*[1-9][0-9]*(\\.[0-9]+)?$)|(^\\+?[0]+\\.[0-9]*[1-9][0-9]*$)"
+        }
+      },
+      "required":["earthRadius"]
+    },
+    "places": {
+      "description": "list of places to visit",
+      "type":"array",
+      "items": {
+        "type":"object",
+        "properties": {
+          "name": {
+            "type":"string"
+          },
+          "latitude": {
+            "type":"string"
+          },
+          "longitude": {
+            "type":"string"
+          }
+        },
+        "required": ["name","latitude","longitude"],
+        "additionalProperties": true
+      },
+      "minitems": 0
+    },
+    "distances": {
+      "description": "distances between corresponding places",
+      "type":"array",
+      "items": {
+        "type":"integer",
+        "minimum": 0
+      },
+      "minitems": 0
+    }
+  },
+  "required":["requestVersion","requestType","options","places"],
+  "additionalProperties": false
+}
