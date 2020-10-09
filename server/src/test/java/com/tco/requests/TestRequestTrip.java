@@ -1,14 +1,13 @@
 package com.tco.requests;
 
-import com.tco.misc.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestRequestTrip {
   private RequestTrip requestTrip;
@@ -53,7 +52,7 @@ public class TestRequestTrip {
 
   @Test
   @DisplayName("Testing distance list with given CO trip")
-  public void testCorrectDistanceList() throws BadRequestException {
+  public void testCorrectDistanceList() {
     List<Long> results = Arrays.asList(30L, 44L, 62L);
     requestTrip.buildResponse();
     assertEquals(3, requestTrip.getDistances().size());
@@ -62,7 +61,7 @@ public class TestRequestTrip {
 
   @Test
   @DisplayName("Testing for two identical places return [0,0]")
-  public void testSameLocations() throws BadRequestException {
+  public void testSameLocations() {
     places.remove(2);
     places.remove(1);
     Map<String, String> denver = Map.of(
@@ -80,7 +79,7 @@ public class TestRequestTrip {
 
   @Test
   @DisplayName("Testing with earthRadius in feet and delta being 100ft")
-  public void testBigEarthRadius() throws BadRequestException {
+  public void testBigEarthRadius() {
     options.clear();
     options.put("title", "My Trip");
     options.put("earthRadius", "20902230");
@@ -95,7 +94,7 @@ public class TestRequestTrip {
 
   @Test
   @DisplayName("Testing with earthRadius in millimeters and delta being 100ft")
-  public void testSmallEarthRadius() throws BadRequestException {
+  public void testSmallEarthRadius() {
     options.clear();
     options.put("title", "My Trip");
     options.put("earthRadius", "6371008771");
@@ -117,7 +116,7 @@ public class TestRequestTrip {
 
     requestTrip = new RequestTrip(options, places);
     requestTrip.buildResponse();
-    List<Long> results = Arrays.asList(0L);
+    List<Long> results = Collections.singletonList(0L);
     assertEquals(results, requestTrip.getDistances());
   }
 
@@ -125,10 +124,8 @@ public class TestRequestTrip {
   @DisplayName("Testing with no place provided")
   public void testNoPlaceGiven() {
     places.clear();
-    assertEquals(0, places.size());
-
     requestTrip = new RequestTrip(options, places);
     requestTrip.buildResponse();
-    assertEquals(true, requestTrip.getDistances().isEmpty());
+    assertTrue(requestTrip.getDistances().isEmpty());
   }
 }
