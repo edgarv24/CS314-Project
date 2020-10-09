@@ -22,6 +22,7 @@ public class RequestConfig extends RequestHeader {
     this.supportedRequests.add("config");
     this.supportedRequests.add("distance");
     this.supportedRequests.add("find");
+    this.supportedRequests.add("trip");
     log.trace("buildResponse -> {}", this);
   }
 

@@ -43,6 +43,6 @@ public class TestRequestConfig {
   @DisplayName("3 supportedRequests")
   public void testSupportedRequests() {
     int size = conf.getSupportedRequests().size();
-    assertEquals(3, size);
+    assertEquals(4, size);
   }
 }
