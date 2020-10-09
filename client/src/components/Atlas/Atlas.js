@@ -21,6 +21,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as distanceSchema from "../../../schemas/DistanceResponse.json";
+import {PROTOCOL_VERSION} from "../utils/constants";
 
 import Coordinates from "coordinate-parser";
 
@@ -325,7 +326,7 @@ export default class Atlas extends Component {
         };
         let distResult = null;
         sendServerRequest({
-            requestVersion: 2,
+            requestVersion: PROTOCOL_VERSION,
             requestType: "distance",
             place1: place1Pos,
             place2: place2Pos,
