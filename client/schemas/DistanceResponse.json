@@ -2,7 +2,7 @@
   "$id": "https://example.com/address.schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "distance",
-  "description": "distance response",
+  "description": "distance request/response",
   "type": "object",
   "properties": {
     "requestVersion": {
