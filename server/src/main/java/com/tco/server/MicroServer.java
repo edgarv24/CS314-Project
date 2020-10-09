@@ -2,10 +2,7 @@ package com.tco.server;
 
 import com.tco.misc.BadRequestException;
 import com.tco.misc.JSONValidator;
-import com.tco.requests.RequestDistance;
-import com.tco.requests.RequestConfig;
-import com.tco.requests.RequestFind;
-import com.tco.requests.RequestHeader;
+import com.tco.requests.*;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -42,6 +39,7 @@ class MicroServer {
           post("/config", (req, res) -> processHttpRequest(req, res, RequestConfig.class));
           post("/distance", (req, res) -> processHttpRequest(req, res, RequestDistance.class));
           post("/find", (req, res) -> processHttpRequest(req, res, RequestFind.class));
+          post("/trip", (req, res) -> processHttpRequest(req, res, RequestTrip.class));
         });
   }
 
