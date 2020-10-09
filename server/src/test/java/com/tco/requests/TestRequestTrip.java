@@ -44,6 +44,19 @@ public class TestRequestTrip {
   }
 
   @Test
+  @DisplayName("Request type is \"find\"")
+  public void testType() {
+    String type = requestTrip.getRequestType();
+    assertEquals("trip", type);
+  }
+
+  @Test
+  @DisplayName("Version number is equal to 3")
+  public void testVersion() {
+    int version = requestTrip.getRequestVersion();
+    assertEquals(3, version);
+  }
+  @Test
   @DisplayName("Testing constructor")
   public void testConstructor() {
     assertEquals(options, requestTrip.getOptions());
