@@ -13,7 +13,6 @@ public class RequestTrip extends RequestHeader {
   private Map<String, String> options;
   private List<Map<String, String>> places;
   private List<Long> distances;
-  private CalculateDistance cd;
 
   private final transient Logger log = LoggerFactory.getLogger(RequestTrip.class);
 
@@ -29,28 +28,20 @@ public class RequestTrip extends RequestHeader {
   }
 
   @Override
-  public void buildResponse() throws BadRequestException {
+  public void buildResponse() {
     buildDistanceList(options, places);
     log.trace("buildResponse -> {}", this);
   }
 
   public void buildDistanceList(Map<String, String> options, List<Map<String, String>> places) {
     distances = new ArrayList<>();
-    Double radius = Double.parseDouble(options.get("earthRadius"));
-    cd = CalculateDistance.usingRadius(radius);
+    double radius = Double.parseDouble(options.get("earthRadius"));
+    CalculateDistance cd = CalculateDistance.usingRadius(radius);
     for (int i = 0; i < places.size(); i++) {
-      double lat1 = Double.parseDouble(places.get(i).get("latitude"));
-      double long1 = Double.parseDouble(places.get(i).get("longitude"));
-      double lat2;
-      double long2;
-      if (i != places.size() - 1) {
-        lat2 = Double.parseDouble(places.get(i + 1).get("latitude"));
-        long2 = Double.parseDouble(places.get(i + 1).get("longitude"));
-      } else {
-        lat2 = Double.parseDouble(places.get(0).get("latitude"));
-        long2 = Double.parseDouble(places.get(0).get("longitude"));
-      }
-      distances.add((long) cd.distBetween(lat1, long1, lat2, long2));
+      if (i != places.size() - 1)
+        distances.add(cd.distBetween(places.get(i), places.get(i + 1)));
+      else
+        distances.add(cd.distBetween(places.get(i), places.get(0)));
     }
   }
 

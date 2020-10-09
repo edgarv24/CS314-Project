@@ -54,7 +54,7 @@ public class TestRequestTrip {
   @Test
   @DisplayName("Testing distance list with given CO trip")
   public void testCorrectDistanceList() throws BadRequestException {
-    List<Long> results = Arrays.asList(29L, 44L, 62L);
+    List<Long> results = Arrays.asList(30L, 44L, 62L);
     requestTrip.buildResponse();
     assertEquals(3, requestTrip.getDistances().size());
     assertEquals(results, requestTrip.getDistances());
