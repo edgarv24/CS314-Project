@@ -92,29 +92,25 @@ export default class Atlas extends Component {
                         </Col>
                     </Row>
                     {this.renderButtons()}
-                    {this.renderDistanceModal()}
+                    {this.state.distModalOpen && this.renderDistanceModal()}
                 </Container>
             </div>
         );
     }
 
     renderDistanceModal() {
-        if (this.state.distModalOpen) {
-            const pos1 = this.state.markerPosition;
-            const pos2 = this.state.secondMarkerPosition;
-            const input1 = pos1 ? `${pos1["lat"]}, ${pos1["lng"]}` : "";
-            const input2 = pos2 ? `${pos2["lat"]}, ${pos2["lng"]}` : "";
+        const pos1 = this.state.markerPosition;
+        const pos2 = this.state.secondMarkerPosition;
 
-            return (
-                <DistanceModal
-                    isOpen={this.state.distModalOpen}
-                    toggleOpen={(isOpen = !this.state.distModalOpen) => this.setState({distModalOpen: isOpen})}
-                    processDistanceRequestSuccess={this.processDistanceRequestSuccess}
-                    input1={input1}
-                    input2={input2}
-                />
-            );
-        }
+        return (
+            <DistanceModal
+                isOpen={this.state.distModalOpen}
+                toggleOpen={(isOpen = !this.state.distModalOpen) => this.setState({distModalOpen: isOpen})}
+                processDistanceRequestSuccess={this.processDistanceRequestSuccess}
+                input1={pos1 ? `${pos1["lat"]}, ${pos1["lng"]}` : ""}
+                input2={pos2 ? `${pos2["lat"]}, ${pos2["lng"]}` : ""}
+            />
+        );
     }
 
     renderDistanceLabel() {
