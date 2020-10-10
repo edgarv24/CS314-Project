@@ -37,10 +37,6 @@ function testRenderInput() {
         />);
 
     expect(settings.find('Input').length).toEqual(1);
-    expect(settings.find('Row').length).toEqual(5);
-    expect(settings.find('Row').at(1).text()).toMatch("Type:config");
-    expect(settings.find('Row').at(2).text()).toMatch("Supported:config,distance,find,trip");
-    expect(settings.find('Row').at(3).text()).toMatch("Version:3");
 }
 
 test('An Input field should be rendered inside the Settings', testRenderInput);
@@ -94,6 +90,22 @@ function testUpdateServerPort() {
     expect(actualBeforeServerPort).toEqual(expectedBeforeServerPort);
     expect(actualAfterServerPort).toEqual(inputText);
 }
+
+function testRenderSettingsRow() {
+    const settings = mount(
+        <ServerSettings
+            isOpen={startProperties.isOpen}
+            serverSettings={startProperties.serverSettings}
+            toggleOpen={startProperties.toggleOpen}
+            processServerConfigSuccess={startProperties.processServerConfigSuccess}
+        />);
+    expect(settings.find('Row').length).toEqual(5);
+    expect(settings.find('Row').at(1).text()).toMatch("Type:config");
+    expect(settings.find('Row').at(2).text()).toMatch("Supported:config,distance,find,trip");
+    expect(settings.find('Row').at(3).text()).toMatch("Version:3");
+}
+
+test('SettingsRow should have 5 rows and the correct values for the labels', testRenderSettingsRow);
 
 function mockConfigResponse() {
     fetch.mockResponse(JSON.stringify(
