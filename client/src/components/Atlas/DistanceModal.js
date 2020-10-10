@@ -18,6 +18,9 @@ import * as distanceSchema from "../../../schemas/DistanceResponse.json";
 import Coordinates from "coordinate-parser";
 import {PROTOCOL_VERSION} from "../../utils/constants";
 
+const BOX_INPUT1 = 0;
+const BOX_INPUT2 = 1;
+
 export default class DistanceModal extends Component {
 
     constructor(props) {
@@ -26,14 +29,13 @@ export default class DistanceModal extends Component {
         this.state = {
             inputValues: [this.props.input1, this.props.input2],      // strings from 2 input boxes
             coordinatePairs: [null, null],              // converted coordinates from 2 input boxes
-            coordinatesAreValid: false,
             calculatedDistance: 0
         };
     }
 
     componentDidMount() {
-        this.updateInputValueAndAttemptConvert(0, this.state.inputValues[0]);
-        this.updateInputValueAndAttemptConvert(1, this.state.inputValues[1]);
+        this.updateInputValueAndAttemptConvert(BOX_INPUT1, this.state.inputValues[BOX_INPUT1]);
+        this.updateInputValueAndAttemptConvert(BOX_INPUT2, this.state.inputValues[BOX_INPUT2]);
         this.requestDistanceFromServer();
     }
 
@@ -41,12 +43,13 @@ export default class DistanceModal extends Component {
         return (
             <div>
                 <Modal isOpen={this.props.isOpen} toggle={() => this.props.toggleOpen()}>
-                    <ModalHeader className="mt-1 ml-4"
-                        toggle={() => this.props.toggleOpen()}>Distance Between Coordinates</ModalHeader>
+                    <ModalHeader className="mt-1" toggle={() => this.props.toggleOpen()}>
+                        <span className="ml-4">Distance Between Coordinates</span>
+                    </ModalHeader>
                     <ModalBody>
                         <div>
-                            {this.renderCoordinateInput(0)}
-                            {this.renderCoordinateInput(1)}
+                            {this.renderCoordinateInput(BOX_INPUT1)}
+                            {this.renderCoordinateInput(BOX_INPUT2)}
                         </div>
                     </ModalBody>
                     {this.renderActionButtons()}
@@ -84,11 +87,11 @@ export default class DistanceModal extends Component {
             <ModalFooter>
                 <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
                 <Button color='primary' onClick={() => {
-                    this.props.processDistanceRequestSuccess(this.state.coordinatePairs[0],
-                        this.state.coordinatePairs[1], this.state.calculatedDistance);
+                    this.props.processDistanceRequestSuccess(this.state.coordinatePairs[BOX_INPUT1],
+                        this.state.coordinatePairs[BOX_INPUT2], this.state.calculatedDistance);
                     this.resetModalState();
                 }}
-                        disabled={!(this.state.calculatedDistance && this.state.coordinatesAreValid)}
+                        disabled={this.state.calculatedDistance == null || !this.checkValidCoordinates()}
                 >
                     Submit
                 </Button>
@@ -108,15 +111,7 @@ export default class DistanceModal extends Component {
         }
 
         newInputValues[index] = newInputString;
-        const validCoordinates = this.checkValidCoordinates(newCoordinates);
-        this.setState({
-            inputValues: newInputValues, coordinatePairs: newCoordinates,
-            coordinatesAreValid: validCoordinates
-        });
-    }
-
-    checkValidCoordinates(coordinates = this.state.coordinatePairs) {
-        return coordinates[0] != null && coordinates[1] != null;
+        this.setState({ inputValues: newInputValues, coordinatePairs: newCoordinates });
     }
 
     isValidCoordinate(position) {
@@ -128,14 +123,18 @@ export default class DistanceModal extends Component {
         }
     };
 
-    requestDistanceFromServer() {
+    checkValidCoordinates(coordinates = this.state.coordinatePairs) {
+        return coordinates[BOX_INPUT1] != null && coordinates[BOX_INPUT2] != null;
+    }
+
+    requestDistanceFromServer(earthRadius = 3959.0) {
         if (this.checkValidCoordinates()) {
-            sendServerRequest(this.constructRequestBody(this.state.coordinatePairs, 3959.0))
+            sendServerRequest(this.constructRequestBody(this.state.coordinatePairs, earthRadius))
                 .then(responseJSON => {
                     if (responseJSON) {
                         this.processDistanceResponse(responseJSON)
                     } else {
-                        this.setState({coordinatesAreValid: false, calculatedDistance: null});
+                        this.setState({calculatedDistance: null});
                     }
                 });
         } else {
@@ -148,8 +147,8 @@ export default class DistanceModal extends Component {
         return {
             requestVersion: PROTOCOL_VERSION,
             requestType: "distance",
-            place1: this.latLngToStringPair(coordinates[0]),
-            place2: this.latLngToStringPair(coordinates[1]),
+            place1: this.latLngToStringPair(coordinates[BOX_INPUT1]),
+            place2: this.latLngToStringPair(coordinates[BOX_INPUT2]),
             earthRadius: earthRadius,
             distance: 0
         }
@@ -168,7 +167,7 @@ export default class DistanceModal extends Component {
         if (isJsonResponseValid(responseBody, distanceSchema)) {
             this.setState({calculatedDistance: responseBody.distance});
         } else {
-            this.setState({coordinatePairs: [null, null], coordinatesAreValid: false});
+            this.setState({coordinatePairs: [null, null]});
         }
     }
 
@@ -177,7 +176,6 @@ export default class DistanceModal extends Component {
         this.setState({
             inputValues: [null, null],
             coordinatePairs: [null, null],
-            coordinatesAreValid: false,
             calculatedDistance: null
         });
     }
