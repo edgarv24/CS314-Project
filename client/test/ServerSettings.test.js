@@ -5,6 +5,7 @@ import React from 'react'
 import Page from "../src/components/Page";
 import Footer from '../src/components/Margins/Footer'
 import ServerSettings from '../src/components/Margins/ServerSettings'
+import {jest, test} from "@jest/globals";
 
 const startProperties = {
     serverSettings: {'serverPort': 'black-bottle.cs.colostate.edu:31400', 'serverConfig': {}},
@@ -36,6 +37,10 @@ function testRenderInput() {
         />);
 
     expect(settings.find('Input').length).toEqual(1);
+    expect(settings.find('Row').length).toEqual(5);
+    expect(settings.find('Row').at(1).text()).toMatch("Type:config");
+    expect(settings.find('Row').at(2).text()).toMatch("Supported:config,distance,find,trip");
+    expect(settings.find('Row').at(3).text()).toMatch("Version:3");
 }
 
 test('An Input field should be rendered inside the Settings', testRenderInput);
@@ -96,7 +101,8 @@ function mockConfigResponse() {
             'placeAttributes': ["latitude", "longitude", "name"],
             'requestType': "config",
             'requestVersion': 1,
-            'serverName': "t14 The Fourteeners"
+            'serverName': "t14 The Fourteeners",
+            'supportedRequests': ["config","distance","find", "trip"]
         }));
 }
 
