@@ -1,17 +1,5 @@
 import React, {Component} from 'react';
-import {
-    Button,
-    Col,
-    Container,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    ModalFooter,
-    Row,
-    Input,
-    InputGroup,
-    InputGroupAddon
-} from 'reactstrap';
+import {Button, Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 
 import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
 
@@ -19,11 +7,9 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import 'leaflet/dist/leaflet.css';
-import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
-import * as distanceSchema from "../../../schemas/DistanceResponse.json";
-import {PROTOCOL_VERSION} from "../../utils/constants";
+import DistanceModal from "./DistanceModal";
 
-import Coordinates from "coordinate-parser";
+import {LOG} from "../../utils/constants"
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -46,20 +32,14 @@ export default class Atlas extends Component {
         this.setMapToHome = this.setMapToHome.bind(this);
         this.getHomePosition = this.getHomePosition.bind(this);
 
-        this.toggleCoordinateMenu = this.toggleCoordinateMenu.bind(this);
-        this.requestDistanceFromServer = this.requestDistanceFromServer.bind(this);
-        this.updateInput1 = this.updateInput1.bind(this);
-        this.updateInput2 = this.updateInput2.bind(this);
-        this.submitDistanceRequest = this.submitDistanceRequest.bind(this);
+        this.processDistanceRequestSuccess = this.processDistanceRequestSuccess.bind(this);
 
         this.state = {
             userPosition: null,
             markerPosition: null,
             secondMarkerPosition: null,
             mapCenter: MAP_CENTER_DEFAULT,
-            modal: false,
-            input1: null,
-            input2: null,
+            distModalOpen: false,
             distanceLabel: null
         };
     }
@@ -83,7 +63,7 @@ export default class Atlas extends Component {
                 {this.getMarker(this.state.markerPosition, MARKER_ICON, true)}
                 {this.getMarker(this.state.secondMarkerPosition, MARKER_ICON, true)}
                 {this.getMarker(this.state.userPosition, DISTINCT_MARKER, false)}
-                {this.renderPolyline()}
+                {this.state.distanceLabel != null && this.renderPolyline()}
             </Map>
         );
     }
@@ -112,10 +92,29 @@ export default class Atlas extends Component {
                         </Col>
                     </Row>
                     {this.renderButtons()}
-                    {this.renderCoordinateMenu()}
+                    {this.renderDistanceModal()}
                 </Container>
             </div>
         );
+    }
+
+    renderDistanceModal() {
+        if (this.state.distModalOpen) {
+            const pos1 = this.state.markerPosition;
+            const pos2 = this.state.secondMarkerPosition;
+            const input1 = pos1 ? `${pos1["lat"]}, ${pos1["lng"]}` : "";
+            const input2 = pos2 ? `${pos2["lat"]}, ${pos2["lng"]}` : "";
+
+            return (
+                <DistanceModal
+                    isOpen={this.state.distModalOpen}
+                    toggleOpen={(isOpen = !this.state.distModalOpen) => this.setState({distModalOpen: isOpen})}
+                    processDistanceRequestSuccess={this.processDistanceRequestSuccess}
+                    input1={input1}
+                    input2={input2}
+                />
+            );
+        }
     }
 
     renderDistanceLabel() {
@@ -123,7 +122,7 @@ export default class Atlas extends Component {
             <Row className="mb-3">
                 <Col sm={12} md={{size: 10, offset: 1}}>
                     <InputGroup>
-                        <InputGroupAddon addonType="prepend">Distance</InputGroupAddon>
+                        <InputGroupAddon addonType="prepend"> Distance </InputGroupAddon>
                         <Input disabled={true}
                                value={this.getDistanceLabelText()}/>
                     </InputGroup>
@@ -149,83 +148,33 @@ export default class Atlas extends Component {
                     </Button>{' '}
                 </Col>
                 <Col className="my-3" xs={{size: 5, offset: 0}}>
-                    <Button color="primary" onClick={this.toggleCoordinateMenu}> Find Distance </Button>
+                    <Button color="primary" onClick={() => this.setState({distModalOpen: true})}> Find
+                        Distance </Button>
                 </Col>
             </Row>
         );
-    }
-
-    renderCoordinateMenu() {
-        return (
-            <Row>
-                <Col>
-                    <Modal isOpen={this.state.modal} toggle={this.toggleCoordinateMenu}
-                           className={this.props.className}>
-                        <ModalHeader toggle={this.toggleCoordinateMenu}> Distance Between Coordinates </ModalHeader>
-                        <ModalBody>
-                            {this.renderCoordinateInputs()}
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button className="mr-4" color='primary' onClick={this.toggleCoordinateMenu}> Cancel </Button>
-                            <Button color='primary' onClick={this.submitDistanceRequest}> Enter </Button>
-                        </ModalFooter>
-                    </Modal>
-                </Col>
-            </Row>
-        );
-    }
-
-    renderCoordinateInputs() {
-        return (
-            <div>
-                <Row className="ml-2 mr-2 mt-3 mb-4">
-                    <Col>
-                        <InputGroup>
-                            <InputGroupAddon addonType="prepend">Point 1</InputGroupAddon>
-                            <Input placeholder="0.0, 0.0"
-                                   onChange={(e) => () => this.setState({input1: e.target.value})}
-                                   value={this.state.input1}/>
-                        </InputGroup>
-                    </Col>
-                </Row>
-                <Row className="ml-2 mr-2 mb-3">
-                    <Col>
-                        <InputGroup>
-                            <InputGroupAddon addonType="prepend">Point 2</InputGroupAddon>
-                            <Input placeholder="0.0, 0.0"
-                                   onChange={(e) => () => this.setState({input2: e.target.value})}
-                                   value={this.state.input2}/>
-                        </InputGroup>
-                    </Col>
-                </Row>
-            </div>
-        );
-    }
-
-    toggleCoordinateMenu() {
-        this.setState({modal: !this.state.modal});
     }
 
     setMarker(mapClickInfo) {
         if (!this.state.markerPosition) {
             this.setState({
                 markerPosition: mapClickInfo.latlng,
-                mapCenter: mapClickInfo.latlng
+                mapCenter: mapClickInfo.latlng,
+                distanceLabel: null
             });
         } else if (!this.state.secondMarkerPosition) {
             this.setState({
                 secondMarkerPosition: mapClickInfo.latlng,
-                mapCenter: mapClickInfo.latlng
+                mapCenter: mapClickInfo.latlng,
+                distanceLabel: null
             });
         } else {
             this.setState({
                 markerPosition: this.state.secondMarkerPosition,
                 secondMarkerPosition: mapClickInfo.latlng,
-                mapCenter: mapClickInfo.latlng
+                mapCenter: mapClickInfo.latlng,
+                distanceLabel: null
             });
-        }
-        if (this.state.markerPosition && this.state.secondMarkerPosition){
-            this.requestDistanceFromServer();
         }
     }
 
@@ -275,76 +224,18 @@ export default class Atlas extends Component {
         }
     }
 
-    isValidPosition(position) {
-        let isValid;
-        try {
-            isValid = true;
-            new Coordinates(position);
-            return isValid;
-        } catch (error) {
-            isValid = false;
-            return isValid;
-        }
-    };
-
-    updateInput1() {
-        if (this.isValidPosition(this.state.input1)) {
-            const position1 = new Coordinates(this.state.input1);
-            const coord1 = {lat: position1.getLatitude(), lng: position1.getLongitude()};
-
-            this.setState({markerPosition: coord1});
-        } else {
-            this.setState({markerPosition: {lat: 10, lng: -35}});
-        }
-
-    }
-
-    updateInput2() {
-        if (this.isValidPosition(this.state.input2)) {
-            const position2 = new Coordinates(this.state.input2);
-            const coord2 = {lat: position2.getLatitude(), lng: position2.getLongitude()};
-
-            this.setState({secondMarkerPosition: coord2});
-        } else {
-            this.setState({secondMarkerPosition: {lat: -10, lng: 36}});
-        }
-
-    }
-
-    submitDistanceRequest() {
-        this.updateInput1();
-        this.updateInput2();
-
-        this.requestDistanceFromServer();
-    }
-
-    requestDistanceFromServer() {
-        let place1Pos = {latitude: this.state.markerPosition["lat"].toString(), longitude: this.state.markerPosition["lng"].toString()};
-        let place2Pos = {
-            latitude: this.state.secondMarkerPosition["lat"].toString(),
-            longitude: this.state.secondMarkerPosition["lng"].toString()
-        };
-        let distResult = null;
-        sendServerRequest({
-            requestVersion: PROTOCOL_VERSION,
-            requestType: "distance",
-            place1: place1Pos,
-            place2: place2Pos,
-            earthRadius: 3959.0,
-            distance: 0
-        }).then(distance => {
-            if (distance) {
-                if (this.validDistanceResponse(distance.data)) {
-                    this.setState({distanceLabel: distance.data.distance});
-                }
-            } else {
-                this.setState({distanceLabel: null});
-            }
+    processDistanceRequestSuccess(coordinate1, coordinate2, distance) {
+        const c1 = `(${coordinate1["lat"]}, ${coordinate1["lng"]})`;
+        const c2 = `(${coordinate2["lat"]}, ${coordinate2["lng"]})`;
+        LOG.info(`Distance between ${c1} and ${c2} = ${distance}`);
+        this.setState({
+            markerPosition: coordinate1, secondMarkerPosition: coordinate2,
+            distanceLabel: distance, mapCenter: coordinate2
         });
     }
 
-    validDistanceResponse(distance) {
-        return isJsonResponseValid(distance, distanceSchema);
+    processRequestError(message) {
+        LOG.error(message);
+        this.props.createSnackBar(message);
     }
-
 }
