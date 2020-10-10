@@ -91,6 +91,7 @@ function testPolyLineRender() {
 
     simulateOnClickEvent(atlasWrapper, {latlng: firstClick});
     simulateOnClickEvent(atlasWrapper, {latlng: secondClick});
+    atlasWrapper.instance().processDistanceRequestSuccess(firstClick, secondClick, 0);
 
     expect(atlasWrapper.containsMatchingElement(<Polyline />)).toEqual(true);
 
