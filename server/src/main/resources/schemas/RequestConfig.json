@@ -19,4 +19,3 @@
   "required":["requestVersion","requestType"],
   "additionalProperties": true
 }
-
