@@ -24,7 +24,9 @@ export default class ServerSettings extends Component {
         return (
             <div>
                 <Modal isOpen={this.props.isOpen} toggle={() => this.props.toggleOpen()}>
-                    <ModalHeader toggle={() => this.props.toggleOpen()}>Server Connection</ModalHeader>
+                    <ModalHeader className="mt-1" toggle={() => this.props.toggleOpen()}>
+                        <span className="ml-4">Server Connection</span>
+                    </ModalHeader>
                     {this.renderSettings(this.getCurrentServerName())}
                     {this.renderActions()}
                 </Modal>
