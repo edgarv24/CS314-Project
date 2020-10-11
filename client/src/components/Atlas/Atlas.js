@@ -10,6 +10,7 @@ import 'leaflet/dist/leaflet.css';
 import DistanceModal from "./DistanceModal";
 
 import {LOG} from "../../utils/constants"
+import FindModal from "./FindModal";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -40,6 +41,7 @@ export default class Atlas extends Component {
             secondMarkerPosition: null,
             mapCenter: MAP_CENTER_DEFAULT,
             distModalOpen: false,
+            findModalOpen: false,
             distanceLabel: null
         };
     }
@@ -93,6 +95,7 @@ export default class Atlas extends Component {
                     </Row>
                     {this.renderButtons()}
                     {this.state.distModalOpen && this.renderDistanceModal()}
+                    {this.state.findModalOpen && this.renderFindModal()}
                 </Container>
             </div>
         );
@@ -109,6 +112,15 @@ export default class Atlas extends Component {
                 processDistanceRequestSuccess={this.processDistanceRequestSuccess}
                 input1={pos1 ? `${pos1["lat"]}, ${pos1["lng"]}` : ""}
                 input2={pos2 ? `${pos2["lat"]}, ${pos2["lng"]}` : ""}
+            />
+        );
+    }
+
+    renderFindModal() {
+        return (
+            <FindModal
+                isOpen={this.state.findModalOpen}
+                toggleOpen={(isOpen = !this.state.findModalOpen) => this.setState({findModalOpen: isOpen})}
             />
         );
     }
@@ -138,14 +150,18 @@ export default class Atlas extends Component {
     renderButtons() {
         return (
             <Row className="text-center">
-                <Col className="my-3" xs={{size: 5, offset: 1}}>
+                <Col className="my-3" xs={{size: 3, offset: 2}}>
                     <Button color="primary" onClick={this.setMapToHome}>
                         Where am I?
                     </Button>{' '}
                 </Col>
-                <Col className="my-3" xs={{size: 5, offset: 0}}>
+                <Col className="my-3" xs={{size: 2, offset: 0}}>
                     <Button color="primary" onClick={() => this.setState({distModalOpen: true})}> Find
                         Distance </Button>
+                </Col>
+                <Col className="my-3" xs={{size: 3, offset: 0}}>
+                    <Button color="primary" onClick={() => this.setState({findModalOpen: true})}> Find
+                        Places </Button>
                 </Col>
             </Row>
         );
