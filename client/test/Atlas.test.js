@@ -52,8 +52,8 @@ function testWhereAmIButtonNoGeolocation() {
 
     expect(actualMarkerPosition).toEqual(expectedMarkerPosition);
 
-    let latlng = {lat: 0, lng: 0};
-    simulateOnClickEvent(atlasWrapper, {latlng: latlng});
+    simulateOnClickEvent(atlasWrapper, {latlng: {lat: 0, lng: 0}});
+    simulateOnClickEvent(atlasWrapper, {latlng: {lat: 1, lng: 1}});
     atlas.setMapToHome();
 
     let home = atlas.getHomePosition();

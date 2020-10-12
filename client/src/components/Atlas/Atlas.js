@@ -233,8 +233,8 @@ export default class Atlas extends Component {
     }
 
     setMapToHome() {
-        if (this.state.secondMarkerPosition !== this.state.userPosition) {
-            let homePos = this.getHomePosition();
+        let homePos = this.getHomePosition();
+        if (this.state.secondMarkerPosition !== homePos) {
             this.setState({
                 markerPosition: this.state.secondMarkerPosition,
                 secondMarkerPosition: homePos,
