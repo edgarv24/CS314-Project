@@ -40,7 +40,7 @@ export default class DistanceModal extends Component {
                             {this.renderInputBox()}
                         </div>
                     </ModalBody>
-                    {this.renderSearchButton()}
+                    {this.renderCancelButton()}
                 </Modal>
             </div>
         );
@@ -53,7 +53,8 @@ export default class DistanceModal extends Component {
                     <InputGroup>
                         <InputGroupAddon addonType="prepend">{`Name`}</InputGroupAddon>
                         <Input placeholder="Enter place"
-                               onChange={ e => this.setState({inputText: e.target.value}) }
+                               onChange={ e => {this.setState({inputText: e.target.value})
+                               this.requestFindFromServer(e.target.value)} }
                                value={this.state.inputText || ""}
                         />
                     </InputGroup>
@@ -62,13 +63,14 @@ export default class DistanceModal extends Component {
         );
     }
 
-    renderSearchButton() {
+    renderCancelButton() {
         return (
             <ModalFooter>
-                <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
-                <Button color='primary' onClick={this.requestFindFromServer(this.state.inputText)}
+                <Button className="mr-2"
+                        color='primary'
+                        onClick={() => this.resetModalState()}
                 >
-                    Submit
+                    Cancel
                 </Button>
             </ModalFooter>
         );
