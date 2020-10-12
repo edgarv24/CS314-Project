@@ -247,7 +247,7 @@ export default class Atlas extends Component {
                 markerPosition: this.state.secondMarkerPosition,
                 secondMarkerPosition: homePos,
                 mapCenter: homePos,
-                mapBounds: new L.latLngBounds([homePos]),
+                mapBounds: null,
                 zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM,
                 distanceLabel: null
             });
