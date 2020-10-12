@@ -24,6 +24,7 @@ const MAP_LAYER_ATTRIBUTION = "&copy; <a href=&quot;http://osm.org/copyright&quo
 const MAP_LAYER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const MAP_MIN_ZOOM = 1;
 const MAP_MAX_ZOOM = 19;
+const MAP_DEFAULT_ZOOM = 15;
 
 export default class Atlas extends Component {
 
@@ -43,7 +44,7 @@ export default class Atlas extends Component {
             secondMarkerPosition: null,
             mapCenter: MAP_CENTER_DEFAULT,
             mapBounds: null,
-            zoomLevel: 12,
+            zoomLevel: MAP_DEFAULT_ZOOM,
             distModalOpen: false,
             findModalOpen: false,
             distanceLabel: null
@@ -87,7 +88,7 @@ export default class Atlas extends Component {
                     userPosition: homePosition,
                     markerPosition: homePosition,
                     mapCenter: homePosition,
-                    mapBounds: new L.latLngBounds([homePosition])
+                    mapBounds: null
                 })
             });
         }
@@ -195,7 +196,7 @@ export default class Atlas extends Component {
             secondMarkerPosition: newMarkerPosition2,
             mapCenter: mapClickInfo.latlng,
             mapBounds: this.getMapBounds(newMarkerPosition, newMarkerPosition2),
-            zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : 15,
+            zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM,
             distanceLabel: null
         });
     }
@@ -233,7 +234,7 @@ export default class Atlas extends Component {
                 <Polyline ref={initMarker} color={'red'} positions={
                     [[this.state.markerPosition.lat, this.state.markerPosition.lng],
                         [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
-                    <Popup className="font-weight-bold">Distance: {this.state.distanceLabel} miles</Popup>
+                    <Popup className="font-weight-bold">Distance: {this.getDistanceLabelText()}</Popup>
                 </Polyline>
             );
         }
@@ -247,7 +248,7 @@ export default class Atlas extends Component {
                 secondMarkerPosition: homePos,
                 mapCenter: homePos,
                 mapBounds: new L.latLngBounds([homePos]),
-                zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : 15,
+                zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM,
                 distanceLabel: null
             });
         }
@@ -279,7 +280,7 @@ export default class Atlas extends Component {
             distanceLabel: distance,
             mapCenter: (this.mapRef.current) ? this.mapRef.current.leafletElement.getCenter() : MAP_CENTER_DEFAULT,
             mapBounds: this.getMapBounds(coordinate1, coordinate2),
-            zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : 15
+            zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM
         });
     }
 
