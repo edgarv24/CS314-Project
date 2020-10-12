@@ -222,11 +222,18 @@ export default class Atlas extends Component {
     }
 
     renderPolyline() {
+        const initMarker = ref => {
+            if (ref) {
+                ref.leafletElement.openPopup()
+            }
+        };
+
         if (this.state.markerPosition && this.state.secondMarkerPosition) {
             return (
-                <Polyline color={'red'} positions={
+                <Polyline ref={initMarker} color={'red'} positions={
                     [[this.state.markerPosition.lat, this.state.markerPosition.lng],
                         [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
+                    <Popup className="font-weight-bold">Distance: {this.state.distanceLabel} miles</Popup>
                 </Polyline>
             );
         }
