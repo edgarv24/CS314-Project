@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
 import {Button, Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 
 import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
@@ -29,6 +29,8 @@ export default class Atlas extends Component {
 
     constructor(props) {
         super(props);
+        this.mapRef = createRef();
+
         this.setMarker = this.setMarker.bind(this);
         this.setMapToHome = this.setMapToHome.bind(this);
         this.getHomePosition = this.getHomePosition.bind(this);
@@ -40,6 +42,8 @@ export default class Atlas extends Component {
             markerPosition: null,
             secondMarkerPosition: null,
             mapCenter: MAP_CENTER_DEFAULT,
+            mapBounds: null,
+            zoomLevel: 12,
             distModalOpen: false,
             findModalOpen: false,
             distanceLabel: null
@@ -50,15 +54,19 @@ export default class Atlas extends Component {
         return (
             <Map
                 className={'mapStyle'}
+                ref={this.mapRef}
                 boxZoom={false}
                 useFlyTo={true}
-                zoom={15}
-                minZoom={MAP_MIN_ZOOM}
-                maxZoom={MAP_MAX_ZOOM}
-                maxBounds={MAP_BOUNDS}
+                bounds={this.state.mapBounds}
+                boundsOptions={{padding: [180, 180], maxZoom: 15}}
                 viewport={{
                     center: this.state.mapCenter
                 }}
+                zoom={this.state.zoomLevel}
+                minZoom={MAP_MIN_ZOOM}
+                maxZoom={MAP_MAX_ZOOM}
+                maxBounds={MAP_BOUNDS}
+
                 onClick={this.setMarker}
             >
                 <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
@@ -74,10 +82,12 @@ export default class Atlas extends Component {
         // request user location once after first render
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
+                const homePosition = {lat: position.coords.latitude, lng: position.coords.longitude};
                 this.setState({
-                    userPosition: {lat: position.coords.latitude, lng: position.coords.longitude},
-                    markerPosition: {lat: position.coords.latitude, lng: position.coords.longitude},
-                    mapCenter: {lat: position.coords.latitude, lng: position.coords.longitude}
+                    userPosition: homePosition,
+                    markerPosition: homePosition,
+                    mapCenter: homePosition,
+                    mapBounds: new L.latLngBounds([homePosition])
                 })
             });
         }
@@ -168,26 +178,26 @@ export default class Atlas extends Component {
     }
 
     setMarker(mapClickInfo) {
+        let newMarkerPosition = this.state.markerPosition;
+        let newMarkerPosition2 = this.state.secondMarkerPosition;
+
         if (!this.state.markerPosition) {
-            this.setState({
-                markerPosition: mapClickInfo.latlng,
-                mapCenter: mapClickInfo.latlng,
-                distanceLabel: null
-            });
+            newMarkerPosition = mapClickInfo.latlng;
         } else if (!this.state.secondMarkerPosition) {
-            this.setState({
-                secondMarkerPosition: mapClickInfo.latlng,
-                mapCenter: mapClickInfo.latlng,
-                distanceLabel: null
-            });
+            newMarkerPosition2 = mapClickInfo.latlng;
         } else {
-            this.setState({
-                markerPosition: this.state.secondMarkerPosition,
-                secondMarkerPosition: mapClickInfo.latlng,
-                mapCenter: mapClickInfo.latlng,
-                distanceLabel: null
-            });
+            newMarkerPosition = this.state.secondMarkerPosition;
+            newMarkerPosition2 = mapClickInfo.latlng;
         }
+
+        this.setState({
+            markerPosition: newMarkerPosition,
+            secondMarkerPosition: newMarkerPosition2,
+            mapCenter: mapClickInfo.latlng,
+            mapBounds: this.getMapBounds(newMarkerPosition, newMarkerPosition2),
+            zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : 15,
+            distanceLabel: null
+        });
     }
 
     getMarker(position, iconStyle, usePopup) {
@@ -211,20 +221,6 @@ export default class Atlas extends Component {
         return position.lat.toFixed(2) + ', ' + position.lng.toFixed(2);
     }
 
-    setMapToHome() {
-        let homePos = this.getHomePosition();
-        this.setState({
-            secondMarkerPosition: {lat: homePos["lat"], lng: homePos["lng"]},
-            mapCenter: {lat: homePos["lat"], lng: homePos["lng"]}
-        });
-    }
-
-    getHomePosition() {
-        if (this.state.userPosition)
-            return this.state.userPosition;
-        return MAP_CENTER_DEFAULT;
-    }
-
     renderPolyline() {
         if (this.state.markerPosition && this.state.secondMarkerPosition) {
             return (
@@ -236,13 +232,47 @@ export default class Atlas extends Component {
         }
     }
 
+    setMapToHome() {
+        if (this.state.secondMarkerPosition !== this.state.userPosition) {
+            let homePos = this.getHomePosition();
+            this.setState({
+                markerPosition: this.state.secondMarkerPosition,
+                secondMarkerPosition: homePos,
+                mapCenter: homePos,
+                mapBounds: new L.latLngBounds([homePos]),
+                zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : 15,
+                distanceLabel: null
+            });
+        }
+    }
+
+    getHomePosition() {
+        if (this.state.userPosition)
+            return this.state.userPosition;
+        return MAP_CENTER_DEFAULT;
+    }
+
+    getMapBounds(markerLatLng1, markerLatLng2) {
+        let latLongArray;
+        if (markerLatLng1 && markerLatLng2)
+            latLongArray = [markerLatLng1, markerLatLng2];
+        else if (markerLatLng1)
+            latLongArray = [markerLatLng1];
+        else
+            latLongArray = [MAP_CENTER_DEFAULT];
+        return new L.latLngBounds(latLongArray);
+    }
+
     processDistanceRequestSuccess(coordinate1, coordinate2, distance) {
         const c1 = `(${coordinate1["lat"]}, ${coordinate1["lng"]})`;
         const c2 = `(${coordinate2["lat"]}, ${coordinate2["lng"]})`;
         LOG.info(`Distance between ${c1} and ${c2} = ${distance}`);
         this.setState({
             markerPosition: coordinate1, secondMarkerPosition: coordinate2,
-            distanceLabel: distance, mapCenter: coordinate2
+            distanceLabel: distance,
+            mapCenter: (this.mapRef.current) ? this.mapRef.current.leafletElement.getCenter() : MAP_CENTER_DEFAULT,
+            mapBounds: this.getMapBounds(coordinate1, coordinate2),
+            zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : 15
         });
     }
 
