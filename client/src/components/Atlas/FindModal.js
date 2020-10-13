@@ -10,6 +10,8 @@ import {
     ModalFooter,
     ModalHeader,
     Row,
+    ListGroup,
+    ListGroupItem
 } from 'reactstrap';
 
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
@@ -24,7 +26,8 @@ export default class DistanceModal extends Component {
 
         this.state = {
             places: null,
-            inputText: null
+            inputText: null,
+            listToggle: false
         };
     }
 
@@ -38,6 +41,8 @@ export default class DistanceModal extends Component {
                     <ModalBody>
                         <div>
                             {this.renderInputBox()}
+                            {this.requestFindFromServer(this.state.inputText)}
+                            {this.renderList()}
                         </div>
                     </ModalBody>
                     {this.renderSearchButton()}
@@ -62,14 +67,27 @@ export default class DistanceModal extends Component {
         );
     }
 
+    renderList(){
+        if(this.state.listToggle) {
+            return (
+                <ListGroup>
+                    {this.listPlacesItems()}
+                </ListGroup>
+            )
+        }
+    }
+
+    listPlacesItems(){
+        const listItems = this.state.places.map((d) => <li key={d.name}>{d.name}</li>);
+            return(
+                <ListGroupItem> {listItems} </ListGroupItem>
+            );
+    }
+
     renderSearchButton() {
         return (
             <ModalFooter>
                 <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
-                <Button color='primary' onClick={this.requestFindFromServer(this.state.inputText)}
-                >
-                    Submit
-                </Button>
             </ModalFooter>
         );
     }
@@ -104,7 +122,7 @@ export default class DistanceModal extends Component {
     processFindResponse(responseJSON) {
         const responseBody = responseJSON.data;
         if (isJsonResponseValid(responseBody, findSchema)) {
-            this.setState({places: responseBody.places});
+            this.setState({places: responseBody.places, listToggle: true});
         } else {
             this.setState({places: null});
         }
