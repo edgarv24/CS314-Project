@@ -9,15 +9,17 @@ import {
     ModalBody,
     ModalFooter,
     ModalHeader,
-    Row,
-    ListGroup,
-    ListGroupItem
+    Row
 } from 'reactstrap';
 
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as findSchema from "../../../schemas/FindResponse.json";
 
 import {PROTOCOL_VERSION} from "../../utils/constants";
+
+import Scrollbar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import ListItem from "@material-ui/core/ListItem";
 
 export default class DistanceModal extends Component {
 
@@ -27,7 +29,8 @@ export default class DistanceModal extends Component {
         this.state = {
             places: null,
             inputText: null,
-            listToggle: false
+            listToggle: false,
+            locateToggle: false
         };
     }
 
@@ -45,7 +48,7 @@ export default class DistanceModal extends Component {
                             {this.renderList()}
                         </div>
                     </ModalBody>
-                    {this.renderSearchButton()}
+                    {this.renderCancelButton()}
                 </Modal>
             </div>
         );
@@ -70,21 +73,21 @@ export default class DistanceModal extends Component {
     renderList(){
         if(this.state.listToggle) {
             return (
-                <ListGroup>
+                <Scrollbar>
                     {this.listPlacesItems()}
-                </ListGroup>
+                </Scrollbar>
             )
         }
     }
 
     listPlacesItems(){
-        const listItems = this.state.places.map((d) => <li key={d.name}>{d.name}</li>);
-            return(
-                <ListGroupItem> {listItems} </ListGroupItem>
-            );
+        const listItems = this.state.places.map(item => <ListItem>{item.name}</ListItem>);
+        return (
+            <ListItem> {listItems} </ListItem>
+        );
     }
 
-    renderSearchButton() {
+    renderCancelButton() {
         return (
             <ModalFooter>
                 <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
@@ -122,7 +125,7 @@ export default class DistanceModal extends Component {
     processFindResponse(responseJSON) {
         const responseBody = responseJSON.data;
         if (isJsonResponseValid(responseBody, findSchema)) {
-            this.setState({places: responseBody.places, listToggle: true});
+            this.setState({places: responseBody.places, listToggle: true, locateToggle: true});
         } else {
             this.setState({places: null});
         }
