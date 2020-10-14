@@ -43,7 +43,6 @@ export default class FindModal extends Component {
                     <ModalBody >
                         <div>
                             {this.renderInputBox()}
-                            {this.requestFindFromServer(this.state.inputText)}
                         </div>
                     </ModalBody>
                     <ModalBody style={{'maxHeight': '30vh', 'overflowY': 'auto'}}>
@@ -64,7 +63,8 @@ export default class FindModal extends Component {
                     <InputGroup>
                         <InputGroupAddon addonType="prepend">{`Name`}</InputGroupAddon>
                         <Input placeholder="Enter place"
-                               onChange={ e => this.setState({inputText: e.target.value}) }
+                               onChange={ e => {this.setState({inputText: e.target.value})
+                               this.requestFindFromServer(e.target.value)} }
                                value={this.state.inputText || ""}
                         />
                     </InputGroup>
