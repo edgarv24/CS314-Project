@@ -54,3 +54,7 @@ The checklist will be updated as we identify new faults in our code that we wish
 * Can the readability of the code be improved by smaller methods?
 * Do you think certain methods should be restructured to have more intuitive control flow?
 
+### Usability faults
+* Are UI components intuitive to use and accessible?
+* Does the API follow the protocol standard?
+* Are passed in attributes kept unmodified during server requests?
