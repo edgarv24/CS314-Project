@@ -37,3 +37,9 @@ The checklist will be updated as we identify new faults in our code that we wish
 
 ### Exception faults
 * Have all possible error conditions been considered?
+
+## Uasability and Accessibility
+* Is the solution well desgined from a uasbility perspective?
+* Is the API well documented?
+* Is the proposed solution (UI) accessible?
+* Is the API/UI intuitive to use?
