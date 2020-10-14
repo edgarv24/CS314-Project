@@ -129,6 +129,7 @@ export default class Atlas extends Component {
 
     renderFindModal() {
         return (
+
             <FindModal
                 isOpen={this.state.findModalOpen}
                 toggleOpen={(isOpen = !this.state.findModalOpen) => this.setState({findModalOpen: isOpen})}
