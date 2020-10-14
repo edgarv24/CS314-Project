@@ -17,14 +17,19 @@ import * as findSchema from "../../../schemas/FindResponse.json";
 
 import {PROTOCOL_VERSION} from "../../utils/constants";
 
-export default class DistanceModal extends Component {
+
+import ListItem from "@material-ui/core/ListItem";
+
+export default class FindModal extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             places: null,
-            inputText: null
+            inputText: null,
+            listToggle: false,
+            locateToggle: false
         };
     }
 
@@ -35,9 +40,15 @@ export default class DistanceModal extends Component {
                     <ModalHeader className="mt-1" toggle={() => this.props.toggleOpen()}>
                         <span className="ml-4">Find Places</span>
                     </ModalHeader>
-                    <ModalBody>
+                    <ModalBody >
                         <div>
                             {this.renderInputBox()}
+                            {this.requestFindFromServer(this.state.inputText)}
+                        </div>
+                    </ModalBody>
+                    <ModalBody style={{'maxHeight': '30vh', 'overflowY': 'auto'}}>
+                        <div>
+                            {this.renderList()}
                         </div>
                     </ModalBody>
                     {this.renderCancelButton()}
@@ -63,15 +74,19 @@ export default class DistanceModal extends Component {
         );
     }
 
+    renderList(){
+        if(this.state.listToggle) {
+            const listItems = this.state.places.map(item => <ListItem key={item.name}>{item.name}</ListItem>);
+            return (
+                listItems
+            )
+        }
+    }
+
     renderCancelButton() {
         return (
             <ModalFooter>
-                <Button className="mr-2"
-                        color='primary'
-                        onClick={() => this.resetModalState()}
-                >
-                    Cancel
-                </Button>
+                <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
             </ModalFooter>
         );
     }
@@ -106,7 +121,7 @@ export default class DistanceModal extends Component {
     processFindResponse(responseJSON) {
         const responseBody = responseJSON.data;
         if (isJsonResponseValid(responseBody, findSchema)) {
-            this.setState({places: responseBody.places});
+            this.setState({places: responseBody.places, listToggle: true, locateToggle: true});
         } else {
             this.setState({places: null});
         }

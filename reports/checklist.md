@@ -37,3 +37,9 @@ The checklist will be updated as we identify new faults in our code that we wish
 
 ### Exception faults
 * Have all possible error conditions been considered?
+
+### Readability
+* Was the code easy to understand?
+* Which parts were confusing to you and why?
+* Can the readability of the code be improved by smaller methods?
+* Do you think certain methods should be restructured to have more intuitive control flow?
