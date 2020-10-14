@@ -9,8 +9,7 @@ The checklist will be updated as we identify new faults in our code that we wish
 * Are all program variables initialized before their values are used?
 * Have all constants been named?
 * Should the upper bound of arrays be equal to the size of the array or size-1?
-* If character strings are used, is a delimiter explicitly assigned?
-* Is there any possibility of a buffer overflow?
+* Are all cases handled where a null value may lead to errors (bad index/ null reference)?
 
 ### Control faults
 * For each conditional statement, is the condition correct?
@@ -31,9 +30,23 @@ The checklist will be updated as we identify new faults in our code that we wish
 * Do all components use a consistent model for shared memory structure?
 
 ### Storage faults
-* If a linked structure is modified, have all links been correctly diagnosed?
-* If dynamic storage is used, has space been allocated correctly?
-* Is space explicitly deallocated after it is no longer required?
+* If an object is used, has it been allocated and initialized correctly?
 
 ### Exception faults
 * Have all possible error conditions been considered?
+* Are exceptions caught or thrown by the calling method or object (if needed)?
+
+### Import faults
+* Are all imports used somewhere in the file?
+* Are new dependencies listed in package.json?
+
+### Test faults
+* Do tests actually test what they are supposed to?
+* Is there an associated test for all key methods in a class?
+
+### Readability
+* Are related variables grouped together?
+* Do functions follow the single responsibility principle (only do one thing)?
+* Are there any unnecessary comments or commented-out code?
+* Do variables, methods, and classes follow proper naming conventions?
+* Are long conditional statements simplified into named variables?
