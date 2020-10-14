@@ -21,21 +21,21 @@ public class TestRequestTrip {
     options.put("earthRadius", "3959.0");
 
     places = new ArrayList<>();
-    Map<String, String> placesEntry1 =
-        Map.of(
-            "name", "Denver",
-            "latitude", "39.7",
-            "longitude", "-105.0");
-    Map<String, String> placesEntry2 =
-        Map.of(
-            "name", "Boulder",
-            "latitude", "40.0",
-            "longitude", "-105.4");
-    Map<String, String> placesEntry3 =
-        Map.of(
-            "name", "Fort Collins",
-            "latitude", "40.6",
-            "longitude", "-105.1");
+    Map<String, String> placesEntry1 = new HashMap<>();
+    placesEntry1.put("name", "Denver");
+    placesEntry1.put("latitude", "39.7");
+    placesEntry1.put("longitude", "-105.0");
+
+    Map<String, String> placesEntry2 = new HashMap<>();
+    placesEntry2.put("name", "Boulder");
+    placesEntry2.put("latitude", "40.0");
+    placesEntry2.put("longitude", "-105.4");
+
+    Map<String, String> placesEntry3 = new HashMap<>();
+    placesEntry3.put("name", "Fort Collins");
+    placesEntry3.put("latitude", "40.6");
+    placesEntry3.put("longitude", "-105.1");
+
     places.add(placesEntry1);
     places.add(placesEntry2);
     places.add(placesEntry3);
@@ -56,6 +56,7 @@ public class TestRequestTrip {
     int version = requestTrip.getRequestVersion();
     assertEquals(3, version);
   }
+
   @Test
   @DisplayName("Testing constructor")
   public void testConstructor() {
@@ -77,11 +78,11 @@ public class TestRequestTrip {
   public void testSameLocations() {
     places.remove(2);
     places.remove(1);
-    Map<String, String> denver = Map.of(
-            "name", "Denver",
-            "latitude", "39.7",
-            "longitude", "-105.0"
-    );
+    Map<String, String> denver = new HashMap<>();
+    denver.put("name", "Denver");
+    denver.put("latitude", "39.7");
+    denver.put("longitude", "-105.0");
+
     places.add(denver);
     requestTrip = new RequestTrip(options, places);
     requestTrip.buildResponse();

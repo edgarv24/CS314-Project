@@ -17,9 +17,10 @@ import * as findSchema from "../../../schemas/FindResponse.json";
 
 import {PROTOCOL_VERSION} from "../../utils/constants";
 
+
 import ListItem from "@material-ui/core/ListItem";
 
-export default class DistanceModal extends Component {
+export default class FindModal extends Component {
 
     constructor(props) {
         super(props);
