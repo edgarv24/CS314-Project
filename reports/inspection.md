@@ -4,7 +4,7 @@
 | ----- | ----- |
 | Subject | *file and methods/line range to review for meeting* |
 | Meeting | *date, time, location* |
-| Checklist | https://github.com/csucs314f20/t14/blob/master/reports/checklist.md |
+| Checklist | [checklist.md](https://github.com/csucs314f20/t14/blob/master/reports/checklist.md) |
 
 ### Roles
 
