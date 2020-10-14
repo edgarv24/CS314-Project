@@ -43,7 +43,6 @@ export default class FindModal extends Component {
                     <ModalBody >
                         <div>
                             {this.renderInputBox()}
-                            {this.requestFindFromServer(this.state.inputText)}
                         </div>
                     </ModalBody>
                     <ModalBody style={{'maxHeight': '30vh', 'overflowY': 'auto'}}>
