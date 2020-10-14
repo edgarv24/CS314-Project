@@ -9,7 +9,7 @@ import {
     ModalBody,
     ModalFooter,
     ModalHeader,
-    Row
+    Row,
 } from 'reactstrap';
 
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
@@ -17,8 +17,6 @@ import * as findSchema from "../../../schemas/FindResponse.json";
 
 import {PROTOCOL_VERSION} from "../../utils/constants";
 
-import Scrollbar from 'react-perfect-scrollbar';
-import 'react-perfect-scrollbar/dist/css/styles.css';
 import ListItem from "@material-ui/core/ListItem";
 
 export default class DistanceModal extends Component {
@@ -41,10 +39,14 @@ export default class DistanceModal extends Component {
                     <ModalHeader className="mt-1" toggle={() => this.props.toggleOpen()}>
                         <span className="ml-4">Find Places</span>
                     </ModalHeader>
-                    <ModalBody>
+                    <ModalBody >
                         <div>
                             {this.renderInputBox()}
                             {this.requestFindFromServer(this.state.inputText)}
+                        </div>
+                    </ModalBody>
+                    <ModalBody style={{'maxHeight': '30vh', 'overflowY': 'auto'}}>
+                        <div>
                             {this.renderList()}
                         </div>
                     </ModalBody>
@@ -72,19 +74,11 @@ export default class DistanceModal extends Component {
 
     renderList(){
         if(this.state.listToggle) {
+            const listItems = this.state.places.map(item => <ListItem key={item.name}>{item.name}</ListItem>);
             return (
-                <Scrollbar>
-                    {this.listPlacesItems()}
-                </Scrollbar>
+                listItems
             )
         }
-    }
-
-    listPlacesItems(){
-        const listItems = this.state.places.map(item => <ListItem>{item.name}</ListItem>);
-        return (
-            <ListItem> {listItems} </ListItem>
-        );
     }
 
     renderCancelButton() {
