@@ -52,8 +52,8 @@ function testWhereAmIButtonNoGeolocation() {
 
     expect(actualMarkerPosition).toEqual(expectedMarkerPosition);
 
-    let latlng = {lat: 0, lng: 0};
-    simulateOnClickEvent(atlasWrapper, {latlng: latlng});
+    simulateOnClickEvent(atlasWrapper, {latlng: {lat: 0, lng: 0}});
+    simulateOnClickEvent(atlasWrapper, {latlng: {lat: 1, lng: 1}});
     atlas.setMapToHome();
 
     let home = atlas.getHomePosition();
@@ -93,7 +93,7 @@ function testPolyLineRender() {
     simulateOnClickEvent(atlasWrapper, {latlng: secondClick});
     atlasWrapper.instance().processDistanceRequestSuccess(firstClick, secondClick, 0);
 
-    expect(atlasWrapper.containsMatchingElement(<Polyline />)).toEqual(true);
+    expect(atlasWrapper.find(Polyline)).toHaveLength(1);
 
     let polyline = atlasWrapper.find(Polyline);
 
