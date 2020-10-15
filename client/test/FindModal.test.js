@@ -36,9 +36,9 @@ test("Testing FindModal's Initial State", testInitialFindModalState);
 
 function testInputBox() {
     const findModal = shallow(<FindModal/>);
-    const event = {target: {name: "value", value: "Denver"}};
-    const input = findModal.find('input');
-    input.simulate('change', event);
+    const event = {target: {value: "Denver"}};
+    const input = findModal.find("Input");
+    input.simulate("change", event);
     expect(findModal.state().inputText).toEqual('Denver');
 }
 
