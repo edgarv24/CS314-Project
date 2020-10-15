@@ -33,7 +33,6 @@ function testMarkerIsRenderedOnClick() {
     simulateOnClickEvent(atlas, {latlng: latlng});
 
     expect(atlas.state().markerPosition).toEqual(latlng);
-    // expect(atlas.find('Marker')).toEqual(1); ??
 }
 
 test("Testing Marker Rendered on Click", testMarkerIsRenderedOnClick);
