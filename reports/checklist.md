@@ -53,8 +53,18 @@ The checklist will be updated as we identify new faults in our code that we wish
 * Was the code easy to understand?
 * Can the readability of the code be improved by smaller methods?
 * Do you think certain methods should be restructured to have more intuitive control flow?
+* Is the code DRY?
+* Are functions and classes generic?
 
 ### Usability faults
 * Are UI components intuitive to use and accessible?
 * Does the API follow the protocol standard?
 * Are passed in attributes kept unmodified during server requests?
+
+### Maintainability
+* Is code refactored whenever possible?
+* Is code easy to test?
+* Are defects easy to identify and fix?
+* Are configurable values kept in place to avoid code changes?
+* Are values hard-coded?
+
