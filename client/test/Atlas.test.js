@@ -6,6 +6,7 @@ import {shallow} from 'enzyme';
 import Atlas from '../src/components/Atlas/Atlas';
 import {Polyline} from "react-leaflet";
 
+
 const startProperties = {
     createSnackBar: jest.fn()
 };
@@ -33,7 +34,6 @@ function testMarkerIsRenderedOnClick() {
     simulateOnClickEvent(atlas, {latlng: latlng});
 
     expect(atlas.state().markerPosition).toEqual(latlng);
-    // expect(atlas.find('Marker')).toEqual(1); ??
 }
 
 test("Testing Marker Rendered on Click", testMarkerIsRenderedOnClick);

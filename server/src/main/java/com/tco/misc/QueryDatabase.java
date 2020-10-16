@@ -63,7 +63,7 @@ public class QueryDatabase {
   }
 
   public String getCorrectQuery(String placeName, Integer limit) {
-    if (placeName != null) {
+    if (placeName != null ) {
       return "SELECT "
           + COLUMNS
           + " FROM "
