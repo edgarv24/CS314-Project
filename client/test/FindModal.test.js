@@ -2,14 +2,10 @@ import './jestConfig/enzyme.config.js';
 
 import React from 'react';
 import {shallow} from 'enzyme';
+import axios from 'axios';
 
 import FindModal from '../src/components/Atlas/FindModal';
-import Atlas from "../src/components/Atlas/Atlas";
-
-const startProperties = {
-    createSnackBar: jest.fn()
-};
-
+import {jest} from "@jest/globals";
 
 function testInitialFindModalState() {
     const findModal = shallow(<FindModal/>);
@@ -36,10 +32,17 @@ test("Testing FindModal's Initial State", testInitialFindModalState);
 
 function testInputBox() {
     const findModal = shallow(<FindModal/>);
-    const event = {target: {value: "Denver"}};
-    const input = findModal.find("Input");
+    let input = findModal.find("Input");
+    let event = {target: {value: "Denver"}};
+
     input.simulate("change", event);
-    expect(findModal.state().inputText).toEqual('Denver');
+
+    let actualInputText = findModal.state().inputText;
+    let expectedInputText = 'Denver';
+
+    expect(actualInputText).toEqual(expectedInputText);
 }
 
 test("Testing input box", testInputBox);
+
+

@@ -6,6 +6,7 @@ import {shallow} from 'enzyme';
 import Atlas from '../src/components/Atlas/Atlas';
 import {Polyline} from "react-leaflet";
 
+
 const startProperties = {
     createSnackBar: jest.fn()
 };
