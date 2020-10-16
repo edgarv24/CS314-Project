@@ -12,6 +12,7 @@
 | ---- | ---- |
 | Edgar | 12:40 - 13:20 |
 | Darin | 14:00 - 14:50 |
+| Rylie | 15:35 - 16:00 |
 
 ### Problems found
 
@@ -19,6 +20,9 @@
 | --- | --- | :---: | :---: | --- |
 | Atlas:62 | Constant could be used for readability | low | Darin | |
 | Atlas:223 | possible constant needed | low | Edgar |  |
+| Atlas:103 | Create style function for duplicate Col style | low | Rylie | |
+| Atlas:83 | Unecessary comment | low | Rylie | |
+| Atlas:165 | Create style function for Col Button styles| low | Rylie | |
 | Atlas:115 | Distance Modal test needed | med | Edgar | |
 | Atlas:130 | Find Modal test needed | med | Edgar | |
 | Atlas:154 | Distance Label test needed | med | Edgar | |
