@@ -13,6 +13,7 @@
 | Edgar | 12:40 - 13:20 |
 | Darin | 14:00 - 14:50 |
 | Rylie | 15:35 - 16:00 |
+| Mikayla | 16:16 - 17:00 |
 
 ### Problems found
 
@@ -30,3 +31,4 @@
 | Atlas:206 | Possible duplication | med | Edgar | |
 | Atlas:226 | renderPolyline should take 2 latlng arguments | med | Darin | |
 | Atlas:165 | Column adjustment needed for buttons, breaks in mobile format | high | Darin | |
+| Atlas:288 | processRequestError method was never utilized | low | Mikayla | | 
