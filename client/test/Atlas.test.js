@@ -101,3 +101,9 @@ function testPolyLineRender() {
 }
 
 test("Testing Polyline Render", testPolyLineRender);
+
+function testFindModalLocateButton() {
+    const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+
+
+}

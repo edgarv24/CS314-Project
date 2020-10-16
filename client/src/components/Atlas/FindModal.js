@@ -29,7 +29,8 @@ export default class FindModal extends Component {
             places: null,
             inputText: null,
             listToggle: false,
-            locateToggle: false
+            locateToggle: false,
+            selectedPlace: null
         };
     }
 
@@ -50,7 +51,7 @@ export default class FindModal extends Component {
                             {this.renderList()}
                         </div>
                     </ModalBody>
-                    {this.renderButton()}
+                    {this.renderButtons()}
                 </Modal>
             </div>
         );
@@ -75,16 +76,25 @@ export default class FindModal extends Component {
 
     renderList(){
         if(this.state.listToggle) {
-            const listItems = this.state.places.map(item => <ListItem key={item.name}>{item.name}</ListItem>);
+            const listItems = this.state.places.map(item => <ListItem button key={item.name} onClick={() => this.setState({selectedPlace: item.name})}>{item.name}</ListItem>);
             return (
                 listItems
             )
         }
     }
 
-    renderCancelButton() {
+    renderLocateButton(){
+        if (this.state.locateToggle){
+            return(
+              <Button className="mr-2" color='primary'> Locate </Button>
+            );
+        }
+    }
+
+    renderButtons() {
         return (
             <ModalFooter>
+                {this.renderLocateButton()}
                 <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
             </ModalFooter>
         );
