@@ -22,10 +22,14 @@ function testInitialFindModalState() {
     let actualLocateToggle = findModal.state().locateToggle;
     let expectedLocateToggle = false;
 
+    let actualSelectedPlace = findModal.state().selectedPlace;
+    let expectedSelectedPlace = null;
+
     expect(actualPlaces).toEqual(expectedPlaces);
     expect(actualInputText).toEqual(expectedInputText);
     expect(actualListToggle).toEqual(expectedListToggle);
     expect(actualLocateToggle).toEqual(expectedLocateToggle);
+    expect(actualSelectedPlace).toEqual(expectedSelectedPlace);
 }
 
 test("Testing FindModal's Initial State", testInitialFindModalState);
