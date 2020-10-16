@@ -10,7 +10,7 @@
 
 | Name | Preparation Time |
 | ---- | ---- |
-| Edgar | 12:40 -  |
+| Edgar | 12:40 - 1:20|
 |  |  |
 
 ### Problems found
