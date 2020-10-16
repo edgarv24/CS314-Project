@@ -50,7 +50,7 @@ export default class FindModal extends Component {
                             {this.renderList()}
                         </div>
                     </ModalBody>
-                    {this.renderCancelButton()}
+                    {this.renderButton()}
                 </Modal>
             </div>
         );
