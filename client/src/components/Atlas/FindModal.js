@@ -91,7 +91,7 @@ export default class FindModal extends Component {
         }
     }
 
-    renderCancelButton() {
+    renderButtons() {
         return (
             <ModalFooter>
                 {this.renderLocateButton()}
