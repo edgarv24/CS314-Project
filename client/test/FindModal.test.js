@@ -61,4 +61,4 @@ function testListSize() {
     expect(findModal.state().places.length).toEqual(3);
 }
 
-test("Testing input list size after find request", testListSize);
+test("Testing input list size after find requests", testListSize);
