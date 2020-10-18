@@ -51,6 +51,7 @@
     "jest-fetch-mock": "^3.0.3",
     "postcss-loader": "^3.0.0",
     "precss": "^4.0.0",
+    "react-leaflet-control": "^2.1.2",
     "react-window": "^1.8.5",
     "regenerator-runtime": "^0.13.5",
     "sass-loader": "^8.0.2",

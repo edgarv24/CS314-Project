@@ -1,16 +1,24 @@
 import React, {Component, createRef} from 'react';
-import {Button, Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'reactstrap';
+import {Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 
 import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
+import Control from 'react-leaflet-control';
+import 'leaflet/dist/leaflet.css';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-import 'leaflet/dist/leaflet.css';
+import {Paper} from '@material-ui/core';
+import {IconButton, Tooltip, Zoom} from '@material-ui/core';
+import GpsFixedIcon from '@material-ui/icons/GpsFixed';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import LinearScaleIcon from '@material-ui/icons/LinearScale';
+import SearchIcon from '@material-ui/icons/Search';
+
 import DistanceModal from "./DistanceModal";
+import FindModal from "./FindModal";
 
 import {LOG} from "../../utils/constants"
-import FindModal from "./FindModal";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -59,7 +67,7 @@ export default class Atlas extends Component {
                 boxZoom={false}
                 useFlyTo={true}
                 bounds={this.state.mapBounds}
-                boundsOptions={{padding: [180, 180], maxZoom: 15}}
+                boundsOptions={{padding: [100, 100], maxZoom: 15}}
                 viewport={{
                     center: this.state.mapCenter
                 }}
@@ -71,6 +79,19 @@ export default class Atlas extends Component {
                 onClick={this.setMarker}
             >
                 <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
+                <MapButton buttonID="home-button" buttonIcon={<GpsFixedIcon/>} mapPosition="topleft"
+                           tooltipText="Where am I?" tooltipPlacement="right"
+                           onClick={() => this.setMapToHome()}/>
+                <MapButton buttonID="distance-button" buttonIcon={<LinearScaleIcon/>} mapPosition="topleft"
+                           tooltipText="2 Point Distance" tooltipPlacement="right"
+                           onClick={() => this.setState({distModalOpen: true})}/>
+                <MapButton buttonID="find-button" buttonIcon={<SearchIcon/>} mapPosition="topleft"
+                           tooltipText="Find Place by Name" tooltipPlacement="right"
+                           onClick={() => this.setState({findModalOpen: true})}/>
+                <MapButton buttonID="scroll-down-button" buttonIcon={<ArrowDownwardIcon/>} mapPosition="topright"
+                           tooltipText="Itinerary" tooltipPlacement="left"
+                           onClick={() => window.scrollTo({top: document.body.offsetHeight, behavior: 'smooth'})}/>
+
                 {this.getMarker(this.state.markerPosition, MARKER_ICON, true)}
                 {this.getMarker(this.state.secondMarkerPosition, MARKER_ICON, true)}
                 {this.getMarker(this.state.userPosition, DISTINCT_MARKER, false)}
@@ -104,36 +125,10 @@ export default class Atlas extends Component {
                             {this.renderLeafletMap()}
                         </Col>
                     </Row>
-                    {this.renderButtons()}
                     {this.state.distModalOpen && this.renderDistanceModal()}
                     {this.state.findModalOpen && this.renderFindModal()}
                 </Container>
             </div>
-        );
-    }
-
-    renderDistanceModal() {
-        const pos1 = this.state.markerPosition;
-        const pos2 = this.state.secondMarkerPosition;
-
-        return (
-            <DistanceModal
-                isOpen={this.state.distModalOpen}
-                toggleOpen={(isOpen = !this.state.distModalOpen) => this.setState({distModalOpen: isOpen})}
-                processDistanceRequestSuccess={this.processDistanceRequestSuccess}
-                input1={pos1 ? `${pos1["lat"]}, ${pos1["lng"]}` : ""}
-                input2={pos2 ? `${pos2["lat"]}, ${pos2["lng"]}` : ""}
-            />
-        );
-    }
-
-    renderFindModal() {
-        return (
-
-            <FindModal
-                isOpen={this.state.findModalOpen}
-                toggleOpen={(isOpen = !this.state.findModalOpen) => this.setState({findModalOpen: isOpen})}
-            />
         );
     }
 
@@ -159,23 +154,27 @@ export default class Atlas extends Component {
         return `${this.state.distanceLabel} miles`;
     }
 
-    renderButtons() {
+    renderDistanceModal() {
+        const pos1 = this.state.markerPosition;
+        const pos2 = this.state.secondMarkerPosition;
+
         return (
-            <Row className="text-center">
-                <Col className="my-3" xs={{size: 3, offset: 2}}>
-                    <Button color="primary" onClick={this.setMapToHome}>
-                        Where am I?
-                    </Button>{' '}
-                </Col>
-                <Col className="my-3" xs={{size: 2, offset: 0}}>
-                    <Button color="primary" onClick={() => this.setState({distModalOpen: true})}> Find
-                        Distance </Button>
-                </Col>
-                <Col className="my-3" xs={{size: 3, offset: 0}}>
-                    <Button color="primary" onClick={() => this.setState({findModalOpen: true})}> Find
-                        Places </Button>
-                </Col>
-            </Row>
+            <DistanceModal
+                isOpen={this.state.distModalOpen}
+                toggleOpen={(isOpen = !this.state.distModalOpen) => this.setState({distModalOpen: isOpen})}
+                processDistanceRequestSuccess={this.processDistanceRequestSuccess}
+                input1={pos1 ? `${pos1["lat"]}, ${pos1["lng"]}` : ""}
+                input2={pos2 ? `${pos2["lat"]}, ${pos2["lng"]}` : ""}
+            />
+        );
+    }
+
+    renderFindModal() {
+        return (
+            <FindModal
+                isOpen={this.state.findModalOpen}
+                toggleOpen={(isOpen = !this.state.findModalOpen) => this.setState({findModalOpen: isOpen})}
+            />
         );
     }
 
@@ -235,7 +234,7 @@ export default class Atlas extends Component {
                 <Polyline ref={initMarker} color={'red'} positions={
                     [[this.state.markerPosition.lat, this.state.markerPosition.lng],
                         [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
-                    <Popup className="font-weight-bold">Distance: {this.getDistanceLabelText()}</Popup>
+                    <Popup offset={[0, -1]} className="font-weight-bold">Distance: {this.getDistanceLabelText()}</Popup>
                 </Polyline>
             );
         }
@@ -289,4 +288,19 @@ export default class Atlas extends Component {
         LOG.error(message);
         this.props.createSnackBar(message);
     }
+}
+
+const MapButton = (props) => {
+    const {buttonID, mapPosition, tooltipText, tooltipPlacement, onClick, buttonIcon} = props;
+    return (
+        <Control position={mapPosition}>
+            <Tooltip title={tooltipText} placement={tooltipPlacement} TransitionComponent={Zoom} arrow>
+                <Paper elevation={4}>
+                    <IconButton id={buttonID} onClick={onClick} size="small" color="inherit">
+                        {buttonIcon}
+                    </IconButton>
+                </Paper>
+            </Tooltip>
+        </Control>
+    );
 }
