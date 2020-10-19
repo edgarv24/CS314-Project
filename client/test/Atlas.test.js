@@ -21,6 +21,15 @@ test("Testing Atlas's Initial State", () => {
     expect(actualMarkerPosition).toEqual(expectedMarkerPosition);
 });
 
+test("Testing initial trip state", () => {
+    const atlas = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+    const trip = atlas.state().trip;
+
+    expect(trip.title).toEqual("My Trip");
+    expect(trip.places).toEqual([]);
+    expect(trip.distances).toEqual([]);
+});
+
 test("Testing Marker Rendered on Click", () => {
     const atlas = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
 
