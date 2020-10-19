@@ -5,7 +5,9 @@ import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
 import Control from 'react-leaflet-control';
 import 'leaflet/dist/leaflet.css';
 
-import icon from 'leaflet/dist/images/marker-icon.png';
+import blue_icon from 'leaflet/dist/images/marker-icon.png';
+import red_icon from '../../static/images/markers/marker-icon-red.png';
+import gold_icon from '../../static/images/markers/marker-icon-gold.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import {Paper} from '@material-ui/core';
@@ -15,6 +17,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import LinearScaleIcon from '@material-ui/icons/LinearScale';
 import SearchIcon from '@material-ui/icons/Search';
 
+import Trip from "./Trip"
 import DistanceModal from "./DistanceModal";
 import FindModal from "./FindModal";
 
@@ -22,12 +25,10 @@ import {LOG} from "../../utils/constants"
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
-const MARKER_ICON = L.icon({iconUrl: icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
-const DISTINCT_MARKER = new L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-    shadowUrl: iconShadow,
-    iconAnchor: [12, 40],
-});
+const BLUE_MARKER = L.icon({iconUrl: blue_icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
+const RED_MARKER = L.icon({iconUrl: red_icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
+const GOLD_MARKER = L.icon({iconUrl: gold_icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
+
 const MAP_LAYER_ATTRIBUTION = "&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors";
 const MAP_LAYER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const MAP_MIN_ZOOM = 1;
@@ -47,6 +48,7 @@ export default class Atlas extends Component {
         this.processDistanceRequestSuccess = this.processDistanceRequestSuccess.bind(this);
 
         this.state = {
+            trip: new Trip(),
             userPosition: null,
             markerPosition: null,
             secondMarkerPosition: null,
@@ -79,6 +81,17 @@ export default class Atlas extends Component {
                 onClick={this.setMarker}
             >
                 <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
+                {this.renderMapButtons()}
+                {this.renderMapMarkers()}
+
+                {this.state.distanceLabel != null && this.renderPolyline()}
+            </Map>
+        );
+    }
+
+    renderMapButtons() {
+        return (
+            <div>
                 <MapButton buttonID="home-button" buttonIcon={<GpsFixedIcon/>} mapPosition="topleft"
                            tooltipText="Where am I?" tooltipPlacement="right"
                            onClick={() => this.setMapToHome()}/>
@@ -91,12 +104,20 @@ export default class Atlas extends Component {
                 <MapButton buttonID="scroll-down-button" buttonIcon={<ArrowDownwardIcon/>} mapPosition="topright"
                            tooltipText="Itinerary" tooltipPlacement="left"
                            onClick={() => window.scrollTo({top: document.body.offsetHeight, behavior: 'smooth'})}/>
+            </div>
+        );
+    }
 
-                {this.getMarker(this.state.markerPosition, MARKER_ICON, true)}
-                {this.getMarker(this.state.secondMarkerPosition, MARKER_ICON, true)}
-                {this.getMarker(this.state.userPosition, DISTINCT_MARKER, false)}
-                {this.state.distanceLabel != null && this.renderPolyline()}
-            </Map>
+    renderMapMarkers() {
+        return (
+            <div>
+                {this.state.trip.coordinatesList.map((position) =>
+                    this.getMarker(position, GOLD_MARKER, true)
+                )};
+                {this.getMarker(this.state.markerPosition, BLUE_MARKER, true)}
+                {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, true)}
+                {this.getMarker(this.state.userPosition, RED_MARKER, false)}
+            </div>
         );
     }
 
@@ -269,6 +290,15 @@ export default class Atlas extends Component {
         else
             latLongArray = [MAP_CENTER_DEFAULT];
         return new L.latLngBounds(latLongArray);
+    }
+
+    processFindRequestAddToTrip(placeData) {
+        // do a setState with trip to addDestination
+        // ex) this.setState({setOtherStateVars..., trip: this.state.trip.addDestination(placeData)});
+    }
+
+    processFindRequestViewLocation(placeData) {
+        // do a setState to change map center or bounds, or something like setMapToHome to move markers
     }
 
     processDistanceRequestSuccess(coordinate1, coordinate2, distance) {
