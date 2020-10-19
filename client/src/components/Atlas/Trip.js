@@ -20,12 +20,14 @@ export default class Trip {
     }
 
     copy(prevTrip) {
-        //let newTrip = JSON.parse(JSON.stringify(prevTrip));
         let newTrip = new Trip();
         newTrip.requestVersion = prevTrip.requestVersion;
         newTrip.requestType = prevTrip.requestType;
-        newTrip.options = prevTrip.options;
-        newTrip.places = prevTrip.places;
+        newTrip.options = {title: prevTrip.title, earthRadius: prevTrip.options.earthRadius};
+        newTrip.places = [];
+        prevTrip.places.forEach(item => {
+            newTrip.places.push(JSON.parse(JSON.stringify(item)));
+        });
         newTrip.distances = prevTrip.distances;
         return newTrip;
     }
@@ -36,14 +38,34 @@ export default class Trip {
         return newTrip;
     }
 
-    addNote(place, note) {
+    addNote(index, note) {
         if (this.places.length === 0)
             return this;
         else {
             let newTrip = this.copy(this);
-            newTrip.places[place].notes = note;
+            Object.assign(newTrip.places[index], {'notes': note});
             return newTrip;
         }
+    }
+
+    setDistance(distances) {
+        let newTrip = this.copy(this);
+        newTrip.distances = distances;
+        return newTrip;
+    }
+
+    loadJSON(tripFile) {
+        let newTrip = this.copy(this);
+        newTrip.requestVersion = tripFile.requestVersion;
+        newTrip.requestType = tripFile.requestVersion;
+        newTrip.options = tripFile.options;
+        newTrip.places = tripFile.places;
+        newTrip.distances = tripFile.distances;
+        return newTrip;
+    }
+
+    save() {
+        return JSON.parse(JSON.stringify(this));
     }
 }
 
