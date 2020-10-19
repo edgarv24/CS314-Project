@@ -6,8 +6,8 @@ import Control from 'react-leaflet-control';
 import 'leaflet/dist/leaflet.css';
 
 import blue_icon from 'leaflet/dist/images/marker-icon.png';
-import red_icon from '../../static/images/marker-icon-red.png';
-import gold_icon from '../../static/images/marker-icon-gold.png';
+import red_icon from '../../static/images/markers/marker-icon-red.png';
+import gold_icon from '../../static/images/markers/marker-icon-gold.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import {Paper} from '@material-ui/core';
