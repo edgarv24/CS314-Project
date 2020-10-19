@@ -13,6 +13,10 @@ export default class Trip {
         return this.options.title;
     }
 
+    get earthRadius() {
+        return this.options.earthRadius;
+    }
+
     addDestination(destination) {
         const newTrip = this.copy(this);
         newTrip.places = [...this.places, destination];
@@ -39,11 +43,11 @@ export default class Trip {
     }
 
     addNote(index, note) {
-        if (this.places.length === 0)
+        if (this.places.length === 0 || index > this.places.length)
             return this;
         else {
             let newTrip = this.copy(this);
-            Object.assign(newTrip.places[index], {'notes': note});
+            newTrip.places[index].notes = note;
             return newTrip;
         }
     }
@@ -64,7 +68,7 @@ export default class Trip {
         return newTrip;
     }
 
-    save() {
+    build() {
         return JSON.parse(JSON.stringify(this));
     }
 }

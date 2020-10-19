@@ -36,6 +36,12 @@ describe('Trip', () => {
         expect(trip.distances).toEqual(emptyArray);
     });
 
+    it('gets earthradius', () => {
+       let expectedEarthRadius = '3959.0';
+       let actualEarthRadius = trip.earthRadius;
+       expect(actualEarthRadius).toEqual(expectedEarthRadius);
+    });
+
     it('adds new places to a new trip object', () => {
         let destination = {
             'name': 'Fort Collins',
@@ -62,8 +68,7 @@ describe('Trip', () => {
 
     it('returns original object if notes assigned to empty places array', () => {
         let note = 'Home of CSU';
-        let place = 'Fort Collins'
-        const newTrip = trip.addNote(place, note);
+        const newTrip = trip.addNote(0, note);
         expect(newTrip).toEqual(trip);
     });
 
@@ -77,6 +82,18 @@ describe('Trip', () => {
         let newTrip = trip.addDestination(destination).addNote(0, note);
         expect(newTrip.places[0].notes).toEqual(note);
     });
+
+    it('returns original object if index greater than length', () => {
+        let destination = {
+            'name': 'Fort Collins',
+            'latitude': '40.5853',
+            'longitude': '-105.0844'
+        };
+        let note = 'Home of CSU';
+        let temp = trip.addDestination(destination);
+        let newTrip = temp.addNote(10, note);
+        expect(newTrip).toEqual(temp);
+    })
 
     it('sets distances', () => {
         let expectedDistances = [1, 2, 3];
@@ -113,7 +130,7 @@ describe('Trip', () => {
            "places"         : [],
            "distances"      : []
        }
-       let actualJSON = trip.save();
+       let actualJSON = trip.build();
        expect(actualJSON).toEqual(expectedJSON);
     });
 });
