@@ -8,6 +8,36 @@ import {beforeEach, describe, it} from "@jest/globals";
 describe('Trip', () => {
 
     let trip;
+    let mockTripResponse = { "data": {
+            "options": {
+                "title": "Eurotrip from Denver",
+                "earthRadius": "3959.0"
+            },
+            "places": [
+                {
+                    "name": "Place 1",
+                    "latitude": "10",
+                    "longitude": "40"
+                },
+                {
+                    "name": "Place 2",
+                    "latitude": "20",
+                    "longitude": "50"
+                },
+                {
+                    "name": "Place 3",
+                    "latitude": "30",
+                    "longitude": "60"
+                }
+            ],
+            "distances": [
+                960,
+                932,
+                1889
+            ],
+            "requestType": "trip",
+            "requestVersion": 3
+        }};
 
     beforeEach(() => {
         trip = new Trip();
@@ -54,7 +84,7 @@ describe('Trip', () => {
     });
 
     it('adds multiple places at once', () => {
-        let newTrip = trip.addPlace({'name': 'a', 'latitude': '0', 'longitude': 0});
+        let newTrip = trip.addPlace({'name': 'a', 'latitude': '0', 'longitude': '0'});
         expect(trip.places.length).toEqual(0);
         expect(newTrip.places.length).toEqual(1);
 
@@ -205,4 +235,26 @@ describe('Trip', () => {
         expect(itineraryData[0]).toEqual(expected1);
         expect(itineraryData[1]).toEqual(expected2);
     });
+
+    it('sends requests to server to update distances', () => {
+        trip.updateDistance(mockTripResponse, trip);
+        let expectedDistances = [960, 932, 1889];
+        expect(trip.distances).toEqual(expectedDistances);
+    });
+
+    it('does not alter distances with bad coordinates', () => {
+       const invalidPlace = {"name": "place1", "latitude": "40 W", "longitude": "40 N"};
+
+       const newTrip = trip.addPlace(invalidPlace);
+       expect(newTrip.places).toEqual(trip.places);
+    });
+
+    it('checks multiple places for valid coordinates', () => {
+        const p1 = {'name': 'Place 1', 'latitude': '10', 'longitude': '40'};
+        const p2 = {'name': 'Place 2', 'latitude': '20', 'longitude': '50'};
+        const p3 = {'name': 'Place 3', 'latitude': '30 W', 'longitude': '60 N'};
+
+        expect(trip.checkValidCoordinates([p1, p2, p3])).toEqual(false);
+    });
+
 });
