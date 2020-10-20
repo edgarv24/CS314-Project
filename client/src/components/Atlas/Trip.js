@@ -1,5 +1,7 @@
 import {PROTOCOL_VERSION} from "../../utils/constants";
 import Coordinates from "coordinate-parser";
+import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
+import * as tripSchema from "../../../schemas/TripResponse.json"
 
 export default class Trip {
     constructor() {
@@ -15,10 +17,45 @@ export default class Trip {
     }
 
     addPlaces(places) {
+        if (!this.checkValidCoordinates(places))
+            return this;
+
         const newTrip = this.copy();
         newTrip.places = this.places.concat(places);
-        // recalculate distances with server request
+        sendServerRequest(this.constructRequestBody(newTrip)).then(responseJSON => {
+            if (responseJSON)
+                    this.updateDistance(responseJSON, newTrip)
+        });
         return newTrip;
+    }
+
+
+    checkValidCoordinates(places) {
+        try {
+            places.forEach(place => {
+                let coords = place.latitude + ' ' + place.longitude;
+                new Coordinates(coords);
+            })
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    constructRequestBody(trip) {
+        return {
+            requestVersion: trip.requestVersion,
+            requestType: trip.requestType,
+            options: trip.options,
+            places: trip.places,
+        }
+    }
+
+    updateDistance(responseJSON, newTrip) {
+        const responseBody = responseJSON.data;
+        if (isJsonResponseValid(responseBody, tripSchema)) {
+            newTrip.distances = responseBody.distances;
+        }
     }
 
     removeAtIndex(index) {
@@ -27,6 +64,10 @@ export default class Trip {
 
         const newTrip = this.copy();
         newTrip.places.splice(index, 1);
+        sendServerRequest(this.constructRequestBody(newTrip)).then(responseJSON => {
+            if (responseJSON)
+                this.updateDistance(responseJSON, newTrip)
+        });
         return newTrip;
     }
 
