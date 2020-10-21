@@ -1,0 +1,64 @@
+{
+  "options": {
+    "title": "Popular Peaks Round Trip",
+    "earthRadius": "3959.0"
+  },
+  "places": [
+    {
+      "name": "Capitol Peak",
+      "municipality": "Aspen",
+      "state": "Colorado",
+      "country": "United States",
+      "latitude": "39.1503",
+      "longitude": "-107.0831",
+      "altitude": "14131"
+    },
+    {
+      "name": "Mount Kilimanjaro",
+      "country": "Tanzania",
+      "latitude": "-3.0674",
+      "longitude": "37.3556",
+      "altitude": "19341"
+    },
+    {
+      "name": "Mount Everest",
+      "country": "Nepal",
+      "latitude": "27.988056",
+      "longitude": "86.925278",
+      "altitude": "29029"
+    },
+    {
+      "name": "Mount Fuji",
+      "country": "Japan",
+      "latitude": "35.3606",
+      "longitude": "138.7274",
+      "altitude": "12388"
+    },
+    {
+      "name": "Denali",
+      "country": "Alaska",
+      "latitude": "63.0692",
+      "longitude": "-151.0070",
+      "altitude": "20308"
+    },
+    {
+      "name": "Mount Rushmore",
+      "municipality": "Keystone",
+      "state": "South Dakota",
+      "country": "United States",
+      "latitude": "43.8791",
+      "longitude": "-103.4591",
+      "altitude": "5725"
+    }
+  ],
+  "distances": [
+    9092,
+    3929,
+    3054,
+    3466,
+    2283,
+    377
+  ],
+  "requestType": "trip",
+  "requestVersion": 3
+}

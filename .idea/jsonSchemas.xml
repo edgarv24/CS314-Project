@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JsonSchemaMappingsProjectConfiguration">
+    <state>
+      <map>
+        <entry key="TripFile">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="TripFile" />
+              <option name="relativePathToSchema" value="client/schemas/TripFile.json" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="client/test/TripFiles/peaks-trip.json" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="client/test/TripFiles/co-brews.json" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="client/test/TripFiles/world-brews.json" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="client/test/TripFiles/us-brews.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+      </map>
+    </state>
+  </component>
+</project>
