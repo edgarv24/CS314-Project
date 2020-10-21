@@ -18,7 +18,7 @@ public class QueryDatabase {
   private static String DB_PASSWORD;
 
   private final String COLUMNS =
-      "world.name, world.municipality, world.altitude, world.latitude, world.longitude, world.id, world.type";
+      "world.name, world.municipality, country.name, region.name, world.altitude, world.latitude, world.longitude, world.id, world.type";
   private final String TABLES =
       "world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id";
   private final String WHERECLAUSE1 = "country.name LIKE \"%";
@@ -80,9 +80,9 @@ public class QueryDatabase {
           + "%\" OR "
           + WHERECLAUSE4
           + placeName
-          + "%\") ORDER BY name;";
+          + "%\") ORDER BY world.name;";
     } else {
-      return "SELECT * FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
+      return "SELECT " + COLUMNS + " FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
     }
   }
 
@@ -97,23 +97,19 @@ public class QueryDatabase {
 
     resultSet.beforeFirst();
     while (resultSet.next()) {
-      String name = resultSet.getString("name");
-      String municipality = resultSet.getString("municipality");
-      String altitude = resultSet.getString("altitude");
-      String latitude = resultSet.getString("latitude");
-      String longitude = resultSet.getString("longitude");
-      String type = resultSet.getString("type");
-      String id = resultSet.getString("id");
-      log.trace(String.format("Adding result %s", name));
+      log.trace(String.format("Adding result %s", resultSet.getString("name")));
 
       Map<String, String> map = new HashMap<>();
-      map.put("name", name);
-      map.put("municipality", municipality);
-      map.put("altitude", altitude);
-      map.put("latitude", latitude);
-      map.put("longitude", longitude);
-      map.put("type", type);
-      map.put("id", id);
+      map.put("name", resultSet.getString("name"));
+      map.put("municipality", resultSet.getString("municipality"));
+      map.put("altitude", resultSet.getString("altitude"));
+      map.put("latitude", resultSet.getString("latitude"));
+      map.put("longitude", resultSet.getString("longitude"));
+      map.put("type", resultSet.getString("type"));
+      map.put("id", resultSet.getString("id"));
+      map.put("region", resultSet.getString("region.name"));
+      map.put("country", resultSet.getString("country.name"));
+      map.put("url", String.format("https://aopa.org/destinations/airports/%s/details", resultSet.getString("id")));
       queryResults.add(map);
     }
   }
