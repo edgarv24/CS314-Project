@@ -4,7 +4,10 @@
 # GitHub Repo: https://github.com/darin3/cs314-deploy
 
 # Password-less SSH login (optional): https://linuxize.com/post/how-to-setup-passwordless-ssh-login/
-# ** WARNING: This program will remove any "server-*.jar" files from your home directory on the remote server (for clean up). **
+#   - otherwise, you will have to provide a password twice (rsync then ssh commands)
+
+# ** WARNING: Script may attempt to check in multiple jars if you already have any "server-*.jar" files
+#             in /tmp/ on the remote machine. Should be able to re-run deploy.sh to fix it. **
 
 : '
 MIT License
@@ -64,16 +67,14 @@ if [[ $rebuild =~ ^[yY]|yes|Yes|YES$ ]]; then
 fi
 
 echo "Copying server-#.jar to CSU machine."
-if ! (rsync target/server-*.jar "${eid}@${MACHINE}.cs.colostate.edu:"); then
+if ! (rsync target/server-*.jar "${eid}@${MACHINE}.cs.colostate.edu:/tmp/"); then
   echo "Error: rsync failed, could not copy jar to remote machine."
   exit $EXIT_ERROR
 fi
 
-echo "Running \"~cs314/bin/checkin ${server} server-*.jar\""
-echo "Deleting jar file."
-
-CHECKIN_AND_RM_JAR="~cs314/bin/checkin ${server} server-*.jar; rm server-*.jar"
-if ! (ssh "${eid}@${MACHINE}.cs.colostate.edu" "${CHECKIN_AND_RM_JAR}"); then
+echo "Running \"~cs314/bin/checkin ${server} /tmp/server-*.jar\""
+echo ""
+if ! (ssh "${eid}@${MACHINE}.cs.colostate.edu" "~cs314/bin/checkin ${server} /tmp/server-*.jar; rm -f /tmp/server-*.jar"); then
   echo "Error: there was a problem with ssh or ~cs314/bin/checkin."
   exit $EXIT_ERROR
 fi
