@@ -17,8 +17,9 @@ import * as findSchema from "../../../schemas/FindResponse.json";
 
 import {PROTOCOL_VERSION} from "../../utils/constants";
 
-
 import ListItem from "@material-ui/core/ListItem";
+
+import {LOG} from "../../utils/constants";
 
 export default class FindModal extends Component {
 
@@ -29,7 +30,7 @@ export default class FindModal extends Component {
             places: null,
             inputText: null,
             listToggle: false,
-            locateToggle: false,
+            buttonToggle: false,
             selectedPlace: null
         };
     }
@@ -76,18 +77,10 @@ export default class FindModal extends Component {
 
     renderList(){
         if(this.state.listToggle) {
-            const listItems = this.state.places.map(item => <ListItem button key={item.name} onClick={() => this.setState({selectedPlace: item.name})}>{item.name}</ListItem>);
+            const listItems = this.state.places.map(item => <ListItem button key={item.name} onClick={() => this.setState({selectedPlace: item})}>{item.name}</ListItem>);
             return (
                 listItems
             )
-        }
-    }
-
-    renderLocateButton(){
-        if (this.state.locateToggle){
-            return(
-              <Button className="mr-2" color='primary'> Locate </Button>
-            );
         }
     }
 
@@ -98,6 +91,22 @@ export default class FindModal extends Component {
                 <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
             </ModalFooter>
         );
+    }
+
+    /*renderTripButton(){
+        if (this.state.buttonToggle) {
+            return (
+                <Button id="trip-button" className="mr-2" color='primary' onClick={() => this.props.processFindRequestAddToTrip(this.state.selectedPlace)}> Add to Trip </Button>
+            );
+        }
+    }*/
+
+    renderLocateButton(){
+        if (this.state.buttonToggle){
+            return(
+                <Button id="locate-button" className="mr-2" color='primary' onClick={() => this.props.setMapToPlace(this.state.selectedPlace)}> Locate </Button>
+            );
+        }
     }
 
     resetModalState() {
@@ -130,7 +139,7 @@ export default class FindModal extends Component {
     processFindResponse(responseJSON) {
         const responseBody = responseJSON.data;
         if (isJsonResponseValid(responseBody, findSchema)) {
-            this.setState({places: responseBody.places, listToggle: true, locateToggle: true});
+            this.setState({places: responseBody.places, listToggle: true, buttonToggle: true});
         } else {
             this.setState({places: null});
         }

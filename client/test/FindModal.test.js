@@ -1,12 +1,13 @@
 import './jestConfig/enzyme.config.js';
 
 import React from 'react';
-import {shallow} from 'enzyme';
+import {mount, shallow} from 'enzyme';
 
 
 import FindModal from '../src/components/Atlas/FindModal';
+import {test} from "@jest/globals";
 
-
+test("Testing FindModal's Initial State", testInitialFindModalState);
 function testInitialFindModalState() {
     const findModal = shallow(<FindModal/>);
 
@@ -19,8 +20,8 @@ function testInitialFindModalState() {
     let actualListToggle = findModal.state().listToggle;
     let expectedListToggle = false;
 
-    let actualLocateToggle = findModal.state().locateToggle;
-    let expectedLocateToggle = false;
+    let actualButtonToggle = findModal.state().buttonToggle;
+    let expectedButtonToggle = false;
 
     let actualSelectedPlace = findModal.state().selectedPlace;
     let expectedSelectedPlace = null;
@@ -28,12 +29,11 @@ function testInitialFindModalState() {
     expect(actualPlaces).toEqual(expectedPlaces);
     expect(actualInputText).toEqual(expectedInputText);
     expect(actualListToggle).toEqual(expectedListToggle);
-    expect(actualLocateToggle).toEqual(expectedLocateToggle);
+    expect(actualButtonToggle).toEqual(expectedButtonToggle);
     expect(actualSelectedPlace).toEqual(expectedSelectedPlace);
 }
 
-test("Testing FindModal's Initial State", testInitialFindModalState);
-
+test("Testing input box", testInputBox);
 function testInputBox() {
     const findModal = shallow(<FindModal/>);
     let input = findModal.find("Input");
@@ -47,8 +47,7 @@ function testInputBox() {
     expect(actualInputText).toEqual(expectedInputText);
 }
 
-test("Testing input box", testInputBox);
-
+test("Testing input list size after find requests", testListSize);
 function testListSize() {
     const findModal = shallow(<FindModal/>);
     let firstResponse = '{"data": {"requestType": "find", "requestVersion": 3, '+
@@ -65,4 +64,20 @@ function testListSize() {
     expect(findModal.state().places.length).toEqual(3);
 }
 
-test("Testing input list size after find requests", testListSize);
+test("Testing listItem", () => {
+    const findModal = mount(<FindModal/>);
+    findModal.setState({listToggle: true, places: [{"name": "Airport 1", "latitude": "90", "longitude": "100"}]});
+    findModal.update();
+    let listItem = findModal.find("ListItem");
+    expect(listItem.length).toEqual(1);
+    let event = {target: {value: "Airport 1"}};
+
+    expect(findModal.state().listToggle).toEqual(true);
+
+    listItem.simulate("click", event);
+
+    let actualListItem = findModal.state().selectedPlace;
+    let expectedListItem = "Airport 1";
+
+    expect(actualListItem).toEqual(expectedListItem);
+});
