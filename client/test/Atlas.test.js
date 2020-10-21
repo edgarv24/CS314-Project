@@ -5,129 +5,190 @@ import {mount, shallow} from 'enzyme';
 
 import Atlas from '../src/components/Atlas/Atlas';
 import {Polyline} from "react-leaflet";
-import {jest, test} from "@jest/globals";
+import {beforeEach, describe, jest, test} from "@jest/globals";
 
+const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
+const MAP_DEFAULT_ZOOM = 15;
 
 const startProperties = {
     createSnackBar: jest.fn()
 };
+describe('Atlas', () => {
+    let atlas;
+    let atlasMounted;
 
-test("Testing Atlas's Initial State", () => {
-    const atlas = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+    function simulateButtonClickEvent(reactWrapper, buttonID) {
+        const button = reactWrapper.find(buttonID).at(0);
+        expect(button).toBeDefined();
+        button.simulate('click');
+        reactWrapper.update();
+    }
 
-    let actualMarkerPosition = atlas.state().markerPosition;
-    let expectedMarkerPosition = null;
+    function simulateOnClickEvent(reactWrapper, event) {
+        reactWrapper.find('Map').at(0).simulate('click', event);
+        reactWrapper.update();
+    }
+    
+    beforeEach(() => {
+        atlas = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+        atlasMounted = mount(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+    });
+    
+    test("Testing Atlas's Initial State", () => {
+        let actualMarkerPosition = atlas.state().markerPosition;
+        let expectedMarkerPosition = null;
 
-    expect(actualMarkerPosition).toEqual(expectedMarkerPosition);
-});
+        expect(actualMarkerPosition).toEqual(expectedMarkerPosition);
+    });
 
-test("Testing initial trip state", () => {
-    const atlas = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
-    const trip = atlas.state().trip;
+    test("Testing initial trip state", () => {
+        const trip = atlas.state().trip;
 
-    expect(trip.title).toEqual("My Trip");
-    expect(trip.places).toEqual([]);
-    expect(trip.distances).toEqual([]);
-});
+        expect(trip.title).toEqual("My Trip");
+        expect(trip.places).toEqual([]);
+        expect(trip.distances).toEqual([]);
+    });
 
-test("Testing Marker Rendered on Click", () => {
-    const atlas = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+    test("Testing Marker Rendered on Click", () => {
+        let actualMarkerPosition = atlas.state().markerPosition;
+        let expectedMarkerPosition = null;
 
-    let actualMarkerPosition = atlas.state().markerPosition;
-    let expectedMarkerPosition = null;
+        expect(actualMarkerPosition).toEqual(expectedMarkerPosition);
 
-    expect(actualMarkerPosition).toEqual(expectedMarkerPosition);
+        let latlng = {lat: 0, lng: 0};
+        simulateOnClickEvent(atlas, {latlng: latlng});
 
-    let latlng = {lat: 0, lng: 0};
-    simulateOnClickEvent(atlas, {latlng: latlng});
+        expect(atlas.state().markerPosition).toEqual(latlng);
+    });
 
-    expect(atlas.state().markerPosition).toEqual(latlng);
-});
+    test("Testing that the second marker renders correctly", () => {
+        expect(atlas.state().secondMarkerPosition).toEqual(null);
 
-function simulateOnClickEvent(reactWrapper, event) {
-    reactWrapper.find('Map').at(0).simulate('click', event);
-    reactWrapper.update();
-}
+        let firstClick = {lat: 0, lng: 0};
+        let secondClick = {lat: 1, lng: 1};
+        simulateOnClickEvent(atlas, {latlng: firstClick});
+        simulateOnClickEvent(atlas, {latlng: secondClick});
 
-test("Testing that the second marker renders correctly", () => {
-    const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+        expect(atlas.state().markerPosition).toEqual(firstClick);
+        expect(atlas.state().secondMarkerPosition).toEqual(secondClick);
 
-    expect(atlasWrapper.state().secondMarkerPosition).toEqual(null);
+        simulateOnClickEvent(atlas, {latlng: firstClick});
 
-    let firstClick = {lat: 0, lng: 0};
-    let secondClick = {lat: 1, lng: 1};
-    simulateOnClickEvent(atlasWrapper, {latlng: firstClick});
-    simulateOnClickEvent(atlasWrapper, {latlng: secondClick});
+        expect(atlas.state().secondMarkerPosition).toEqual(firstClick);
+    });
 
-    expect(atlasWrapper.state().markerPosition).toEqual(firstClick);
-    expect(atlasWrapper.state().secondMarkerPosition).toEqual(secondClick);
+    test("Testing Polyline Render", () => {
+        let firstClick = {lat: 0, lng: 0};
+        let secondClick = {lat: 10, lng: 10};
 
-    simulateOnClickEvent(atlasWrapper, {latlng: firstClick});
+        simulateOnClickEvent(atlas, {latlng: firstClick});
+        simulateOnClickEvent(atlas, {latlng: secondClick});
+        atlas.instance().processDistanceRequestSuccess(firstClick, secondClick, 0);
 
-    expect(atlasWrapper.state().secondMarkerPosition).toEqual(firstClick);
-});
+        expect(atlas.find(Polyline)).toHaveLength(1);
 
-test("Testing Polyline Render", () => {
-    const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
-    let firstClick = {lat: 0, lng: 0};
-    let secondClick = {lat: 10, lng: 10};
+        let polyline = atlas.find(Polyline);
 
-    simulateOnClickEvent(atlasWrapper, {latlng: firstClick});
-    simulateOnClickEvent(atlasWrapper, {latlng: secondClick});
-    atlasWrapper.instance().processDistanceRequestSuccess(firstClick, secondClick, 0);
+        expect(polyline.props().positions).toEqual([[firstClick.lat, firstClick.lng], [secondClick.lat, secondClick.lng]]);
+    });
 
-    expect(atlasWrapper.find(Polyline)).toHaveLength(1);
+    test("Test button that returns to home position (no geolocation)", () => {
+        const home = atlasMounted.instance().getHomePosition();
 
-    let polyline = atlasWrapper.find(Polyline);
+        atlasMounted.setState({markerPosition: home}); // normally done in componentDidMount
 
-    expect(polyline.props().positions).toEqual([[firstClick.lat, firstClick.lng], [secondClick.lat, secondClick.lng]]);
-});
+        simulateOnClickEvent(atlasMounted, {latlng: {lat: 0, lng: 0}});
+        expect(atlasMounted.state().secondMarkerPosition).toEqual(null);
 
-function simulateButtonClickEvent(atlasWrapper, buttonID) {
-    const button = atlasWrapper.find(buttonID).at(0);
-    expect(button).toBeDefined();
-    button.simulate('click');
-    atlasWrapper.update();
-}
+        simulateButtonClickEvent(atlasMounted, '#home-button')
+        expect(atlasMounted.state().secondMarkerPosition).toEqual(home);
+        expect(atlasMounted.state().mapCenter).toEqual(home);
+    });
 
-test("Test button that returns to home position (no geolocation)", () => {
-    const atlasWrapper = mount(<Atlas createSnackBar={startProperties.createSnackBar}/>);
-    const home = atlasWrapper.instance().getHomePosition();
+    test("Test button that opens find modal", () => {
+        expect(atlasMounted.state().findModalOpen).toBeFalsy();
 
-    atlasWrapper.setState({markerPosition: home}); // normally done in componentDidMount
+        simulateButtonClickEvent(atlasMounted, '#find-button')
+        expect(atlasMounted.state().findModalOpen).toBeTruthy();
+    });
 
-    simulateOnClickEvent(atlasWrapper, {latlng: {lat: 0, lng: 0}});
-    expect(atlasWrapper.state().secondMarkerPosition).toEqual(null);
+    test("Test button that opens distance modal", () => {
+        expect(atlasMounted.state().distModalOpen).toBeFalsy();
 
-    simulateButtonClickEvent(atlasWrapper, '#home-button')
-    expect(atlasWrapper.state().secondMarkerPosition).toEqual(home);
-    expect(atlasWrapper.state().mapCenter).toEqual(home);
-});
+        simulateButtonClickEvent(atlasMounted, '#distance-button')
+        expect(atlasMounted.state().distModalOpen).toBeTruthy();
+    });
 
-test("Test button that opens find modal", () => {
-    const atlasWrapper = mount(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+    test("Test button that scrolls page down", () => {
+        window.scrollTo = jest.fn();
 
-    expect(atlasWrapper.state().findModalOpen).toBeFalsy();
+        expect(window.scrollY).toEqual(0);
 
-    simulateButtonClickEvent(atlasWrapper, '#find-button')
-    expect(atlasWrapper.state().findModalOpen).toBeTruthy();
-});
+        simulateButtonClickEvent(atlasMounted, '#scroll-down-button')
+        expect(window.scrollY).toEqual(document.body.offsetHeight);
+    });
 
-test("Test button that opens distance modal", () => {
-    const atlasWrapper = mount(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+    test("Test renderDistanceLabel default", () => {
+        let distanceLabel = atlas.find('Input');
+        expect(distanceLabel.props().value).toEqual('N/A');
+    });
 
-    expect(atlasWrapper.state().distModalOpen).toBeFalsy();
+    test("Test renderDistanceLabel with 1 mile", () => {
+        atlas.setState({distanceLabel: '1'});
+        atlas.update();
+        let distanceLabel = atlas.find('Input');
+        expect(distanceLabel.props().value).toEqual('1 miles');
+    });
 
-    simulateButtonClickEvent(atlasWrapper, '#distance-button')
-    expect(atlasWrapper.state().distModalOpen).toBeTruthy();
-});
+    test("Test renderDistanceLabel with 100 miles", () => {
+        atlas.setState({distanceLabel: '100'});
+        atlas.update();
+        let distanceLabel = atlas.find('Input');
+        expect(distanceLabel.props().value).toEqual('100 miles');
+    });
 
-test("Test button that scrolls page down", () => {
-    const atlasWrapper = mount(<Atlas createSnackBar={startProperties.createSnackBar}/>);
-    window.scrollTo = jest.fn();
+    test("Test renderMapMarkers returning correct trip markers", () => {
+        const p1 = {'name': 'Place 1', 'latitude': '0', 'longitude': '0'};
+        const p2 = {'name': 'Place 2', 'latitude': '0', 'longitude': '0'};
+        const p3 = {'name': 'Place 3', 'latitude': '0', 'longitude': '0'};
+        let newTrip = atlasMounted.state().trip.addPlaces([p1, p2, p3]);
+        atlasMounted.setState({trip: newTrip});
+        atlasMounted.update();
+        expect(atlasMounted.find('Marker').length).toEqual(3);
+    });
 
-    expect(window.scrollY).toEqual(0);
+    test("Test getMapBounds with zero markers", () => {
+       let actualBounds = atlas.instance().getMapBounds(null, null);
+       let expectedBounds = new L.latLngBounds([MAP_CENTER_DEFAULT]);
+       expect(actualBounds).toEqual(expectedBounds);
+    });
 
-    simulateButtonClickEvent(atlasWrapper, '#scroll-down-button')
-    expect(window.scrollY).toEqual(document.body.offsetHeight);
+    test("Test getMapBounds with one marker", () => {
+        let marker1 = {lat: 20, lng: 20};
+        let actualBounds = atlas.instance().getMapBounds(marker1, null);
+        let expectedBounds = new L.latLngBounds([{lat: 20, lng: 20}]);
+        expect(actualBounds).toEqual(expectedBounds);
+    });
+
+    test("Test getMapBounds with both markers", () => {
+        let marker1 = {lat: 20, lng: 20};
+        let marker2 = {lat: 30, lng: 30};
+        let actualBounds = atlas.instance().getMapBounds([marker1, marker2]);
+        let expectedBounds = new L.latLngBounds([{lat: 20, lng: 20}, {lat: 30, lng: 30}]);
+        expect(actualBounds).toEqual(expectedBounds);
+    });
+
+    test("Test processDistanceRequestSuccess", () => {
+        let c1 = {lat: 20, lng: 20};
+        let c2 = {lat: 30, lng: 30};
+        let dist = "100";
+        atlas.instance().processDistanceRequestSuccess(c1, c2, dist);
+        atlas.update();
+        expect(atlas.state().markerPosition).toEqual(c1);
+        expect(atlas.state().secondMarkerPosition).toEqual(c2);
+        expect(atlas.state().distanceLabel).toEqual(dist);
+        expect(atlas.state().mapCenter).toEqual(MAP_CENTER_DEFAULT);
+        expect(atlas.state().zoomLevel).toEqual(MAP_DEFAULT_ZOOM);
+    });
+
 });
