@@ -11,7 +11,7 @@
 | Name | Preparation Time |
 | ---- | ---- |
 | Darin | 14:50 - 15:25 |
-| Mikayla | 15:00-16:00 |
+| Mikayla | 15:00 - 16:00 |
 
 ### Problems found
 
