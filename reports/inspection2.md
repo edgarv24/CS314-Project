@@ -11,7 +11,7 @@
 | Name | Preparation Time |
 | ---- | ---- |
 | Darin | 14:50 - 15:25 |
-|  |  |
+| Mikayla | 15:00 - 16:00 |
 
 ### Problems found
 
@@ -19,4 +19,4 @@
 | --- | --- | :---: | :---: | --- |
 | Trip.js:138 | itineraryPlaceData should be a regular method rather than a getter | low | darinh | |
 | Trip.js:25 | sendServerRequest should be in a separate method for reusability | med | darinh | |
-|  | | | | |
+| Trip.js:112 | tripFile.requestVersion should be tripFile.requestType | hi | cessna17 | |
