@@ -11,7 +11,7 @@
 | Name | Preparation Time |
 | ---- | ---- |
 | Darin | 14:50 - 15:25 |
-|  |  |
+| Mikayla | 15:00 - 16:00 |
 
 ### Problems found
 
@@ -22,4 +22,4 @@
 | Trip.js:10 | My Trip and 3959.0 can be defined as constants | low | edvarela | |
 | Trip.js:56 | Possible unnecessary brackets | low | edvarela | |
 | Trip.js:67 | same as Trip.js:25 | med | edvarela | |
-
+| Trip.js:112 | tripFile.requestVersion should be tripFile.requestType | hi | cessna17 | |
