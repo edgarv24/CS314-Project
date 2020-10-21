@@ -158,4 +158,11 @@ public class TestQueryDatabase {
     assertEquals(100, results.size());
     assertEquals(100, db.getTotalResultsFound());
   }
+
+  @Test
+  @DisplayName("Test one of the results and length")
+  public void testResultsAndLength() throws SQLException{
+    List<Map<String, String>> results = db.getQueryResults();
+    assertEquals(results.get(1).size()-1, 9);
+  }
 }
