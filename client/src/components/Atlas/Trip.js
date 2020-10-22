@@ -1,7 +1,8 @@
 import {PROTOCOL_VERSION} from "../../utils/constants";
 import Coordinates from "coordinate-parser";
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
-import * as tripSchema from "../../../schemas/TripResponse.json"
+import * as tripSchema from "../../../schemas/TripResponse.json";
+import * as tripFileSchema from "../../../schemas/TripFile.json";
 
 const DEFAULT_TRIP_TITLE = 'My Trip';
 const EARTH_RADIUS = '3959.0'
@@ -162,6 +163,15 @@ export default class Trip {
             "leg_dist": legDist,
             "cumulative_dist": cumulativeDist
         };
+    }
+
+    uploadFile(file) {
+        if(!isJsonResponseValid(file, tripFileSchema))
+           return this;
+        let newTrip = this.copy();
+        for (const property in file)
+            newTrip[property] = file[property];
+        return newTrip;
     }
 }
 
