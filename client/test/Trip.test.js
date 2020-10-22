@@ -257,4 +257,6 @@ describe('Trip', () => {
         expect(trip.checkValidCoordinates([p1, p2, p3])).toEqual(false);
     });
 
+
+
 });

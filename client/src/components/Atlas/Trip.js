@@ -3,11 +3,14 @@ import Coordinates from "coordinate-parser";
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as tripSchema from "../../../schemas/TripResponse.json"
 
+const DEFAULT_TRIP_TITLE = 'My Trip';
+const EARTH_RADIUS = '3959.0'
+
 export default class Trip {
     constructor() {
         this.requestVersion = PROTOCOL_VERSION;
         this.requestType = 'trip';
-        this.options = {'title': 'My Trip', 'earthRadius': '3959.0'};
+        this.options = {'title': DEFAULT_TRIP_TITLE, 'earthRadius': EARTH_RADIUS};
         this.places = [];
         this.distances = [];
     }
