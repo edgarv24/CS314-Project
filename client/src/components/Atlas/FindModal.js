@@ -92,10 +92,21 @@ export default class FindModal extends Component {
         );
     }
 
+    /*renderTripButton(){
+        if (this.state.buttonToggle) {
+            return (
+                <Button id="trip-button" className="mr-2" color='primary' onClick={() => this.props.processFindRequestAddToTrip(this.state.selectedPlace)}> Add to Trip </Button>
+            );
+        }
+    }*/
+
     renderLocateButton(){
         if (this.state.buttonToggle){
+            //let latitude = parseInt(this.state.selectedPlace.latitude);
+            //let longitude = parseInt(this.state.selectedPlace.longitude);
+            //let position = {lat: latitude, lng: longitude};
             return(
-                <Button id="locate-button" className="mr-2" color='primary' onClick={() => Atlas.prototype.processFindRequestViewLocation(this.state.selectedPlace)}> Locate </Button>
+                <Button id="locate-button" className="mr-2" color='primary' onClick={() => this.props.processFindRequestViewLocation({lat: parseInt(this.state.selectedPlace.latitude), lng: parseInt(this.state.selectedPlace.longitude)})}> Locate </Button>
             );
         }
     }

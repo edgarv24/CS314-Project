@@ -54,6 +54,8 @@ function testListSize() {
     const findModal = shallow(<FindModal/>);
     let firstResponse = '{"data": {"requestType": "find", "requestVersion": 3, '+
         '                "found": 3, "places": [{"name": "Place1", "latitude": "90", "longitude": "100"}]}}';
+    findModal.setState({selectedPlace: {"name": "place1", "latitude": "100", "longitude": "100"}})
+
     findModal.instance().processFindResponse(JSON.parse(firstResponse));
     findModal.update();
     expect(findModal.state().places.length).toEqual(1);
@@ -64,6 +66,8 @@ function testListSize() {
     findModal.instance().processFindResponse(JSON.parse(secondResponse));
     findModal.update();
     expect(findModal.state().places.length).toEqual(3);
+
+
 }
 
 test("Testing listItem", () => {
@@ -105,11 +109,14 @@ test("Testing listItem onClick", () => {
     expect(findModal.state().selectedPlace).toEqual({"latitude": "90", "longitude": "100", "name": "Airport 3"})
 });
 
+
 test("Testing Locate button", () => {
-    const findModal = shallow(<FindModal/>);
-    const atlas = shallow(<Atlas/>)
+    const atlas = shallow(<Atlas />);
+    const findModal = shallow(<FindModal processFindRequestViewLocation={atlas.instance().processFindRequestViewLocation}/>);
+
     findModal.setState({selectedPlace: {"latitude": "90", "longitude": "100", "name": "Airport 1"}});
     findModal.update();
+
     expect(findModal.state().selectedPlace).toEqual({"latitude": "90", "longitude": "100", "name": "Airport 1"});
 
     expect(findModal.state().buttonToggle).toEqual(false);
@@ -126,14 +133,14 @@ test("Testing Locate button", () => {
         mapCenter: testPos.latlng
     });
     atlas.update();
+
     expect(atlas.state().markerPosition).toEqual({lat: 20, lng: 20});
     expect(atlas.state().secondMarkerPosition).toEqual(testPos);
 
-    // Is this line resetting Atlas so that the previous setState and .update() are not applied?
     locateButton.simulate('click');
-
     atlas.update();
 
-    expect(atlas.state().secondMarkerPosition).toEqual(findModal.state().selectedPlace);
+    let expectedPosition = {lat: parseInt(findModal.state().selectedPlace.latitude), lng: parseInt(findModal.state().selectedPlace.longitude)};
 
+    expect(atlas.state().secondMarkerPosition).toEqual(expectedPosition);
 });
