@@ -15,6 +15,25 @@ export default class Trip {
         this.distances = [];
     }
 
+    updateDistance(onFinish=() => undefined) {
+        sendServerRequest(this.constructRequestBody()).then(responseJSON => {
+            if (responseJSON) {
+                const responseBody = responseJSON.data;
+                if (isJsonResponseValid(responseBody, tripSchema))
+                    this.distances = responseBody.distances;
+            }
+        });
+    }
+
+    constructRequestBody() {
+        return {
+            requestVersion: this.requestVersion,
+            requestType: this.requestType,
+            options: this.options,
+            places: this.places,
+        }
+    }
+
     addPlace(place) {
         return this.addPlaces([place]);
     }
@@ -22,12 +41,12 @@ export default class Trip {
     addPlaces(places) {
         if (!this.checkValidCoordinates(places))
             return this;
+
         const newTrip = this.copy();
         newTrip.places = this.places.concat(places);
-        this.updateDistance();
+        newTrip.updateDistance();
         return newTrip;
     }
-
 
     checkValidCoordinates(places) {
         try {
@@ -41,31 +60,13 @@ export default class Trip {
         }
     }
 
-    constructRequestBody() {
-        return {
-            requestVersion: this.requestVersion,
-            requestType: this.requestType,
-            options: this.options,
-            places: this.places,
-        }
-    }
-
-    updateDistance() {
-        sendServerRequest(this.constructRequestBody()).then(responseJSON => {
-            if (responseJSON) {
-                const responseBody = responseJSON.data;
-                if (isJsonResponseValid(responseBody, tripSchema))
-                    this.distances = responseBody.distances;
-            }
-        });
-    }
-
     removeAtIndex(index) {
         if (index < 0 || index >= this.places.length)
             return this;
+
         const newTrip = this.copy();
         newTrip.places.splice(index, 1);
-        this.updateDistance();
+        newTrip.updateDistance();
         return newTrip;
     }
 
@@ -82,7 +83,7 @@ export default class Trip {
         return newTrip;
     }
 
-     setTitle(newTitle) {
+    setTitle(newTitle) {
         let newTrip = this.copy();
         newTrip.options.title = newTitle;
         return newTrip;
@@ -107,7 +108,7 @@ export default class Trip {
     loadJSON(tripFile) {
         let newTrip = this.copy();
         newTrip.requestVersion = tripFile.requestVersion;
-        newTrip.requestType = tripFile.requestVersion;
+        newTrip.requestType = tripFile.requestType;
         newTrip.options = tripFile.options;
         newTrip.places = tripFile.places;
         newTrip.distances = tripFile.distances;
@@ -137,10 +138,17 @@ export default class Trip {
         let distancesAreCalculated = this.distances.length > 0;
         let cumulativeDist = 0;
 
+        if (this.places.length === 0) {
+            return [];
+        }
+        if (this.places.length === 1) {
+            return [this.fullJSON(this.places[0], 0, 0, 0)];
+        }
+
         let placesData = [];
         for (let i = 0; i <= this.places.length; i++) {
             const place = this.places[i % this.places.length];
-            const legDist = (distancesAreCalculated && index > 0) ? this.distances[index - 1] : 0;
+            const legDist = (distancesAreCalculated && i > 0) ? this.distances[i - 1] : 0;
             cumulativeDist += legDist;
 
             placesData.push(this.fullJSON(place, legDist, cumulativeDist, i));
@@ -159,9 +167,31 @@ export default class Trip {
             "country": place.country || "",
             "altitude": place.altitude || "",
             "notes": place.notes || "",
+            "primary_text": this.primaryText(place),
+            "location_text": this.locationText(place),
             "leg_dist": legDist,
             "cumulative_dist": cumulativeDist
         };
     }
-}
 
+    primaryText(place) {
+        if (!place.name || place.name.length === 0)
+            return `(${place.latitude}, ${place.longitude})`;
+        return place.name;
+    }
+
+    locationText(place) {
+        const potentialItems = [place.municipality, place.state, place.country];
+        let items = [];
+        for (let i = 0; i < potentialItems.length; i++) {
+            if (potentialItems[i] && items.length < 2)
+                items.push(potentialItems[i]);
+        }
+        const MAX_LENGTH = 42;
+        let result = items.join(", ");
+        if (result.length > MAX_LENGTH)
+            result = result.substring(0, MAX_LENGTH) + "...";
+
+        return result;
+    }
+}
