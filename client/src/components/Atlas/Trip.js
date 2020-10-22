@@ -22,13 +22,9 @@ export default class Trip {
     addPlaces(places) {
         if (!this.checkValidCoordinates(places))
             return this;
-
         const newTrip = this.copy();
         newTrip.places = this.places.concat(places);
-        sendServerRequest(this.constructRequestBody(newTrip)).then(responseJSON => {
-            if (responseJSON)
-                    this.updateDistance(responseJSON, newTrip)
-        });
+        this.updateDistance();
         return newTrip;
     }
 
@@ -45,32 +41,31 @@ export default class Trip {
         }
     }
 
-    constructRequestBody(trip) {
+    constructRequestBody() {
         return {
-            requestVersion: trip.requestVersion,
-            requestType: trip.requestType,
-            options: trip.options,
-            places: trip.places,
+            requestVersion: this.requestVersion,
+            requestType: this.requestType,
+            options: this.options,
+            places: this.places,
         }
     }
 
-    updateDistance(responseJSON, newTrip) {
-        const responseBody = responseJSON.data;
-        if (isJsonResponseValid(responseBody, tripSchema)) {
-            newTrip.distances = responseBody.distances;
-        }
+    updateDistance() {
+        sendServerRequest(this.constructRequestBody()).then(responseJSON => {
+            if (responseJSON) {
+                const responseBody = responseJSON.data;
+                if (isJsonResponseValid(responseBody, tripSchema))
+                    this.distances = responseBody.distances;
+            }
+        });
     }
 
     removeAtIndex(index) {
         if (index < 0 || index >= this.places.length)
             return this;
-
         const newTrip = this.copy();
         newTrip.places.splice(index, 1);
-        sendServerRequest(this.constructRequestBody(newTrip)).then(responseJSON => {
-            if (responseJSON)
-                this.updateDistance(responseJSON, newTrip)
-        });
+        this.updateDistance();
         return newTrip;
     }
 
