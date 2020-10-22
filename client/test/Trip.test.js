@@ -3,7 +3,7 @@ import './jestConfig/enzyme.config.js';
 import React from 'react';
 
 import Trip from '../src/components/Atlas/Trip';
-import {beforeEach, describe, it} from "@jest/globals";
+import {beforeEach, describe, it, jest} from "@jest/globals";
 
 describe('Trip', () => {
 
@@ -237,7 +237,8 @@ describe('Trip', () => {
     });
 
     it('sends requests to server to update distances', () => {
-        trip.updateDistance(mockTripResponse, trip);
+        trip.updateDistance = jest.fn(() => trip.distances = mockTripResponse.data.distances);
+        trip.updateDistance();
         let expectedDistances = [960, 932, 1889];
         expect(trip.distances).toEqual(expectedDistances);
     });
@@ -256,5 +257,4 @@ describe('Trip', () => {
 
         expect(trip.checkValidCoordinates([p1, p2, p3])).toEqual(false);
     });
-
 });
