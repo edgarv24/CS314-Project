@@ -170,41 +170,6 @@ describe('Trip', () => {
         expect(actualDistances).toEqual(expectedDistances);
     });
 
-    it('loads a JSON file into properties', () => {
-        let tripFile = {
-            "requestType": "trip",
-            "requestVersion": 3,
-            "options": {
-                "title": "Shopping Loop",
-                "earthRadius": "3959.0"
-            },
-            "places": [
-                {
-                    "name": "Denver",
-                    "latitude": "39° 44' 31.3548'' N",
-                    "longitude": "104° 59' 29.5116'' W",
-                    "notes": "The big city"
-                },
-                {
-                    "name": "Boulder",
-                    "latitude": "40° 0' 53.9424'' N",
-                    "longitude": "105° 16' 13.9656'' W",
-                    "notes": "Home of CU"
-                },
-                {
-                    "name": "Fort Collins",
-                    "latitude": "40° 35' 6.9288'' N",
-                    "longitude": "105° 5' 3.9084'' W",
-                    "notes": "Home of CSU"
-                }],
-            "distances": [20, 40, 50]
-        }
-        let newTrip = trip.loadJSON(tripFile);
-        expect(newTrip.title).toEqual('Shopping Loop');
-        expect(newTrip.places.length).toEqual(3);
-        expect(newTrip.distances).toEqual([20, 40, 50]);
-    });
-
     it('creates a JSON tripFile', () => {
         let expectedJSON = {
             "requestType": "trip",
@@ -271,21 +236,22 @@ describe('Trip', () => {
     });
 
     it('checks trip files validity and returns newTrip', () => {
-        let newTrip = trip.uploadFile(mockTripFile);
+        let newTrip = trip.loadJSON(mockTripFile);
+        let expectedNames = ['Denver', 'Boulder', 'Fort Collins'];
+        let expectedDistances = [20, 40, 50];
+
         expect(newTrip.title).toEqual('Shopping Loop');
         expect(newTrip.places.length).toEqual(3);
-        let expectedNames = ['Denver', 'Boulder', 'Fort Collins'];
         for (let i = 0; i < newTrip.places.length; i++)
             expect(expectedNames).toContain(
                 newTrip.places[i].name
             );
-        let expectedDistances = [20, 40, 50];
         expect(expectedDistances).toEqual(newTrip.distances);
     });
 
     it('returns original object if trip file invalid', () => {
         delete mockTripFile.requestType;
-        let newTrip = trip.uploadFile(mockTripFile)
+        let newTrip = trip.loadJSON(mockTripFile)
         expect(newTrip.title).toEqual('My Trip');
         expect(newTrip.places.length).toEqual(0);
     });

@@ -106,12 +106,11 @@ export default class Trip {
     }
 
     loadJSON(tripFile) {
+        if(!isJsonResponseValid(tripFile, tripFileSchema))
+            return this;
         let newTrip = this.copy();
-        newTrip.requestVersion = tripFile.requestVersion;
-        newTrip.requestType = tripFile.requestVersion;
-        newTrip.options = tripFile.options;
-        newTrip.places = tripFile.places;
-        newTrip.distances = tripFile.distances;
+        for (const property in tripFile)
+            newTrip[property] = tripFile[property];
         return newTrip;
     }
 
@@ -163,15 +162,6 @@ export default class Trip {
             "leg_dist": legDist,
             "cumulative_dist": cumulativeDist
         };
-    }
-
-    uploadFile(file) {
-        if(!isJsonResponseValid(file, tripFileSchema))
-           return this;
-        let newTrip = this.copy();
-        for (const property in file)
-            newTrip[property] = file[property];
-        return newTrip;
     }
 }
 
