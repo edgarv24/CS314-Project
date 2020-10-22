@@ -170,6 +170,40 @@ describe('Trip', () => {
         expect(actualDistances).toEqual(expectedDistances);
     });
 
+    it('loads a JSON file into properties', () => {
+        let tripFile = {
+            "requestType": "trip",
+            "requestVersion": 3,
+            "options": {
+                "title": "Shopping Loop",
+                "earthRadius": "3959.0"
+            },
+            "places": [
+                {
+                    "name": "Denver",
+                    "latitude": "39° 44' 31.3548'' N",
+                    "longitude": "104° 59' 29.5116'' W",
+                    "notes": "The big city"
+                },
+                {
+                    "name": "Boulder",
+                    "latitude": "40° 0' 53.9424'' N",
+                    "longitude": "105° 16' 13.9656'' W",
+                    "notes": "Home of CU"
+                },
+                {
+                    "name": "Fort Collins",
+                    "latitude": "40° 35' 6.9288'' N",
+                    "longitude": "105° 5' 3.9084'' W",
+                    "notes": "Home of CSU"
+                }],
+            "distances": [20, 40, 50]
+        }
+        let newTrip = trip.loadJSON(tripFile);
+        expect(newTrip.title).toEqual('Shopping Loop');
+        expect(newTrip.places.length).toEqual(3);
+    });
+
     it('creates a JSON tripFile', () => {
         let expectedJSON = {
             "requestType": "trip",
@@ -198,19 +232,27 @@ describe('Trip', () => {
     it('returns place data compatible with the itinerary', () => {
         const p1 = {'name': 'Water Park', 'municipality': 'London', 'country': 'England',
             'latitude': '8', 'longitude': '24', 'notes': 'fun'};
-        const p2 = {'name': 'Zoo', 'municipality': 'Denver', 'state': 'Colorado', 'country': 'United States',
+        const p2 = {'name': '', 'municipality': 'Denver', 'state': 'Colorado', 'country': 'United States',
             'latitude': '3', 'longitude': '7'};
 
         const newTrip = trip.addPlaces([p1, p2]);
         const itineraryData = newTrip.itineraryPlaceData;
 
-        const expected1 = {"id": "destination-1", "name": "Water Park", "latitude": "8", "longitude": "24", "municipality": "London",
-            "state": "", "country": "England", "altitude": "", "notes": "fun", "leg_dist": 0, "cumulative_dist": 0};
-        const expected2 = {"id": "destination-2", "name": "Zoo", "latitude": "3", "longitude": "7", "municipality": "Denver",
-            "state": "Colorado", "country": "United States", "altitude": "", "notes": "", "leg_dist": 0, "cumulative_dist": 0};
+        const expected1 = {"id": "destination-1", "name": "Water Park", "latitude": "8", "longitude": "24",
+            "municipality": "London", "state": "", "country": "England", "altitude": "", "notes": "fun",
+            "primary_text": "Water Park", "location_text": "London, England", "leg_dist": 0, "cumulative_dist": 0};
+        const expected2 = {"id": "destination-2", "name": "", "latitude": "3", "longitude": "7",
+            "municipality": "Denver", "state": "Colorado", "country": "United States", "altitude": "", "notes": "",
+            "primary_text": "(3, 7)", "location_text": "Denver, Colorado", "leg_dist": 0, "cumulative_dist": 0};
 
         expect(itineraryData[0]).toEqual(expected1);
         expect(itineraryData[1]).toEqual(expected2);
+    });
+
+    it('gets the correct primary text', () => {
+        const place = {'name': '', 'municipality': 'Denver', 'state': 'Colorado', 'country': 'United States',
+            'latitude': '3.5891', 'longitude': '7.9910'};
+        expect(trip.primaryText(place)).toEqual("(3.5891, 7.9910)")
     });
 
     it('sends requests to server to update distances', () => {
@@ -221,10 +263,10 @@ describe('Trip', () => {
     });
 
     it('does not alter distances with bad coordinates', () => {
-       const invalidPlace = {"name": "place1", "latitude": "40 W", "longitude": "40 N"};
+        const invalidPlace = {"name": "place1", "latitude": "40 W", "longitude": "40 N"};
 
-       const newTrip = trip.addPlace(invalidPlace);
-       expect(newTrip.places).toEqual(trip.places);
+        const newTrip = trip.addPlace(invalidPlace);
+        expect(newTrip.places).toEqual(trip.places);
     });
 
     it('checks multiple places for valid coordinates', () => {
