@@ -6,6 +6,7 @@ import {mount, shallow} from 'enzyme';
 
 import FindModal from '../src/components/Atlas/FindModal';
 import {test} from "@jest/globals";
+import {ListItem} from "@material-ui/core";
 
 test("Testing FindModal's Initial State", testInitialFindModalState);
 function testInitialFindModalState() {
@@ -65,19 +66,15 @@ function testListSize() {
 }
 
 test("Testing listItem", () => {
-    const findModal = mount(<FindModal/>);
-    findModal.setState({listToggle: true, places: [{"name": "Airport 1", "latitude": "90", "longitude": "100"}]});
-    findModal.update();
-    let listItem = findModal.find("ListItem");
-    expect(listItem.length).toEqual(1);
-    let event = {target: {value: "Airport 1"}};
-
-    expect(findModal.state().listToggle).toEqual(true);
-
-    listItem.simulate("click", event);
-
-    let actualListItem = findModal.state().selectedPlace;
-    let expectedListItem = "Airport 1";
-
-    expect(actualListItem).toEqual(expectedListItem);
+    const findModal = shallow(<FindModal/>);
+    findModal.setState({listToggle: true, places: [
+            {"name": "Airport 1", "latitude": "90", "longitude": "100"},
+            {"name": "Airport 2", "latitude": "90", "longitude": "100"},
+            {"name": "Airport 3", "latitude": "90", "longitude": "100"}]
+    });
+    let listItems = findModal.instance().renderList();
+    expect(listItems.type).toBe(ListItem.type);
+    expect(listItems[0].key).toEqual('Airport 1');
+    expect(listItems[1].key).toEqual('Airport 2');
+    expect(listItems[2].key).toEqual('Airport 3');
 });
