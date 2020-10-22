@@ -1,7 +1,7 @@
 import './jestConfig/enzyme.config.js';
 
 import React from 'react';
-import {mount, shallow} from 'enzyme';
+import {shallow} from 'enzyme';
 
 
 import FindModal from '../src/components/Atlas/FindModal';
@@ -77,4 +77,29 @@ test("Testing listItem", () => {
     expect(listItems[0].key).toEqual('Airport 1');
     expect(listItems[1].key).toEqual('Airport 2');
     expect(listItems[2].key).toEqual('Airport 3');
+});
+
+test("Testing listItem onClick", () => {
+    const findModal = shallow(<FindModal/>);
+    findModal.setState({listToggle: true, places: [
+            {"name": "Airport 1", "latitude": "90", "longitude": "100"},
+            {"name": "Airport 2", "latitude": "90", "longitude": "100"},
+            {"name": "Airport 3", "latitude": "90", "longitude": "100"}]
+    });
+    expect(findModal.state().listToggle).toEqual(true);
+    expect(findModal.state().places.length).toEqual(3);
+
+    findModal.update();
+
+    let listItems = findModal.find(ListItem);
+    expect(listItems.length).toEqual(3);
+
+    listItems.at(0).simulate('click');
+    expect(findModal.state().selectedPlace).toEqual({"latitude": "90", "longitude": "100", "name": "Airport 1"})
+
+    listItems.at(1).simulate('click');
+    expect(findModal.state().selectedPlace).toEqual({"latitude": "90", "longitude": "100", "name": "Airport 2"})
+
+    listItems.at(2).simulate('click');
+    expect(findModal.state().selectedPlace).toEqual({"latitude": "90", "longitude": "100", "name": "Airport 3"})
 });
