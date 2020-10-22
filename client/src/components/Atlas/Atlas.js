@@ -21,7 +21,7 @@ import Trip from "./Trip"
 import DistanceModal from "./DistanceModal";
 import FindModal from "./FindModal";
 
-import {LOG} from "../../utils/constants"
+import {LOG} from "../../utils/constants";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -195,6 +195,7 @@ export default class Atlas extends Component {
             <FindModal
                 isOpen={this.state.findModalOpen}
                 toggleOpen={(isOpen = !this.state.findModalOpen) => this.setState({findModalOpen: isOpen})}
+                processFindRequestViewLocation={this.processFindRequestViewLocation}
             />
         );
     }
@@ -275,6 +276,17 @@ export default class Atlas extends Component {
         }
     }
 
+    setMapToPlace(selectPlace) {
+        this.setState({
+            markerPosition: this.state.markerPosition,
+            secondMarkerPosition: selectPlace,
+            mapCenter: selectPlace,
+            mapBounds: null,
+            zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM,
+            distanceLabel: null
+        });
+    }
+
     getHomePosition() {
         if (this.state.userPosition)
             return this.state.userPosition;
@@ -299,6 +311,7 @@ export default class Atlas extends Component {
 
     processFindRequestViewLocation(placeData) {
         // do a setState to change map center or bounds, or something like setMapToHome to move markers
+        this.setMapToPlace(placeData);
     }
 
     processDistanceRequestSuccess(coordinate1, coordinate2, distance) {
