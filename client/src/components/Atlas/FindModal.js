@@ -18,8 +18,7 @@ import * as findSchema from "../../../schemas/FindResponse.json";
 import {PROTOCOL_VERSION} from "../../utils/constants";
 
 import ListItem from "@material-ui/core/ListItem";
-
-import {LOG} from "../../utils/constants";
+import Atlas from "./Atlas";
 
 export default class FindModal extends Component {
 
@@ -93,18 +92,10 @@ export default class FindModal extends Component {
         );
     }
 
-    /*renderTripButton(){
-        if (this.state.buttonToggle) {
-            return (
-                <Button id="trip-button" className="mr-2" color='primary' onClick={() => this.props.processFindRequestAddToTrip(this.state.selectedPlace)}> Add to Trip </Button>
-            );
-        }
-    }*/
-
     renderLocateButton(){
         if (this.state.buttonToggle){
             return(
-                <Button id="locate-button" className="mr-2" color='primary' onClick={() => this.props.setMapToPlace(this.state.selectedPlace)}> Locate </Button>
+                <Button id="locate-button" className="mr-2" color='primary' onClick={() => Atlas.prototype.processFindRequestViewLocation(this.state.selectedPlace)}> Locate </Button>
             );
         }
     }

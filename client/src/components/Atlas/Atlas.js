@@ -276,16 +276,16 @@ export default class Atlas extends Component {
         }
     }
 
-    setMapToPlace(selectPlace) {
+    /*setMapToPlace(selectPlace) {
         this.setState({
-            markerPosition: this.state.markerPosition,
+            markerPosition: this.state.secondMarkerPosition,
             secondMarkerPosition: selectPlace,
-            mapCenter: selectPlace,
+            mapCenter: selectPlace.latlng,
             mapBounds: null,
             zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM,
             distanceLabel: null
         });
-    }
+    }*/
 
     getHomePosition() {
         if (this.state.userPosition)
@@ -309,9 +309,13 @@ export default class Atlas extends Component {
         // ex) this.setState({setOtherStateVars..., trip: this.state.trip.addDestination(placeData)});
     }
 
-    processFindRequestViewLocation(placeData) {
+    processFindRequestViewLocation(selectPlace) {
         // do a setState to change map center or bounds, or something like setMapToHome to move markers
-        this.setMapToPlace(placeData);
+        this.setState({
+            markerPosition: this.state.secondMarkerPosition,
+            secondMarkerPosition: selectPlace,
+            mapCenter: selectPlace.latlng
+        });
     }
 
     processDistanceRequestSuccess(coordinate1, coordinate2, distance) {

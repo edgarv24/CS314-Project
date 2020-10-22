@@ -7,6 +7,7 @@ import {shallow} from 'enzyme';
 import FindModal from '../src/components/Atlas/FindModal';
 import {test} from "@jest/globals";
 import {ListItem} from "@material-ui/core";
+import Atlas from "../src/components/Atlas/Atlas";
 
 test("Testing FindModal's Initial State", testInitialFindModalState);
 function testInitialFindModalState() {
@@ -102,4 +103,37 @@ test("Testing listItem onClick", () => {
 
     listItems.at(2).simulate('click');
     expect(findModal.state().selectedPlace).toEqual({"latitude": "90", "longitude": "100", "name": "Airport 3"})
+});
+
+test("Testing Locate button", () => {
+    const findModal = shallow(<FindModal/>);
+    const atlas = shallow(<Atlas/>)
+    findModal.setState({selectedPlace: {"latitude": "90", "longitude": "100", "name": "Airport 1"}});
+    findModal.update();
+    expect(findModal.state().selectedPlace).toEqual({"latitude": "90", "longitude": "100", "name": "Airport 1"});
+
+    expect(findModal.state().buttonToggle).toEqual(false);
+    findModal.setState({buttonToggle: true});
+    expect(findModal.state().buttonToggle).toEqual(true);
+
+    let locateButton = findModal.find("#locate-button");
+    expect(locateButton.length).toEqual(1);
+
+    let testPos = {lat: 50, lng: 60};
+    atlas.setState({
+        markerPosition: {lat: 20, lng: 20},
+        secondMarkerPosition: testPos,
+        mapCenter: testPos.latlng
+    });
+    atlas.update();
+    expect(atlas.state().markerPosition).toEqual({lat: 20, lng: 20});
+    expect(atlas.state().secondMarkerPosition).toEqual(testPos);
+
+    // Is this line resetting Atlas so that the previous setState and .update() are not applied?
+    locateButton.simulate('click');
+
+    atlas.update();
+
+    expect(atlas.state().secondMarkerPosition).toEqual(findModal.state().selectedPlace);
+
 });
