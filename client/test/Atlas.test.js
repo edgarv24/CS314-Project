@@ -4,6 +4,7 @@ import React from 'react';
 import {mount, shallow} from 'enzyme';
 
 import Atlas from '../src/components/Atlas/Atlas';
+import Itinerary from "../src/components/Atlas/Itinerary";
 import {Polyline} from "react-leaflet";
 import {beforeEach, describe, jest, test} from "@jest/globals";
 
@@ -13,6 +14,7 @@ const MAP_DEFAULT_ZOOM = 15;
 const startProperties = {
     createSnackBar: jest.fn()
 };
+
 describe('Atlas', () => {
     let atlas;
     let atlasMounted;
@@ -191,4 +193,9 @@ describe('Atlas', () => {
         expect(atlas.state().zoomLevel).toEqual(MAP_DEFAULT_ZOOM);
     });
 
+    test("Test itinerary is rendered", () => {
+        const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
+        const itinerary = atlasWrapper.find(Itinerary).at(0);
+        expect(itinerary).toBeDefined();
+    });
 });
