@@ -81,7 +81,7 @@ Modify trip
 
 ### Epics done  
 Introduction
-* The goal of sprint 3 was to give the user the ability to build a trip. The epics we completed satisfy this requirement by adding support for trip API requests, building a find modal to retrieve and add airports from a database, and adding an itinerary to view and modify the places in the trip. The completed and uncompleted epics and their details are outlined below.
+* The goal of sprint 3 was to give users the ability to build a trip. The epics we completed satisfy this requirement by adding support for trip API requests, building a find modal to retrieve and add airports from a database, and adding an itinerary to view and modify the places in the trip. The completed and uncompleted epics and their details are outlined below.
 
 v3 protocol
 * Goal: Provide support for the v3 server protocol. 
