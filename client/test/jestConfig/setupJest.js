@@ -1,5 +1,3 @@
-import {jest} from "@jest/globals";
-
 global.fetch = require('jest-fetch-mock');
 
 // Subdue Console Messages in Jest Output (Console.error WILL get through for Testing!)
