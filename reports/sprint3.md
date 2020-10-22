@@ -80,20 +80,42 @@ Modify trip
 ## Review
 
 ### Epics done  
+Introduction
+* The goal of sprint 3 was to give the user the ability to build a trip. The epics we completed satisfy this requirement by adding support for trip API requests, building a find modal to retrieve and add airports from a database, and adding an itinerary to view and modify the places in the trip. The completed and uncompleted epics and their details are outlined below.
+
+v3 protocol
+* Goal: Provide support for the v3 server protocol. 
+* Process: We updated the Config and Find protocol objects and added one for Trip requests. Updating config was the simplest of the three as it required adding “trip” to the supported requests and updating the protocol version constant. The find protocol in v3 required more information coming back from the database about each place, including region, country, and url. The v3 protocol also required different behavior for Find, such as returning (limit) random places when a limit is specified without a match string. Finally, the RequestTrip class was created to calculate the leg distances between places listed in the request, including from the last place back around to the first. We wrote a new class to hold the current trip data such as trip title, earth radius, and attributes for each place.
+
+Find places
+* Goal: Allow users to search for airports from the database using a match string.
+* Process: To allow users to search for places, we built a find modal with an input box to enter a string to match. When the input box is changed, a server request is sent to /api/find to get a list of matching places from the database. These places are displayed in a scrollable list, where the user can select a place to either add to the trip or view on the map.
+
+Build a trip
+* Goal: Implement trip building and display it on the itinerary and map.
+* Process: We built an itinerary using material-ui table elements to display destination data. Each row holds the place name, location info, the current distance, and more detail by expanding the row. Then, we built a data class to store and modify the current trip through adding and removing places, loading and saving a trip JSON file, and sending server requests to calculate leg distances. This trip data is also used in the map for displaying the trip through markers and polylines. New destinations can be added from the database or by clicking on the map.
 
 ### Epics not done 
+Modify trip
+* Goal: Add functions to edit the trip and its destinations.
+* Plan: Our team did not get to completing this epic due to a shortage of time. We had planned to add the ability to edit destinations in a popup, reverse or change the start of the list, and update other trip information. Implementation of these features will be moved to the next sprint.
 
 ### What went well
+Many things went well this sprint, and it seemed to go smoother than previous sprints. For one, we were able to meet the sprint goal of building a trip. A big part of this came from our testing and attention to detail on the API and protocol, which allowed us to focus more on implementing client features. We put up a lot more planning up front and were able to have smaller tasks to work on, which made team development go more smoothly. We didn’t get everything done that we planned, but we fixed the broken distance modal from last sprint, added a modal for searching the database, and created an itinerary table for viewing trip data.
 
 ### Problems encountered and resolutions
-
+This one was of the more difficult sprints so far, and we had to overcome many problems. First, the codebase started to get complex, especially in files like Atlas.js, so we worked on cleaning up code and abstracting certain parts into new files and classes. This was seen with our Trip class for storing and modifying trip data. There were a lot of small issues that could go wrong when implementing the find popup, map marker functionality, and the itinerary, so we tried to write more tests and not rush writing the code. To figure out proper client-side testing, we had to read documentation and look at examples from others. Finally, we had difficulty finding time for scrum meetings, so we compromised by setting up informal Slack scrums.
 
 ## Retrospective
 
 ### What we changed this sprint
+Last sprint we did not do a great job of minimizing the size of each task in ZenHub. This time, we focused on breaking them down into smaller chunks so that more tasks could be completed in between class sessions and team members could contribute more to each part. This involved spending more time planning in general at the start of the sprint and helped us stay on track throughout the sprint. Additionally, we integrated code inspections into the process so that we could find defects in our logic and clean up messy components. We put an effort towards writing modular code that is easy to test and understand.
 
 ### What went well
+Even though it is difficult remotely, we incorporated more pair programming to limit easy logic mistakes and help work out solutions to complex problems. This was done through Slack, Microsoft Teams meetings, and simply sharing a remote branch. Also, we put more emphasis into testing our API with Postman and our client with test driven development. We spent more time attempting to write tests first before jumping into implementation. During the last sprint, we had well over 15 failed Travis builds, but this time we managed to limit those to under 5 by being more aware and making sure to test locally before pushing to GitHub. Finally, we substantially increased our understanding of React, including managing state and building more focused components.
 
 ### Potential improvements
+While we improved greatly on testing from last time, we would like to focus even more on test driven development going forward to help keep things from breaking as the project grows larger. We had a hard time raising our test coverage this sprint, and that will be a point of focus for next time. Time management could also be improved, as we seemed to flatline on the burndown report halfway through the sprint.
 
 ### What we will change next time
+In Sprint 4, we will try to better estimate the amount of tasks we can finish during the 3 week sprint. We overplanned this time and didn’t get very far into the Modify Trip epic. Our team will also work on cleaning up long and hard to maintain classes in the codebase. It is becoming difficult to fix and search for things in Atlas.js because it contains a lot of functionality that could be abstracted into other components and files.
