@@ -58,9 +58,9 @@ Modify trip
 
 | Statistic | # Planned | # Completed |
 | --- | ---: | ---: |
-| Epics | 4 | *count* |
-| Tasks |  34   | *count* | 
-| Story Points |  50  | *sum* | 
+| Epics | 4 | 3 |
+| Tasks |  34   | 31 | 
+| Story Points |  50  | 53 | 
 
 ### Confidence in Task Completion
 * Our team is mostly confident in our ability to complete the majority of the planned tasks for Sprint 3. We gained valuable experience with the code base and process during the last sprint that will allow us to make more timely and efficient progress this time around. We are hoping to either get ahead or stay on the progress line with the burndown chart because last time we got a little behind at the start. Our plan is to break up tasks more than before so that one person doesn’t get caught up in a major feature that takes days to finish. This will help us reach our goal.
