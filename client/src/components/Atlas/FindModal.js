@@ -18,8 +18,7 @@ import * as findSchema from "../../../schemas/FindResponse.json";
 import {PROTOCOL_VERSION} from "../../utils/constants";
 
 import ListItem from "@material-ui/core/ListItem";
-
-import {LOG} from "../../utils/constants";
+import Atlas from "./Atlas";
 
 export default class FindModal extends Component {
 
@@ -103,8 +102,11 @@ export default class FindModal extends Component {
 
     renderLocateButton(){
         if (this.state.buttonToggle){
+            //let latitude = parseInt(this.state.selectedPlace.latitude);
+            //let longitude = parseInt(this.state.selectedPlace.longitude);
+            //let position = {lat: latitude, lng: longitude};
             return(
-                <Button id="locate-button" className="mr-2" color='primary' onClick={() => this.props.setMapToPlace(this.state.selectedPlace)}> Locate </Button>
+                <Button id="locate-button" className="mr-2" color='primary' onClick={() => this.props.processFindRequestViewLocation({lat: parseInt(this.state.selectedPlace.latitude), lng: parseInt(this.state.selectedPlace.longitude)})}> Locate </Button>
             );
         }
     }
