@@ -89,7 +89,7 @@ v3 protocol
 
 Find places
 * Goal: Allow users to search for airports from the database using a match string.
-* Process: To allow users to search for places, we built a find modal with an input box to enter a string to match. When the input box is changed, a server request is sent to /api/find to get a list of matching places from the database. These places are displayed in a scrollable list, where the user can select a place to either add to the trip or view on the map.
+* Process: To allow users to search for places, we built a find modal with an input box to enter a string to match. When the input box is changed, a server request is sent to /api/find to get a list of matching places from the database. These places are displayed in a scrollable list, where the user can select a place to view on the map.
 
 Build a trip
 * Goal: Implement trip building and display it on the itinerary and map.
