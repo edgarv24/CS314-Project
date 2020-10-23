@@ -209,7 +209,7 @@ export default class Atlas extends Component {
         return (
             <Row className="mt-4">
                 <Col sm={12} md={{size: 10, offset: 1}} lg={{size: 8, offset: 2}}>
-                    <Itinerary trip={this.state.trip}/>
+                    <Itinerary trip={this.state.trip} setTrip={(newTrip) => this.setState({trip: newTrip})}/>
                 </Col>
             </Row>
         );
