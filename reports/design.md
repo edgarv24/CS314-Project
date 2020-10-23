@@ -143,20 +143,16 @@ The changes to the class diagram were minor. The Microserver is now interacting 
 # Sprint 3
 ### User Interface
 
-![sprint 3 user interface](../images/Sprint3UserInterface.png)
+![sprint 3 user interface](../images/Sprint3UserInterface(updated).png)
 
-Changes made to the UI will include adding two new components and a table with buttons. These additions will allow users functionality to find specific places on the map and to build and modify a trip that will appear on the map.
-
-* The first new component will be a Find places button that will open a popup that takes in a string and returns a list of locations based on that string. The popup will have an Add to Trip button that adds the selected location to the trip table, a Locate button that will update the map marker to the selected location, and a Cancel button that exits the popup.
-* The second new component will be a Build Trip button that will open a popup that takes name, longitude, and latitude and returns the leg distance and cumulative distances for the new location. The popup will have an Add button and a Cancel button.
-* The trip table will display Name, Longitude, Latitude, Leg Distance, and Cumulative Distance for each location on the trip and will be updated by the Build Trip button. It will also have a table label with an edit button to add a table name and a variety of other buttons that will remove individual locations, allow user to modify individual locations, allow notes to be added for individual locations, reverse the order of the table listings, save the current trip table as a JSON, and load a previously saved trip table JSON into the trip table.
+User Interface had many changes made to it during this sprint. The Where Am I button, the Calculate Distance button, the Find Places button, and the trip table that were previously going to be underneath the map moved onto the map as buttons. Changes made to the UI also included two new components. The Find modal allows users to enter a match string into an input box to receive back a list of matching places from the database without any button presses. Each place is displayed in a ListItem that is selectable for either adding it to the trip or viewing it on the map. The Itinerary component below the map is a tool used to display and modify the current destinations in the trip. It shows details on each destination, as well as the respective leg and cumulative distances. There are buttons to change trip settings, scroll the page, or add a destination. A gold marker is rendered on the Atlas for every place in the trip, with polylines showing the path between them.
 
 
 ### Component Hierarchy
 
-![sprint 3 component hierarchy](../images/Sprint3ComponentHierarchy.png)
+![sprint 3 component hierarchy](../images/Sprint3ComponentHierarchy(updated).png)
 
-Modifications to the component hierarchy will be adding three new components: Find Places, Build Trip, and Modify Trip. All of these components will have state and lift state to the Atlas component.
+The component hierarchy was modified by adding two new components: one for finding places in the database, and another for building and displaying the current trip. Both of these components have state that is lifted to the parent Atlas component, such as whether or not they should be open.
 
 ### Class Diagram
 
