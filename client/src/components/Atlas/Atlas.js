@@ -303,7 +303,7 @@ export default class Atlas extends Component {
         this.setState({
             markerPosition: this.state.secondMarkerPosition,
             secondMarkerPosition: selectPlace,
-            mapCenter: selectPlace.latlng
+            mapCenter: selectPlace
         });
     }
 
