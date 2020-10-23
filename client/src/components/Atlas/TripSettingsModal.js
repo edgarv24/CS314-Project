@@ -5,7 +5,7 @@ import coBrews from "../../../test/TripFiles/co-brews.json"
 import usBrews from "../../../test/TripFiles/us-brews.json";
 import worldBrews from "../../../test/TripFiles/world-brews.json";
 
-export function TripSettingsModal({trip, setTrip, isOpen, toggleOpen}) {
+export function TripSettingsModal({trip, setTrip, updatePlaceData, isOpen, toggleOpen}) {
     const [titleInput, setTitleInput] = React.useState(trip.title);
     const [realTitle, setRealTitle] = React.useState(trip.title);
 
@@ -26,8 +26,9 @@ export function TripSettingsModal({trip, setTrip, isOpen, toggleOpen}) {
 
     const loadButton = (name, tripFile) => {
         return (
-            <Button id="load-co-brews" className="mr-3" size="sm" color="primary" type="button" outline onClick={() => {
+            <Button id={`load-${name}`} className="mr-3 mb-3" size="sm" color="primary" type="button" outline onClick={() => {
                 setTrip(trip.loadJSON(tripFile));
+                updatePlaceData();
                 resetState()
             }}>
                 {name}

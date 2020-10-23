@@ -5,7 +5,7 @@ import React from 'react'
 import Itinerary from "../src/components/Atlas/Itinerary";
 import Trip from "../src/components/Atlas/Trip";
 import peaksTrip from "../test/TripFiles/peaks-trip.json";
-import {beforeEach, describe, it} from "@jest/globals";
+import {beforeEach, describe, it, jest} from "@jest/globals";
 
 const TRIP = new Trip().loadJSON(peaksTrip);
 
@@ -18,11 +18,12 @@ describe('Itinerary', () => {
 
     const setTrip = (newTrip) => trip = newTrip;
     const toggleOpen = (open) => isOpen = !open;
+    const updatePlaceData = jest.fn();
 
     beforeEach(() => {
         trip = new Trip().loadJSON(peaksTrip);
         isOpen = true;
-        wrapper = shallow(<TripSettingsModal trip={TRIP} setTrip={setTrip} isOpen={isOpen} toggleOpen={toggleOpen}/>);
+        wrapper = shallow(<TripSettingsModal trip={TRIP} setTrip={setTrip} updatePlaceData={updatePlaceData} isOpen={isOpen} toggleOpen={toggleOpen}/>);
     });
 
     it("renders inputs", () => {
