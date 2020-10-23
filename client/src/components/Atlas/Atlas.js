@@ -26,8 +26,6 @@ import FindModal from "./FindModal";
 
 import {LOG} from "../../utils/constants";
 
-import tripFile from "../../../test/TripFiles/peaks-trip.json";
-
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
 const BLUE_MARKER = L.icon({iconUrl: blue_icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
@@ -64,7 +62,7 @@ export default class Atlas extends Component {
             findModalOpen: false,
             distanceLabel: null,
             displayTripMarkers: true,
-            displayTripLines: true
+            displayTripLines: false
         };
     }
 
@@ -170,8 +168,7 @@ export default class Atlas extends Component {
                     userPosition: homePosition,
                     markerPosition: homePosition,
                     mapCenter: homePosition,
-                    mapBounds: null,
-                    trip: this.state.trip.loadJSON(tripFile)
+                    mapBounds: null
                 })
             });
         }

@@ -19,13 +19,10 @@ export default class Itinerary extends React.Component {
 
         this.state = {
             placeData: this.props.trip.itineraryPlaceData,
-            settingsModalOpen: false,
-            goodData: false
+            settingsModalOpen: false
         };
-    }
 
-    componentDidMount() {
-        this.updatePlaceDataOnServerRequestComplete();
+        this.updatePlaceDataOnServerRequestComplete = this.updatePlaceDataOnServerRequestComplete.bind(this);
     }
 
     updatePlaceDataOnServerRequestComplete() {
@@ -48,6 +45,7 @@ export default class Itinerary extends React.Component {
                     trip={this.props.trip}
                     setTrip={this.props.setTrip}
                     isOpen={this.state.settingsModalOpen}
+                    updatePlaceData={this.updatePlaceDataOnServerRequestComplete}
                     toggleOpen={(isOpen = !this.state.settingsModalOpen) => this.setState({settingsModalOpen: isOpen})}/>
             </Paper>
         );
