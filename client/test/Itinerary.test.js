@@ -37,12 +37,14 @@ describe('Itinerary', () => {
     it('has working buttons', () => {
         window.scrollTo = jest.fn();
 
-        wrapper.find('#trip-settings-button').simulate('click');
-        wrapper.find('#add-destination-button').simulate('click');
         wrapper.find('#scroll-up-button').simulate('click');
         wrapper.update();
-
         expect(window.scrollY).toEqual(0);
+
+        wrapper.find('#trip-settings-button').simulate('click');
+        expect(wrapper.state().settingsModalOpen).toBe(true);
+
+        wrapper.find('#add-destination-button').simulate('click');
     });
 
     it('gets the correct distance label', () => {

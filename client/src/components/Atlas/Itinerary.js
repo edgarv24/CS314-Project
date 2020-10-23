@@ -11,12 +11,16 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import FlightIcon from "@material-ui/icons/Flight";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
+import {TripSettingsModal} from './TripSettingsModal';
+
 export default class Itinerary extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            placeData: this.props.trip.itineraryPlaceData
+            placeData: this.props.trip.itineraryPlaceData,
+            settingsModalOpen: false,
+            goodData: false
         };
     }
 
@@ -28,10 +32,10 @@ export default class Itinerary extends React.Component {
         // Send new server request in Trip to make sure values are updated.
         // When the asynchronous request finishes, the callback will update
         // placeData here and also re-render this component.
-        // this.props.trip.sendTripServerRequest(this.props.trip, () => {
-        //     const newPlaceData = this.props.trip.itineraryPlaceData;
-        //     this.setState({placeData: newPlaceData});
-        // });
+        this.props.trip.updateDistance(() => {
+            const newPlaceData = this.props.trip.itineraryPlaceData;
+            this.setState({placeData: newPlaceData});
+        });
     }
 
     render() {
@@ -40,6 +44,11 @@ export default class Itinerary extends React.Component {
                 {this.renderHeader()}
                 <hr style={{borderWidth: "2px", marginBottom: 0}}/>
                 <DestinationTable data={this.state.placeData}/>
+                <TripSettingsModal
+                    trip={this.props.trip}
+                    setTrip={this.props.setTrip}
+                    isOpen={this.state.settingsModalOpen}
+                    toggleOpen={(isOpen = !this.state.settingsModalOpen) => this.setState({settingsModalOpen: isOpen})}/>
             </Paper>
         );
     }
@@ -57,11 +66,12 @@ export default class Itinerary extends React.Component {
     renderButtons() {
         return (
             <div className="mt-3">
-                <Button id="trip-settings-button" outline size="sm" color="primary" onClick={() => undefined}>
+                <Button id="trip-settings-button" outline size="sm" color="primary"
+                        onClick={() => this.setState({settingsModalOpen: true})}>
                     Trip Settings
                 </Button>
                 <Button id="add-destination-button" outline className="ml-3" size="sm" color="primary"
-                        onClick={() => undefined}>
+                        onClick={() => undefined} disabled={true}>
                     Add Destination
                 </Button>
                 {this.renderScrollUpButton()}
@@ -189,7 +199,6 @@ export const DestinationTable = ({data}) => {
         </TableContainer>
     );
 }
-
 
 export function TableActions({count, page, rowsPerPage, onChangePage}) {
     const handleFirstPageButtonClick = (event) => {

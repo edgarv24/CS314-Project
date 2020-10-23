@@ -20,8 +20,10 @@ export default class Trip {
         sendServerRequest(this.constructRequestBody()).then(responseJSON => {
             if (responseJSON) {
                 const responseBody = responseJSON.data;
-                if (isJsonResponseValid(responseBody, tripSchema))
+                if (isJsonResponseValid(responseBody, tripSchema)) {
                     this.distances = responseBody.distances;
+                    onFinish();
+                }
             }
         });
     }
