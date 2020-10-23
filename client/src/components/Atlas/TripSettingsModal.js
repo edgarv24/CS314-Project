@@ -26,7 +26,7 @@ export function TripSettingsModal({trip, setTrip, isOpen, toggleOpen}) {
 
     const loadButton = (name, tripFile) => {
         return (
-            <Button id="load-co-brews" className="mr-3" size="sm" color="primary" type="button" outline onClick={() => {
+            <Button id="load-co-brews" className="mr-3 mb-3" size="sm" color="primary" type="button" outline onClick={() => {
                 setTrip(trip.loadJSON(tripFile));
                 resetState()
             }}>

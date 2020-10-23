@@ -16,6 +16,8 @@ import GpsFixedIcon from '@material-ui/icons/GpsFixed';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import LinearScaleIcon from '@material-ui/icons/LinearScale';
 import SearchIcon from '@material-ui/icons/Search';
+import LocationOffIcon from '@material-ui/icons/LocationOff';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 import Trip from "./Trip";
 import Itinerary from "./Itinerary";
@@ -51,7 +53,7 @@ export default class Atlas extends Component {
         this.processFindRequestViewLocation = this.processFindRequestViewLocation.bind(this);
 
         this.state = {
-            trip: new Trip().loadJSON(tripFile),
+            trip: new Trip(),
             userPosition: null,
             markerPosition: null,
             secondMarkerPosition: null,
@@ -60,7 +62,9 @@ export default class Atlas extends Component {
             zoomLevel: MAP_DEFAULT_ZOOM,
             distModalOpen: false,
             findModalOpen: false,
-            distanceLabel: null
+            distanceLabel: null,
+            displayTripMarkers: true,
+            displayTripLines: true
         };
     }
 
@@ -86,8 +90,7 @@ export default class Atlas extends Component {
                 <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
                 {this.renderMapButtons()}
                 {this.renderMapMarkers()}
-
-                {this.state.distanceLabel != null && this.renderPolyline()}
+                {this.renderPolylines()}
             </Map>
         );
     }
@@ -104,6 +107,12 @@ export default class Atlas extends Component {
                 <MapButton buttonID="find-button" buttonIcon={<SearchIcon/>} mapPosition="topleft"
                            tooltipText="Find Place by Name" tooltipPlacement="right"
                            onClick={() => this.setState({findModalOpen: true})}/>
+                <MapButton buttonID="toggle-trip-markers" buttonIcon={<LocationOffIcon/>} mapPosition="topleft"
+                           tooltipText="Toggle Trip Markers" tooltipPlacement="right"
+                           onClick={() => this.setState({displayTripMarkers: !this.state.displayTripMarkers})}/>
+                <MapButton buttonID="toggle-trip-lines" buttonIcon={<RemoveIcon/>} mapPosition="topleft"
+                           tooltipText="Toggle Trip Lines" tooltipPlacement="right"
+                           onClick={() => this.setState({displayTripLines: !this.state.displayTripLines})}/>
                 <MapButton buttonID="scroll-down-button" buttonIcon={<ArrowDownwardIcon/>} mapPosition="topright"
                            tooltipText="Itinerary" tooltipPlacement="left"
                            onClick={() => window.scrollTo({top: document.body.offsetHeight, behavior: 'smooth'})}/>
@@ -114,15 +123,42 @@ export default class Atlas extends Component {
     renderMapMarkers() {
         const placeData = this.state.trip.itineraryPlaceData;
         return (
-            <div>
-                {this.state.trip.coordinatesList.map((position, index) =>
+            <>
+                {this.state.displayTripMarkers && this.state.trip.coordinatesList.map((position, index) =>
                     this.getMarker(position, GOLD_MARKER, false, placeData[index].id)
                 )};
                 {this.getMarker(this.state.markerPosition, BLUE_MARKER, true, "first")}
                 {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, true, "second")}
                 {this.getMarker(this.state.userPosition, RED_MARKER, false, "user")}
-            </div>
+            </>
         );
+    }
+
+    renderPolylines() {
+        const placeData = this.state.trip.itineraryPlaceData;
+        return (
+            <>
+                {this.state.displayTripLines && this.getPairsForPolylines().map((pair, index) =>
+                    this.renderPolyline(pair[0], pair[1], "green", false, placeData[index].id + "-line")
+                )};
+
+                {this.state.distanceLabel != null && this.renderPolyline(
+                    this.state.markerPosition, this.state.secondMarkerPosition, "red", true, "twoPoint")}
+            </>
+        );
+
+    }
+
+    getPairsForPolylines() {
+        const coordinates = this.state.trip.coordinatesList;
+        const numCoords = coordinates.length;
+        if (coordinates.length < 2)
+            return [];
+
+        let pairs = [];
+        for (let i = 0; i < coordinates.length; i++)
+            pairs.push([coordinates[i], coordinates[(i+1) % numCoords]]);
+        return pairs;
     }
 
     componentDidMount() {
@@ -134,7 +170,8 @@ export default class Atlas extends Component {
                     userPosition: homePosition,
                     markerPosition: homePosition,
                     mapCenter: homePosition,
-                    mapBounds: null
+                    mapBounds: null,
+                    trip: this.state.trip.loadJSON(tripFile)
                 })
             });
         }
@@ -259,18 +296,17 @@ export default class Atlas extends Component {
         return position.lat.toFixed(2) + ', ' + position.lng.toFixed(2);
     }
 
-    renderPolyline() {
+    renderPolyline(position1, position2, color, usePopup, key) {
         const initMarker = ref => {
-            if (ref) {
+            if (ref && usePopup) {
                 ref.leafletElement.openPopup()
             }
         };
 
-        if (this.state.markerPosition && this.state.secondMarkerPosition) {
+        if (position1 && position2) {
             return (
-                <Polyline ref={initMarker} color={'red'} positions={
-                    [[this.state.markerPosition.lat, this.state.markerPosition.lng],
-                        [this.state.secondMarkerPosition.lat, this.state.secondMarkerPosition.lng]]}>
+                <Polyline key={key} ref={initMarker} color={color} positions={
+                    [[position1.lat, position1.lng], [position2.lat, position2.lng]]}>
                     <Popup offset={[0, -1]} className="font-weight-bold">Distance: {this.getDistanceLabelText()}</Popup>
                 </Polyline>
             );
