@@ -147,7 +147,7 @@ The changes to the class diagram were minor. The Microserver is now interacting 
 
 User Interface had many changes made to it during this sprint, including adding two new components. 
 * The Where Am I button, the Calculate Distance button, the Find Places button that were previously going to be underneath the map moved onto the map as buttons. The trip table was turned into a button on the map that opens a table underneath the map.
-* The Find modal allows users to enter a match string into an input box to receive back a list of matching places from the database without any button presses. Each place is displayed in a ListItem that is selectable for either adding it to the trip or viewing it on the map. 
+* The Find modal allows users to enter a match string into an input box to receive back a list of matching places from the database without any button presses. Each place is displayed in a ListItem that is selectable for viewing it on the map. 
 * The Itinerary component below the map is a tool used to display and modify the current destinations in the trip. It shows details on each destination, as well as the respective leg and cumulative distances. There are buttons to change trip settings, scroll the page, or add a destination. A gold marker is rendered on the Atlas for every place in the trip, with polylines showing the path between them.
 
 
