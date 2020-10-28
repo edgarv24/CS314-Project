@@ -56,9 +56,9 @@ User Experience
 
 | Statistic | # Planned | # Completed |
 | --- | ---: | ---: |
-| Epics | *count* | *count* |
-| Tasks |  *count*   | *count* | 
-| Story Points |  *sum*  | *sum* | 
+| Epics | 4 | *count* |
+| Tasks |  28   | *count* | 
+| Story Points |  43  | *sum* | 
 
 ### Confidence in Task Completion
 Our team feels good about our ability to complete the majority of the tasks we have planned. Our production improved significantly between sprints 2 and 3, where we increased the number of completed story points by nearly 36%. We did overplan during sprint 3 and didn’t end up finishing one of the epics, but our knowledge has improved and we are more aware of what it will take to reach our goal. For this sprint, we will attempt to stay more consistent on the burndown report with reduced flatlining.
