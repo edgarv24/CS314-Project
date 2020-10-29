@@ -8,7 +8,7 @@
     "requestVersion": {
       "description":"the TIP protocol version",
       "type":"integer",
-      "minimum": 4
+      "minimum": 1
     },
     "requestType": {
       "description":"the TIP object type should be config",
