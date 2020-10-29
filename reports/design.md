@@ -164,4 +164,24 @@ The component hierarchy was modified by adding two new components: one for findi
 The changes to the class diagram are going to be minor. The Microserver will now interact with RequestTrip.java, a class that we have to implement that will extend RequestHeader.java. This is done to support the v3 protocol and enable the server to determine what kind of request to build.
 
 # Sprint 4 
+### User Interface
+
+![sprint 4 user interface](../images/Sprint4UserInterface.png)
+
+Changes made to the UI will include adding multiple functionalities to existing modals and adding the ability for optimization to the trip itinerary.
+* Add to Trip button will be added to the Find Location modal and allow users to add a selected location to the trip itinerary 
+* The Find Modal will have options to filter results by airport-type and country/region
+* The map marker popups will display more information and button options
+* Clicking on the map will offer an option to add that location to the trip itinerary 
+* An Optimization button will be added to the map that will utilize an optimization algorithm and reorder the trip itinerary when clicked
+* The Add Destination button in the Trip Table will have the option for users to add a location by filling out fields
+* Each location row will retain the user’s coordinate formatting and there will be a collapsible section that will show additional information about the location 
+*Save and Load buttons will be able to save current trip itineraries and load previously saved trip itineraries 
+
+### Class Diagram
+
+![sprint 4 class diagram](../images/Sprint4ClassDiagram.png)
+
+The changes to the class diagram are going to be minor. The RequestTrip.java will interact with the helper class OptimizeTrip.java, a class that we have to implement that will add optimization to the RequestTrip. The image was also updated to include previously added helper classes QueryDatabase.java and CalculateDistance.java.
+
 # Sprint 5
