@@ -67,8 +67,8 @@ Our team feels good about our ability to complete the majority of the tasks we h
 ## Scrums
 
 | Date | Tasks closed  | Tasks in progress | Impediments |
-| 10-28-20 | none | #276 #265 #266 #267 | none |
-
+| :--- | :--- | :--- | :--- |
+| 10-28-2020 | none | #265 #266 #267 #276 | none |
 
 ## Review
 
