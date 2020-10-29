@@ -176,7 +176,7 @@ Changes made to the UI will include adding multiple functionalities to existing 
 * An Optimization button will be added to the map that will utilize an optimization algorithm and reorder the trip itinerary when clicked
 * The Add Destination button in the Trip Table will have the option for users to add a location by filling out fields
 * Each location row will retain the user’s coordinate formatting and there will be a collapsible section that will show additional information about the location 
-*Save and Load buttons will be able to save current trip itineraries and load previously saved trip itineraries 
+* Save and Load buttons will be able to save current trip itineraries and load previously saved trip itineraries 
 
 ### Class Diagram
 
