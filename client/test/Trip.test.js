@@ -4,6 +4,7 @@ import React from 'react';
 
 import Trip from '../src/components/Atlas/Trip';
 import {beforeEach, describe, it, jest} from "@jest/globals";
+import {PROTOCOL_VERSION} from "../src/utils/constants";
 
 describe('Trip', () => {
 
@@ -36,7 +37,7 @@ describe('Trip', () => {
                 1889
             ],
             "requestType": "trip",
-            "requestVersion": 3
+            "requestVersion": PROTOCOL_VERSION
         }};
 
     let mockTripFile = {
@@ -56,7 +57,7 @@ describe('Trip', () => {
     });
 
     it('initializes request info with no-args constructor', () => {
-        expect(trip.requestVersion).toEqual(4);
+        expect(trip.requestVersion).toEqual(PROTOCOL_VERSION);
         expect(trip.requestType).toEqual('trip');
     });
 
