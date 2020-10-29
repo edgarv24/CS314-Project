@@ -56,7 +56,7 @@ describe('Trip', () => {
     });
 
     it('initializes request info with no-args constructor', () => {
-        expect(trip.requestVersion).toEqual(3);
+        expect(trip.requestVersion).toEqual(4);
         expect(trip.requestType).toEqual('trip');
     });
 
@@ -207,7 +207,7 @@ describe('Trip', () => {
     it('creates a JSON tripFile', () => {
         let expectedJSON = {
             "requestType": "trip",
-            "requestVersion": 3,
+            "requestVersion": 4,
             "options": {
                 "title": "My Trip",
                 "earthRadius": "3959.0"

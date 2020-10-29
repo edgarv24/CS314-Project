@@ -40,7 +40,7 @@ export default class ServerSettings extends Component {
                 {this.renderSettingsRow("Name:", currentServerName)}
                 {this.renderSettingsRow("Type:", this.getRequestType())}
                 {this.renderSettingsRow("Supported:", this.getSupportedRequestTypes())}
-                {this.renderSettingsRow("Version:", this.getRequestVersion())}
+                {this.renderSettingsRow("Version:", PROTOCOL_VERSION)}
                 {this.renderSettingsRow("URL:", this.renderInputField())}
             </ModalBody>
         );
@@ -104,10 +104,6 @@ export default class ServerSettings extends Component {
 
     getSupportedRequestTypes(){
         return configSchema.properties.supportedRequests.items.enum.toString();
-    }
-
-    getRequestVersion() {
-        return configSchema.properties.requestVersion.minimum;
     }
 
     updateInput(value) {

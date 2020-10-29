@@ -46,11 +46,6 @@ describe('Itinerary', () => {
 
         wrapper.find('#add-destination-button').simulate('click');
     });
-
-    it('gets the correct distance label', () => {
-        const distanceLabel = wrapper.instance().getDistanceLabelText();
-        expect(distanceLabel).toEqua
-    });
 });
 
 describe('Destination Table', () => {
@@ -67,6 +62,7 @@ describe('Destination Table', () => {
     it('shows the range of rows currently being displayed', () => {
         expect(wrapper.text().includes("1-5 of 7")).toBe(true);
     });
+
 });
 
 describe('Actions Footer', () => {
