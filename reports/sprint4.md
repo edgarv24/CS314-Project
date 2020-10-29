@@ -52,13 +52,14 @@ Filter Search
 
 User Experience
 * Make the application easier to use for all users. To do this, we will clean up and improve many areas of the site based on feedback from outside testers. One change related to this will be showing more details on the results during a Find request so that the user can identify airports more easily by country, municipality, or other features. Another change will involve adding a button to the Find Modal that will add a selected airport to the trip itinerary. We will also modify trip marker pop-ups to show more details about the location if they are provided. Users would like the ability to add a destination by clicking on the map, so we will add this by including a button in the selected marker’s pop-up. Additionally, we will retain user-inputted coordinate formats from trip places by including a “coordinate” field in each place’s data. Finally, a modal will be added for adding or editing a destination.
+
 ## Metrics
 
 | Statistic | # Planned | # Completed |
 | --- | ---: | ---: |
 | Epics | 4 | *count* |
-| Tasks |  28   | *count* | 
-| Story Points |  43  | *sum* | 
+| Tasks |  33   | *count* |
+| Story Points |  49  | *sum* |
 
 ### Confidence in Task Completion
 Our team feels good about our ability to complete the majority of the tasks we have planned. Our production improved significantly between sprints 2 and 3, where we increased the number of completed story points by nearly 36%. We did overplan during sprint 3 and didn’t end up finishing one of the epics, but our knowledge has improved and we are more aware of what it will take to reach our goal. For this sprint, we will attempt to stay more consistent on the burndown report with reduced flatlining.
@@ -66,8 +67,7 @@ Our team feels good about our ability to complete the majority of the tasks we h
 ## Scrums
 
 | Date | Tasks closed  | Tasks in progress | Impediments |
-| :--- | :--- | :--- | :--- |
-| *date* | *#task, ...* | *#task, ...* |  | 
+| 10-28-20 | none | #276 #265 #266 #267 | none |
 
 
 ## Review
@@ -79,7 +79,6 @@ Our team feels good about our ability to complete the majority of the tasks we h
 ### What went well
 
 ### Problems encountered and resolutions
-
 
 ## Retrospective
 
