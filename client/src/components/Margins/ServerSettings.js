@@ -39,8 +39,10 @@ export default class ServerSettings extends Component {
             <ModalBody>
                 {this.renderSettingsRow("Name:", currentServerName)}
                 {this.renderSettingsRow("Type:", this.getRequestType())}
-                {this.renderSettingsRow("Supported:", this.getSupportedRequestTypes())}
                 {this.renderSettingsRow("Version:", PROTOCOL_VERSION)}
+                {this.renderSettingsRow("Supported:", this.getSupportedRequestTypes())}
+                {this.renderSettingsRow("Airport Filters:", this.getAirportFilters())}
+                {this.renderSettingsRow("Geographic Filters:", "country")}
                 {this.renderSettingsRow("URL:", this.renderInputField())}
             </ModalBody>
         );
@@ -49,10 +51,10 @@ export default class ServerSettings extends Component {
     renderSettingsRow(label, value) {
         return (
             <Row className="m-2">
-                <Col xs={3}>
+                <Col xs={5}>
                     {label}
                 </Col>
-                <Col xs={9}>
+                <Col xs={7}>
                     {value}
                 </Col>
             </Row>
@@ -102,8 +104,14 @@ export default class ServerSettings extends Component {
         return configSchema.title;
     }
 
-    getSupportedRequestTypes(){
-        return configSchema.properties.supportedRequests.items.enum.toString();
+    getSupportedRequestTypes() {
+        let requests = configSchema.properties.supportedRequests.items.enum;
+        return `${requests[0]}, ${requests[1]}, ${requests[2]}, ${requests[3]}`;
+    }
+
+    getAirportFilters() {
+        let types = configSchema.properties.filters.properties.type.items.enum;
+        return `${types[0]}, ${types[1]}, ${types[2]}`;
     }
 
     updateInput(value) {

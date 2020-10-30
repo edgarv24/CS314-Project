@@ -12,11 +12,11 @@ import {
     Row,
 } from 'reactstrap';
 
-import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
-import * as distanceSchema from "../../../schemas/DistanceResponse.json";
+import {isJsonResponseValid, sendServerRequest} from "../../../utils/restfulAPI";
+import * as distanceSchema from "../../../../schemas/DistanceResponse.json";
 
 import Coordinates from "coordinate-parser";
-import {PROTOCOL_VERSION} from "../../utils/constants";
+import {PROTOCOL_VERSION} from "../../../utils/constants";
 
 const BOX_INPUT1 = 0;
 const BOX_INPUT2 = 1;

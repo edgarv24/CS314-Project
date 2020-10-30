@@ -2,8 +2,8 @@ import './jestConfig/enzyme.config.js'
 import {mount, shallow} from 'enzyme'
 
 import React from 'react'
-import Itinerary from "../src/components/Atlas/Itinerary";
-import {DestinationTable, TableActions} from "../src/components/Atlas/Itinerary";
+import Itinerary from "../src/components/Atlas/Itinerary/Itinerary";
+import {DestinationTable, TableActions} from "../src/components/Atlas/Itinerary/DestinationTable";
 import {IconButton} from "@material-ui/core";
 import Trip from "../src/components/Atlas/Trip";
 import peaksTrip from "../test/TripFiles/peaks-trip.json";
@@ -45,6 +45,11 @@ describe('Itinerary', () => {
         expect(wrapper.state().settingsModalOpen).toBe(true);
 
         wrapper.find('#add-destination-button').simulate('click');
+    });
+
+    it('gets the correct distance label', () => {
+        const distanceLabel = wrapper.instance().getDistanceLabelText();
+        expect(distanceLabel).toEqual("22201 miles");
     });
 });
 

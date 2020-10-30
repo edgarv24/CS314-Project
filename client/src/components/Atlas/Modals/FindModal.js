@@ -12,13 +12,12 @@ import {
     Row,
 } from 'reactstrap';
 
-import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
-import * as findSchema from "../../../schemas/FindResponse.json";
+import {isJsonResponseValid, sendServerRequest} from "../../../utils/restfulAPI";
+import * as findSchema from "../../../../schemas/FindResponse.json";
 
-import {PROTOCOL_VERSION} from "../../utils/constants";
+import {PROTOCOL_VERSION} from "../../../utils/constants";
 
 import ListItem from "@material-ui/core/ListItem";
-import Atlas from "./Atlas";
 
 export default class FindModal extends Component {
 

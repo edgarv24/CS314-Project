@@ -3,7 +3,7 @@ import './jestConfig/enzyme.config.js';
 import React from 'react';
 import {shallow} from 'enzyme';
 
-import DistanceModal from '../src/components/Atlas/DistanceModal';
+import DistanceModal from '../src/components/Atlas/Modals/DistanceModal';
 
 function testInputBoxes() {
     const distModal = shallow(<DistanceModal/>);

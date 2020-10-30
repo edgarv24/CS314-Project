@@ -2,14 +2,14 @@ import './jestConfig/enzyme.config.js';
 import {shallow} from 'enzyme'
 
 import React from 'react'
-import Itinerary from "../src/components/Atlas/Itinerary";
+import Itinerary from "../src/components/Atlas/Itinerary/Itinerary";
 import Trip from "../src/components/Atlas/Trip";
 import peaksTrip from "../test/TripFiles/peaks-trip.json";
 import {beforeEach, describe, it, jest} from "@jest/globals";
 
 const TRIP = new Trip().loadJSON(peaksTrip);
 
-import {TripSettingsModal} from '../src/components/Atlas/TripSettingsModal';
+import TripSettingsModal from '../src/components/Atlas/Modals/TripSettingsModal';
 
 describe('Itinerary', () => {
     let wrapper;
