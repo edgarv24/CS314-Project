@@ -131,25 +131,31 @@ export function DestinationTableRow({rowData, index, collapseIsOpen, setOpenRow}
                                     color="primary" onClick={() => undefined}>
                                 <EditIcon/>
                             </Button>
-                            <Table size="small">
-                                <TableBody>
-                                    {['name', 'latitude', 'longitude', 'state', 'municipality', 'country', 'altitude', 'notes']
-                                        .filter(item => rowData[item]).map(key =>
-                                            <TableRow key={key + index}>
-                                                <TableCell component="th" scope="row">
-                                                    {`${key.charAt(0).toUpperCase() + key.slice(1)}`}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {`${rowData[key]}`}
-                                                </TableCell>
-                                            </TableRow>
-                                        )}
-                                </TableBody>
-                            </Table>
+                            {renderDetailsTable()}
                         </Box>
                     </Collapse>
                 </TableCell>
             </TableRow>
+        );
+    }
+
+    const renderDetailsTable = () => {
+        return (
+            <Table size="small">
+                <TableBody>
+                    {['name', 'latitude', 'longitude', 'state', 'municipality', 'country', 'altitude', 'notes']
+                        .filter(item => rowData[item]).map(key =>
+                            <TableRow key={key + index}>
+                                <TableCell component="th" scope="row">
+                                    {`${key.charAt(0).toUpperCase() + key.slice(1)}`}
+                                </TableCell>
+                                <TableCell>
+                                    {`${rowData[key]}`}
+                                </TableCell>
+                            </TableRow>
+                        )}
+                </TableBody>
+            </Table>
         );
     }
 
