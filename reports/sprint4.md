@@ -69,6 +69,7 @@ Our team feels good about our ability to complete the majority of the tasks we h
 | Date | Tasks closed  | Tasks in progress | Impediments |
 | :--- | :--- | :--- | :--- |
 | 10-28-2020 | none | #265 #266 #267 #276 | none |
+| 10-30-2020 | #266 #265 #268 #269 #292 | #270 #276 #267 #280 | none |
 
 ## Review
 
