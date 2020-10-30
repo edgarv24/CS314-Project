@@ -41,7 +41,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["airport", "heliport", "balloonport"]
+            "enum": ["airport", "balloonport", "heliport"]
           }
         },
         "where": {

@@ -26,7 +26,7 @@ public class RequestConfig extends RequestHeader {
     this.supportedRequests.add("find");
     this.supportedRequests.add("trip");
     log.trace("buildResponse -> {}", this);
-    filters.put("type", Arrays.asList("airport", "heliport", "balloonport"));
+    filters.put("type", Arrays.asList("airport", "balloonport", "heliport"));
   }
 
   public String getServerName() {
