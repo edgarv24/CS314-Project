@@ -26,10 +26,10 @@ public class TestRequestConfig {
   }
 
   @Test
-  @DisplayName("Version number is equal to 3")
+  @DisplayName("Version number is equal to 4")
   public void testVersion() {
     int version = conf.getRequestVersion();
-    assertEquals(3, version);
+    assertEquals(4, version);
   }
 
   @Test

@@ -67,6 +67,7 @@ describe('Destination Table', () => {
     it('shows the range of rows currently being displayed', () => {
         expect(wrapper.text().includes("1-5 of 7")).toBe(true);
     });
+
 });
 
 describe('Actions Footer', () => {

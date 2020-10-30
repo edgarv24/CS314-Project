@@ -102,7 +102,7 @@ function testRenderSettingsRow() {
     expect(settings.find('Row').length).toEqual(5);
     expect(settings.find('Row').at(1).text()).toMatch("Type:config");
     expect(settings.find('Row').at(2).text()).toMatch("Supported:config,distance,find,trip");
-    expect(settings.find('Row').at(3).text()).toMatch("Version:3");
+    expect(settings.find('Row').at(3).text()).toMatch("Version:4");
 }
 
 test('SettingsRow should have 5 rows and the correct values for the labels', testRenderSettingsRow);
