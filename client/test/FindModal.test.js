@@ -4,7 +4,7 @@ import React from 'react';
 import {shallow} from 'enzyme';
 
 
-import FindModal from '../src/components/Atlas/FindModal';
+import FindModal from '../src/components/Atlas/Modals/FindModal';
 import {test} from "@jest/globals";
 import {ListItem} from "@material-ui/core";
 import Atlas from "../src/components/Atlas/Atlas";

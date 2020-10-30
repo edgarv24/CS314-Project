@@ -179,8 +179,8 @@ export default class Trip {
     }
 
     primaryText(place) {
-        if (!place.name || place.name.length === 0)
-            return `(${place.latitude}, ${place.longitude})`;
+        if (!place.name)
+            return `(${parseFloat(place.latitude).toFixed(4)}, ${parseFloat(place.longitude).toFixed(4)})`;
         return place.name;
     }
 

@@ -6,9 +6,9 @@
   "type": "object",
   "properties": {
     "requestVersion": {
-      "description": "the TIP protocol version",
-      "type": "integer",
-      "minimum": 1
+      "description":"the TIP protocol version",
+      "type":"integer",
+      "minimum": 3
     },
     "requestType": {
       "description": "the TIP object type should be config",
@@ -53,6 +53,7 @@
       },
       "additionalProperties": false
     }
+
   },
   "required":["requestVersion","requestType","serverName","supportedRequests", "filters"],
   "additionalProperties": false

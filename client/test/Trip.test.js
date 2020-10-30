@@ -4,6 +4,7 @@ import React from 'react';
 
 import Trip from '../src/components/Atlas/Trip';
 import {beforeEach, describe, it, jest} from "@jest/globals";
+import {PROTOCOL_VERSION} from "../src/utils/constants";
 
 describe('Trip', () => {
 
@@ -36,7 +37,7 @@ describe('Trip', () => {
                 1889
             ],
             "requestType": "trip",
-            "requestVersion": 3
+            "requestVersion": PROTOCOL_VERSION
         }};
 
     let mockTripFile = {
@@ -56,7 +57,7 @@ describe('Trip', () => {
     });
 
     it('initializes request info with no-args constructor', () => {
-        expect(trip.requestVersion).toEqual(4);
+        expect(trip.requestVersion).toEqual(PROTOCOL_VERSION);
         expect(trip.requestType).toEqual('trip');
     });
 
@@ -243,7 +244,7 @@ describe('Trip', () => {
             "primary_text": "Water Park", "location_text": "London, England", "leg_dist": 0, "cumulative_dist": 0};
         const expected2 = {"id": "destination-2", "name": "", "latitude": "3", "longitude": "7",
             "municipality": "Denver", "state": "Colorado", "country": "United States", "altitude": "", "notes": "",
-            "primary_text": "(3, 7)", "location_text": "Denver, Colorado", "leg_dist": 0, "cumulative_dist": 0};
+            "primary_text": "(3.0000, 7.0000)", "location_text": "Denver, Colorado", "leg_dist": 0, "cumulative_dist": 0};
 
         expect(itineraryData[0]).toEqual(expected1);
         expect(itineraryData[1]).toEqual(expected2);

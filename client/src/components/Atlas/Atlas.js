@@ -20,9 +20,9 @@ import LocationOffIcon from '@material-ui/icons/LocationOff';
 import RemoveIcon from '@material-ui/icons/Remove';
 
 import Trip from "./Trip";
-import Itinerary from "./Itinerary";
-import DistanceModal from "./DistanceModal";
-import FindModal from "./FindModal";
+import Itinerary from "./Itinerary/Itinerary";
+import DistanceModal from "./Modals/DistanceModal";
+import FindModal from "./Modals/FindModal";
 
 import {LOG} from "../../utils/constants";
 
@@ -113,7 +113,7 @@ export default class Atlas extends Component {
                            onClick={() => this.setState({displayTripLines: !this.state.displayTripLines})}/>
                 <MapButton buttonID="scroll-down-button" buttonIcon={<ArrowDownwardIcon/>} mapPosition="topright"
                            tooltipText="Itinerary" tooltipPlacement="left"
-                           onClick={() => window.scrollTo({top: document.body.offsetHeight, behavior: 'smooth'})}/>
+                           onClick={() => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})}/>
             </div>
         );
     }
@@ -176,19 +176,17 @@ export default class Atlas extends Component {
 
     render() {
         return (
-            <div>
-                <Container>
-                    {this.renderDistanceLabel()}
-                    <Row>
-                        <Col sm={12} md={{size: 10, offset: 1}}>
-                            {this.renderLeafletMap()}
-                        </Col>
-                    </Row>
-                    {this.renderItinerary()}
-                    {this.state.distModalOpen && this.renderDistanceModal()}
-                    {this.state.findModalOpen && this.renderFindModal()}
-                </Container>
-            </div>
+            <Container id="atlas">
+                {this.renderDistanceLabel()}
+                <Row>
+                    <Col sm={12} md={{size: 10, offset: 1}}>
+                        {this.renderLeafletMap()}
+                    </Col>
+                </Row>
+                {this.renderItinerary()}
+                {this.state.distModalOpen && this.renderDistanceModal()}
+                {this.state.findModalOpen && this.renderFindModal()}
+            </Container>
         );
     }
 
@@ -209,7 +207,7 @@ export default class Atlas extends Component {
     getDistanceLabelText() {
         if (this.state.distanceLabel === null)
             return "N/A";
-        else if (this.state.distanceLabel === 1)
+        else if (this.state.distanceLabel === "1")
             return "1 mile";
         return `${this.state.distanceLabel} miles`;
     }
@@ -366,11 +364,6 @@ export default class Atlas extends Component {
             mapBounds: this.getMapBounds(coordinate1, coordinate2),
             zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM
         });
-    }
-
-    processRequestError(message) {
-        LOG.error(message);
-        this.props.createSnackBar(message);
     }
 }
 
