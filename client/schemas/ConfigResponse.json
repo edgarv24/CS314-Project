@@ -55,6 +55,6 @@
     }
 
   },
-  "required":["requestVersion","requestType","serverName","supportedRequests", "filters"],
+  "required":["requestVersion","requestType","serverName","supportedRequests"],
   "additionalProperties": false
 }
