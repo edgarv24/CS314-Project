@@ -6,6 +6,7 @@ import Page from "../src/components/Page";
 import Footer from '../src/components/Margins/Footer'
 import ServerSettings from '../src/components/Margins/ServerSettings'
 import {jest, test} from "@jest/globals";
+import {PROTOCOL_VERSION} from "../src/utils/constants";
 
 const startProperties = {
     serverSettings: {'serverPort': 'black-bottle.cs.colostate.edu:31400', 'serverConfig': {}},
@@ -99,10 +100,12 @@ function testRenderSettingsRow() {
             toggleOpen={startProperties.toggleOpen}
             processServerConfigSuccess={startProperties.processServerConfigSuccess}
         />);
-    expect(settings.find('Row').length).toEqual(5);
+    expect(settings.find('Row').length).toEqual(7);
     expect(settings.find('Row').at(1).text()).toMatch("Type:config");
-    expect(settings.find('Row').at(2).text()).toMatch("Supported:config,distance,find,trip");
-    expect(settings.find('Row').at(3).text()).toMatch("Version:4");
+    expect(settings.find('Row').at(2).text()).toMatch("Version:" + PROTOCOL_VERSION);
+    expect(settings.find('Row').at(3).text()).toMatch("Supported:config, distance, find, trip");
+    expect(settings.find('Row').at(4).text()).toMatch("Airport Filters:airport, balloonport, heliport");
+    expect(settings.find('Row').at(5).text()).toMatch("Geographic Filters:country");
 }
 
 test('SettingsRow should have 5 rows and the correct values for the labels', testRenderSettingsRow);
