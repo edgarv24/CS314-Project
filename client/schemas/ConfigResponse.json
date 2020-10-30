@@ -11,24 +11,29 @@
       "minimum": 3
     },
     "requestType": {
-      "description":"the TIP object type should be config",
-      "type":"string",
-      "pattern":"^config$"
+      "description": "the TIP object type should be config",
+      "type": "string",
+      "pattern": "^config$"
     },
     "serverName": {
-      "description":"identify the server instance",
-      "type":"string",
-      "minLength":3
+      "description": "identify the server instance",
+      "type": "string",
+      "minLength": 3
     },
     "supportedRequests": {
       "description": "a list of supported request types",
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["config","distance","find", "trip"]
+        "enum": [
+          "config",
+          "distance",
+          "find",
+          "trip"
+        ]
       }
     },
-    "filters" : {
+    "filters": {
       "description": "supported filters for find requests.",
       "type": "object",
       "properties": {
@@ -36,7 +41,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["airport","balloonport","heliport"]
+            "enum": ["airport", "balloonport", "heliport"]
           }
         },
         "where": {

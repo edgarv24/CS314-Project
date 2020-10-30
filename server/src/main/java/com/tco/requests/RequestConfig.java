@@ -3,12 +3,14 @@ package com.tco.requests;
 import com.tco.misc.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.ArrayList;
+
+import java.util.*;
 
 public class RequestConfig extends RequestHeader {
 
   private String serverName;
   private final ArrayList<String> supportedRequests = new ArrayList<>();
+  private Map<String,List<String>> filters = new HashMap<>();
   private final transient Logger log = LoggerFactory.getLogger(RequestConfig.class);
 
   public RequestConfig() {
@@ -24,6 +26,7 @@ public class RequestConfig extends RequestHeader {
     this.supportedRequests.add("find");
     this.supportedRequests.add("trip");
     log.trace("buildResponse -> {}", this);
+    filters.put("type", Arrays.asList("airport", "balloonport", "heliport"));
   }
 
   public String getServerName() {
@@ -33,4 +36,6 @@ public class RequestConfig extends RequestHeader {
   public ArrayList<String> getSupportedRequests() {
     return supportedRequests;
   }
+
+  public Map<String,List<String>> getFilters() {return filters;}
 }
