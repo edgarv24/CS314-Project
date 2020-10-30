@@ -3,10 +3,14 @@ import './jestConfig/enzyme.config.js';
 import React from 'react';
 import {mount, shallow} from 'enzyme';
 
+import peaksTrip from '../test/TripFiles/peaks-trip.json';
 import Atlas from '../src/components/Atlas/Atlas';
-import Itinerary from "../src/components/Atlas/Itinerary";
+import Itinerary from "../src/components/Atlas/Itinerary/Itinerary";
 import {Polyline} from "react-leaflet";
 import {beforeEach, describe, jest, test} from "@jest/globals";
+import DistanceModal from "../src/components/Atlas/Modals/DistanceModal";
+import FindModal from "../src/components/Atlas/Modals/FindModal";
+import Trip from "../src/components/Atlas/Trip";
 
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
 const MAP_DEFAULT_ZOOM = 15;
@@ -108,26 +112,27 @@ describe('Atlas', () => {
     });
 
     test("Test button that opens find modal", () => {
-        expect(atlasMounted.state().findModalOpen).toBeFalsy();
-
+        expect(atlasMounted.state().findModalOpen).toBe(false);
         simulateButtonClickEvent(atlasMounted, '#find-button')
-        expect(atlasMounted.state().findModalOpen).toBeTruthy();
+        expect(atlasMounted.state().findModalOpen).toBe(true);
     });
 
     test("Test button that opens distance modal", () => {
-        expect(atlasMounted.state().distModalOpen).toBeFalsy();
-
+        expect(atlasMounted.state().distModalOpen).toBe(false);
         simulateButtonClickEvent(atlasMounted, '#distance-button')
-        expect(atlasMounted.state().distModalOpen).toBeTruthy();
+        expect(atlasMounted.state().distModalOpen).toBe(true);
     });
 
-    test("Test button that scrolls page down", () => {
-        window.scrollTo = jest.fn();
+    test("Test button that disables markers", () => {
+        expect(atlasMounted.state().displayTripMarkers).toBe(true);
+        simulateButtonClickEvent(atlasMounted, '#toggle-trip-markers')
+        expect(atlasMounted.state().displayTripMarkers).toBe(false);
+    });
 
-        expect(window.scrollY).toEqual(0);
-
-        simulateButtonClickEvent(atlasMounted, '#scroll-down-button')
-        expect(window.scrollY).toEqual(document.body.offsetHeight);
+    test("Test button that disables trip lines", () => {
+        expect(atlasMounted.state().displayTripLines).toBe(false);
+        simulateButtonClickEvent(atlasMounted, '#toggle-trip-lines')
+        expect(atlasMounted.state().displayTripLines).toBe(true);
     });
 
     test("Test renderDistanceLabel default", () => {
@@ -137,9 +142,7 @@ describe('Atlas', () => {
 
     test("Test renderDistanceLabel with 1 mile", () => {
         atlas.setState({distanceLabel: '1'});
-        atlas.update();
-        let distanceLabel = atlas.find('Input');
-        expect(distanceLabel.props().value).toEqual('1 miles');
+        expect(atlas.instance().getDistanceLabelText()).toEqual("1 mile");
     });
 
     test("Test renderDistanceLabel with 100 miles", () => {
@@ -197,5 +200,36 @@ describe('Atlas', () => {
         const atlasWrapper = shallow(<Atlas createSnackBar={startProperties.createSnackBar}/>);
         const itinerary = atlasWrapper.find(Itinerary).at(0);
         expect(itinerary).toBeDefined();
+    });
+
+    test('renders list of trip lines if toggled', () => {
+        expect(atlas.find(Polyline).length).toEqual(0);
+        atlas.setState({displayTripLines: true, trip: atlas.state().trip.loadJSON(peaksTrip)});
+        expect(atlas.find(Polyline).length).toEqual(6);
+    });
+
+    test('successfully toggles distanceModal', () => {
+        atlas.setState({distModalOpen: true});
+        atlas.find(DistanceModal).props()['toggleOpen']();
+        expect(atlas.state().distModalOpen).toBe(false);
+    });
+
+    test('successfully toggles findModal', () => {
+        atlas.setState({findModalOpen: true});
+        atlas.find(FindModal).props()['toggleOpen']();
+        expect(atlas.state().findModalOpen).toBe(false);
+    });
+
+    test('itinerary sets trip', () => {
+        atlas.setState({trip: new Trip()});
+        atlas.find(Itinerary).props()['setTrip'](atlas.state().trip.loadJSON(peaksTrip));
+        expect(atlas.state().trip.places.length).toEqual(6);
+    });
+
+    test('get home position when userLocation is non-null', () => {
+        const home = {lat: 10, lng: 40}
+        expect(atlas.instance().getHomePosition()).not.toEqual(home);
+        atlas.setState({userPosition: home});
+        expect(atlas.instance().getHomePosition()).toEqual(home);
     });
 });
