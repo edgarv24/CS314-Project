@@ -27,8 +27,25 @@
         "type": "string",
         "enum": ["config","distance","find", "trip"]
       }
+    },
+    "filters": {
+      "description": "list of values to filter search results",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["airport", "heliport", "balloonport"]
+          },
+          "where": {
+            "type": "string",
+            "enum": [""]
+          }
+        }
+      }
     }
   },
-  "required":["requestVersion","requestType","serverName","supportedRequests"],
+  "required":["requestVersion","requestType","serverName","supportedRequests", "filters"],
   "additionalProperties": false
 }
