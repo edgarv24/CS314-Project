@@ -378,7 +378,7 @@ export default class Atlas extends Component {
 }
 
 const MapButton = ({buttonID, buttonIcon, mapPosition, tooltipText, tooltipPlacement, disabled, toggledOn, onClick}) => {
-    const ICON_COLOR = toggledOn ? undefined : blueGrey[100];
+    const ICON_COLOR = toggledOn ? undefined : blueGrey[200];
     return (
         <Control position={mapPosition}>
             <Tooltip title={tooltipText} placement={tooltipPlacement} TransitionComponent={Zoom} arrow>
