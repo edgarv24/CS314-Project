@@ -16,8 +16,9 @@ import GpsFixedIcon from '@material-ui/icons/GpsFixed';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import LinearScaleIcon from '@material-ui/icons/LinearScale';
 import SearchIcon from '@material-ui/icons/Search';
-import LocationOffIcon from '@material-ui/icons/LocationOff';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 import RemoveIcon from '@material-ui/icons/Remove';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 
 import Trip from "./Trip";
 import Itinerary from "./Itinerary/Itinerary";
@@ -94,28 +95,37 @@ export default class Atlas extends Component {
     }
 
     renderMapButtons() {
+        const MAP_BUTTONS = this.getMapButtons();
         return (
-            <div>
-                <MapButton buttonID="home-button" buttonIcon={<GpsFixedIcon/>} mapPosition="topleft"
-                           tooltipText="Where am I?" tooltipPlacement="right"
-                           onClick={() => this.setMapToHome()}/>
-                <MapButton buttonID="distance-button" buttonIcon={<LinearScaleIcon/>} mapPosition="topleft"
-                           tooltipText="2 Point Distance" tooltipPlacement="right"
-                           onClick={() => this.setState({distModalOpen: true})}/>
-                <MapButton buttonID="find-button" buttonIcon={<SearchIcon/>} mapPosition="topleft"
-                           tooltipText="Find Place by Name" tooltipPlacement="right"
-                           onClick={() => this.setState({findModalOpen: true})}/>
-                <MapButton buttonID="toggle-trip-markers" buttonIcon={<LocationOffIcon/>} mapPosition="topleft"
-                           tooltipText="Toggle Trip Markers" tooltipPlacement="right"
-                           onClick={() => this.setState({displayTripMarkers: !this.state.displayTripMarkers})}/>
-                <MapButton buttonID="toggle-trip-lines" buttonIcon={<RemoveIcon/>} mapPosition="topleft"
-                           tooltipText="Toggle Trip Lines" tooltipPlacement="right"
-                           onClick={() => this.setState({displayTripLines: !this.state.displayTripLines})}/>
-                <MapButton buttonID="scroll-down-button" buttonIcon={<ArrowDownwardIcon/>} mapPosition="topright"
-                           tooltipText="Itinerary" tooltipPlacement="left"
-                           onClick={() => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})}/>
-            </div>
+            <>
+                {MAP_BUTTONS.map((data) => {
+                    return <MapButton key={data[0]} buttonID={data[0]} buttonIcon={data[1]}
+                                      mapPosition={data[2]} tooltipText={data[3]} tooltipPlacement={data[4]}
+                                      disabled={data[5]} toggledOn={data[6]} onClick={data[7]}/>
+                })}
+            </>
         );
+    }
+
+    getMapButtons() {
+        const [TL, TR, BL, BR] = ['topleft', 'topright', 'bottomleft', 'bottomright'];
+        const [TOOLTIP_LEFT, TOOLTIP_RIGHT] = ['left', 'right'];
+        const NO_TRIP_DATA = this.state.trip.places.length === 0;
+        const MARKERS_ON = !NO_TRIP_DATA && this.state.displayTripMarkers;
+        const LINES_ON = !NO_TRIP_DATA && this.state.displayTripLines;
+        return [
+            ['home-button', <GpsFixedIcon/>, TL, 'Where am I?', TOOLTIP_RIGHT, false, true,
+                () => this.setMapToHome()],
+            ['distance-button', <LinearScaleIcon/>, TL, '2 Point Distance', TOOLTIP_RIGHT, false, true,
+                () => this.setState({distModalOpen: true})],
+            ['find-button', <SearchIcon/>, TL, 'Find Place by Name', TOOLTIP_RIGHT, false, true,
+                () => this.setState({findModalOpen: true})],
+            ['toggle-trip-markers', <LocationOnIcon/>, BL, 'Toggle Trip Markers', TOOLTIP_RIGHT, NO_TRIP_DATA, MARKERS_ON,
+                () => this.setState({displayTripMarkers: !this.state.displayTripMarkers})],
+            ['toggle-trip-lines', <RemoveIcon/>, BL, 'Toggle Trip Lines', TOOLTIP_RIGHT, NO_TRIP_DATA, LINES_ON,
+                () => this.setState({displayTripLines: !this.state.displayTripLines})],
+            ['scroll-down-button', <ArrowDownwardIcon/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
+                () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})]];
     }
 
     renderMapMarkers() {
@@ -367,14 +377,15 @@ export default class Atlas extends Component {
     }
 }
 
-const MapButton = (props) => {
-    const {buttonID, mapPosition, tooltipText, tooltipPlacement, onClick, buttonIcon} = props;
+const MapButton = ({buttonID, buttonIcon, mapPosition, tooltipText, tooltipPlacement, disabled, toggledOn, onClick}) => {
+    const ICON_COLOR = toggledOn ? undefined : blueGrey[100];
     return (
         <Control position={mapPosition}>
             <Tooltip title={tooltipText} placement={tooltipPlacement} TransitionComponent={Zoom} arrow>
                 <Paper elevation={4}>
-                    <IconButton id={buttonID} onClick={onClick} size="small" color="inherit">
-                        {buttonIcon}
+                    <IconButton id={buttonID} onClick={onClick} disabled={disabled} size="small"
+                                color="inherit" style={{ color: ICON_COLOR }}>
+                            {buttonIcon}
                     </IconButton>
                 </Paper>
             </Tooltip>

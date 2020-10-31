@@ -126,12 +126,16 @@ describe('Atlas', () => {
     test("Test button that disables markers", () => {
         expect(atlasMounted.state().displayTripMarkers).toBe(true);
         simulateButtonClickEvent(atlasMounted, '#toggle-trip-markers')
+        expect(atlasMounted.state().displayTripMarkers).toBe(true);
+        atlasMounted.find('#toggle-trip-markers').at(0).props()['onClick']();
         expect(atlasMounted.state().displayTripMarkers).toBe(false);
     });
 
     test("Test button that disables trip lines", () => {
         expect(atlasMounted.state().displayTripLines).toBe(false);
         simulateButtonClickEvent(atlasMounted, '#toggle-trip-lines')
+        expect(atlasMounted.state().displayTripLines).toBe(false);
+        atlasMounted.find('#toggle-trip-lines').at(0).props()['onClick']();
         expect(atlasMounted.state().displayTripLines).toBe(true);
     });
 
@@ -164,14 +168,14 @@ describe('Atlas', () => {
 
     test("Test getMapBounds with zero markers", () => {
        let actualBounds = atlas.instance().getMapBounds(null, null);
-       let expectedBounds = new L.latLngBounds([MAP_CENTER_DEFAULT]);
+       let expectedBounds = L.latLngBounds([MAP_CENTER_DEFAULT]);
        expect(actualBounds).toEqual(expectedBounds);
     });
 
     test("Test getMapBounds with one marker", () => {
         let marker1 = {lat: 20, lng: 20};
         let actualBounds = atlas.instance().getMapBounds(marker1, null);
-        let expectedBounds = new L.latLngBounds([{lat: 20, lng: 20}]);
+        let expectedBounds = L.latLngBounds([{lat: 20, lng: 20}]);
         expect(actualBounds).toEqual(expectedBounds);
     });
 
@@ -179,7 +183,7 @@ describe('Atlas', () => {
         let marker1 = {lat: 20, lng: 20};
         let marker2 = {lat: 30, lng: 30};
         let actualBounds = atlas.instance().getMapBounds([marker1, marker2]);
-        let expectedBounds = new L.latLngBounds([{lat: 20, lng: 20}, {lat: 30, lng: 30}]);
+        let expectedBounds = L.latLngBounds([{lat: 20, lng: 20}, {lat: 30, lng: 30}]);
         expect(actualBounds).toEqual(expectedBounds);
     });
 
