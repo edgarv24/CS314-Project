@@ -10,7 +10,7 @@
 
 | Name | Preparation Time |
 | ---- | ---- |
-| Darin |  |
+| Darin | 15:30 - 16:20 |
 | Mikayla |  |
 | Edgar |  |
 | Rylie |  |
@@ -19,8 +19,9 @@
 
 | file:line | problem | hi/med/low | who found | github# |
 | --- | --- | :---: | :---: | --- |
-|  |  |  |  |  |
-|  |  |  |  |  |
-|  |  |  |  |  |
-|  |  |  |  |  |
-|  |  |  |  |  |
+| FindModal.js:44 | Items should be contained in a single ModalBody | low | darinh |  |
+| FindModal.js:77 | listToggle state variable is unnecessary and can be replaced with a conditional | med | darinh |  |
+| FindModal.js:78 | ListItem key may cause warnings if there is a duplicate place name | med | darinh |  |
+| FindModal.js:78 | ListItem should have "selected" attribute so users can see when a row is selected | med | darinh |  |
+| FindModal.js:103 | buttonToggle state variable should be replaced with a "disabled" attribute on the button | med | darinh |  |
+| FindModal.js:166 | selectedPlace should be reset (to null) when a new response comes back (on both fail or success) | med | darinh |  |
