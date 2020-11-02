@@ -12,7 +12,7 @@
 | ---- | ---- |
 | Darin | 15:30 - 16:20 |
 | Mikayla |  |
-| Edgar |  |
+| Edgar | 16:00 - 16:30 |
 | Rylie |  |
 
 ### Problems found
@@ -25,3 +25,5 @@
 | FindModal.js:78 | ListItem should have "selected" attribute so users can see when a row is selected | med | darinh |  |
 | FindModal.js:103 | buttonToggle state variable should be replaced with a "disabled" attribute on the button | med | darinh |  |
 | FindModal.js:166 | selectedPlace should be reset (to null) when a new response comes back (on both fail or success) | med | darinh |  |
+| FindModal.js:30 | Unnecessary state variable inputText | med | edvarela | |
+| FindModal.js:67 | onChange can be simplified and value can be removed | med | edvarela | |
