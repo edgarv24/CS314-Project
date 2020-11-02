@@ -11,7 +11,7 @@
 | Name | Preparation Time |
 | ---- | ---- |
 | Darin |  |
-| Mikayla |  |
+| Mikayla | 16:00-16:45 |
 | Edgar |  |
 | Rylie |  |
 
@@ -19,8 +19,8 @@
 
 | file:line | problem | hi/med/low | who found | github# |
 | --- | --- | :---: | :---: | --- |
-|  |  |  |  |  |
-|  |  |  |  |  |
+| 94-100 | Commented out method renderTripButton | low | Mikayla |  |
+| 136 | Hard-coded limit of 10 | low | Mikayla |  |
 |  |  |  |  |  |
 |  |  |  |  |  |
 |  |  |  |  |  |
