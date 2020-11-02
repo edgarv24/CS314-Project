@@ -19,8 +19,8 @@
 
 | file:line | problem | hi/med/low | who found | github# |
 | --- | --- | :---: | :---: | --- |
-| 94-100 | Commented out method renderTripButton | low | Mikayla |  |
+| 94-100 | Commented out method renderTripButton() | low | Mikayla |  |
 | 136 | Hard-coded limit of 10 | low | Mikayla |  |
-|  |  |  |  |  |
+| 104-106 | Unused/commented out code in renderLocateButton() | low | Mikayla |  |
 |  |  |  |  |  |
 |  |  |  |  |  |
