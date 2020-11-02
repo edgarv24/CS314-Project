@@ -10,8 +10,8 @@
 
 | Name | Preparation Time |
 | ---- | ---- |
+| Mikayla | 16:00 - 16:45 |
 | Darin | 15:30 - 16:20 |
-| Mikayla |  |
 | Edgar | 16:00 - 16:30 |
 | Rylie |  |
 
@@ -20,6 +20,9 @@
 | file:line | problem | hi/med/low | who found | github# |
 | --- | --- | :---: | :---: | --- |
 | FindModal.js:44 | Items should be contained in a single ModalBody | low | darinh |  |
+| FindModals.js:94 | Commented out method renderTripButton() | low | cessna17 |  |
+| FindModal.js:104 | Unused/commented out code in renderLocateButton() | low | cessna17 |  |
+| FindModal.js:136 | Hard-coded limit of 10 | low | cessna17 |  |
 | FindModal.js:77 | listToggle state variable is unnecessary and can be replaced with a conditional | med | darinh |  |
 | FindModal.js:78 | ListItem key may cause warnings if there is a duplicate place name | med | darinh |  |
 | FindModal.js:78 | ListItem should have "selected" attribute so users can see when a row is selected | med | darinh |  |
