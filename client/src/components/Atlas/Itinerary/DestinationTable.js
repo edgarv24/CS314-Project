@@ -173,20 +173,14 @@ export function TableActions({count, page, rowsPerPage, onChangePage}) {
     const handleNextButtonClick = (event) => onChangePage(event, page + 1);
     const handleLastPageButtonClick = (event) => onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
 
+    const BACK_DISABLED = page === 0;
+    const FORWARD_DISABLED = page >= Math.ceil(count / rowsPerPage) - 1;
     return (
         <div style={{flexShrink: 0}}>
-            <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0}>
-                <FirstPageIcon/>
-            </IconButton>
-            <IconButton onClick={handleBackButtonClick} disabled={page === 0}>
-                <KeyboardArrowLeft/>
-            </IconButton>
-            <IconButton onClick={handleNextButtonClick} disabled={page >= Math.ceil(count / rowsPerPage) - 1}>
-                <KeyboardArrowRight/>
-            </IconButton>
-            <IconButton onClick={handleLastPageButtonClick} disabled={page >= Math.ceil(count / rowsPerPage) - 1}>
-                <LastPageIcon/>
-            </IconButton>
+            <IconButton onClick={handleFirstPageButtonClick} disabled={BACK_DISABLED}><FirstPageIcon/></IconButton>
+            <IconButton onClick={handleBackButtonClick} disabled={BACK_DISABLED}><KeyboardArrowLeft/></IconButton>
+            <IconButton onClick={handleNextButtonClick} disabled={FORWARD_DISABLED}><KeyboardArrowRight/></IconButton>
+            <IconButton onClick={handleLastPageButtonClick} disabled={FORWARD_DISABLED}><LastPageIcon/></IconButton>
         </div>
     );
 }
