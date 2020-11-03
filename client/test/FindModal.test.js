@@ -14,24 +14,16 @@ function testInitialFindModalState() {
     const findModal = shallow(<FindModal/>);
 
     let actualPlaces = findModal.state().places;
-    let expectedPlaces = null;
+    let expectedPlaces = [];
 
     let actualInputText = findModal.state().inputText;
-    let expectedInputText = null;
-
-    let actualListToggle = findModal.state().listToggle;
-    let expectedListToggle = false;
-
-    let actualButtonToggle = findModal.state().buttonToggle;
-    let expectedButtonToggle = false;
+    let expectedInputText = "";
 
     let actualSelectedPlace = findModal.state().selectedPlace;
     let expectedSelectedPlace = null;
 
     expect(actualPlaces).toEqual(expectedPlaces);
     expect(actualInputText).toEqual(expectedInputText);
-    expect(actualListToggle).toEqual(expectedListToggle);
-    expect(actualButtonToggle).toEqual(expectedButtonToggle);
     expect(actualSelectedPlace).toEqual(expectedSelectedPlace);
 }
 
@@ -53,35 +45,33 @@ test("Testing input list size after find requests", testListSize);
 function testListSize() {
     const findModal = shallow(<FindModal/>);
     let firstResponse = '{"data": {"requestType": "find", "requestVersion": 3, '+
-        '                "found": 3, "places": [{"name": "Place1", "latitude": "90", "longitude": "100"}]}}';
-    findModal.setState({selectedPlace: {"name": "place1", "latitude": "100", "longitude": "100"}})
+        '                "match": "place", "found": 3, "places": [{"name": "Place1", "latitude": "90", "longitude": "100"}]}}';
+    findModal.setState({inputText: "place", selectedPlace: {"name": "place1", "latitude": "100", "longitude": "100"}})
 
     findModal.instance().processFindResponse(JSON.parse(firstResponse));
     findModal.update();
     expect(findModal.state().places.length).toEqual(1);
     let secondResponse = '{"data": {"requestType": "find", "requestVersion": 3, ' +
-        '                  "found": 3, "places": [{"name": "Place1", "latitude": "90", '+
+        '                  "match": "place", "found": 3, "places": [{"name": "Place1", "latitude": "90", '+
         '                  "longitude": "100"},{"name": "Place2", "latitude": "90", '+
         '                  "longitude": "100"},{"name": "Place3", "latitude": "90", "longitude": "100"}]}}';
     findModal.instance().processFindResponse(JSON.parse(secondResponse));
     findModal.update();
     expect(findModal.state().places.length).toEqual(3);
-
-
 }
 
 test("Testing listItem", () => {
     const findModal = shallow(<FindModal/>);
-    findModal.setState({listToggle: true, places: [
+    findModal.setState({places: [
             {"name": "Airport 1", "latitude": "90", "longitude": "100"},
             {"name": "Airport 2", "latitude": "90", "longitude": "100"},
             {"name": "Airport 3", "latitude": "90", "longitude": "100"}]
     });
-    let listItems = findModal.instance().renderList();
-    expect(listItems.type).toBe(ListItem.type);
-    expect(listItems[0].key).toEqual('Airport 1');
-    expect(listItems[1].key).toEqual('Airport 2');
-    expect(listItems[2].key).toEqual('Airport 3');
+
+    const listItems = findModal.instance().renderListItems();
+    expect(listItems[0].key).toEqual('Airport 1-0');
+    expect(listItems[1].key).toEqual('Airport 2-1');
+    expect(listItems[2].key).toEqual('Airport 3-2');
 });
 
 test("Testing listItem onClick", () => {
@@ -112,16 +102,15 @@ test("Testing listItem onClick", () => {
 
 test("Testing Locate button", () => {
     const atlas = shallow(<Atlas />);
-    const findModal = shallow(<FindModal processFindRequestViewLocation={atlas.instance().processFindRequestViewLocation}/>);
+    const findModal = shallow(<FindModal
+        isOpen={true}
+        toggleOpen={() => undefined}
+        processFindRequestViewLocation={atlas.instance().processFindRequestViewLocation}/>);
 
     findModal.setState({selectedPlace: {"latitude": "90", "longitude": "100", "name": "Airport 1"}});
     findModal.update();
 
     expect(findModal.state().selectedPlace).toEqual({"latitude": "90", "longitude": "100", "name": "Airport 1"});
-
-    expect(findModal.state().buttonToggle).toEqual(false);
-    findModal.setState({buttonToggle: true});
-    expect(findModal.state().buttonToggle).toEqual(true);
 
     let locateButton = findModal.find("#locate-button");
     expect(locateButton.length).toEqual(1);
@@ -137,10 +126,11 @@ test("Testing Locate button", () => {
     expect(atlas.state().markerPosition).toEqual({lat: 20, lng: 20});
     expect(atlas.state().secondMarkerPosition).toEqual(testPos);
 
+    const selectedPlace = findModal.state().selectedPlace;
     locateButton.simulate('click');
     atlas.update();
 
-    let expectedPosition = {lat: parseInt(findModal.state().selectedPlace.latitude), lng: parseInt(findModal.state().selectedPlace.longitude)};
+    let expectedPosition = {lat: parseInt(selectedPlace.latitude), lng: parseInt(selectedPlace.longitude)};
 
     expect(atlas.state().secondMarkerPosition).toEqual(expectedPosition);
 });
