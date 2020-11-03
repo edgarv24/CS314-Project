@@ -5,11 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TestRequestFind {
 
@@ -17,7 +17,7 @@ public class TestRequestFind {
 
   @BeforeEach
   public void createConfigurationForTestCases() throws BadRequestException {
-    requestFind = new RequestFind("Denver", 0);
+    requestFind = new RequestFind("Denver", 0, null);
     requestFind.buildResponse();
   }
 
@@ -40,5 +40,11 @@ public class TestRequestFind {
   public void testReturnResults() {
     List<Map<String, String>> results = requestFind.getPlaces();
     assertEquals(30, results.size());
+  }
+
+  @Test
+  @DisplayName("testing Narrow")
+  public void testNarrowElement() {
+    assertNull(requestFind.getNarrow());
   }
 }

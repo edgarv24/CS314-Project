@@ -19,10 +19,17 @@
       "description":"options for this request",
       "type":"object",
       "properties": {
-        "title": {"type":"string"},
+        "title": {
+          "type":"string"},
         "earthRadius": {
           "type":"string",
           "pattern":"(^\\+?[0-9]*[1-9][0-9]*(\\.[0-9]+)?$)|(^\\+?[0]+\\.[0-9]*[1-9][0-9]*$)"
+        },
+        "units": {
+          "type":"string"},
+        "response": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$"
         }
       },
       "required":["earthRadius"]

@@ -25,19 +25,21 @@ public class QueryDatabase {
   private final String WHERECLAUSE2 = "region.name LIKE \"%";
   private final String WHERECLAUSE3 = "world.name LIKE \"%";
   private final String WHERECLAUSE4 = "world.municipality LIKE \"%";
-  private final String QUERY;
+  private String QUERY;
+  private String match;
+  private Integer limit;
 
   private Integer resultsFound;
   private List<Map<String, String>> queryResults;
+  private Map<String, ArrayList<String>> filters;
 
-  public QueryDatabase(String placeName, Integer limit) throws SQLException {
+  public void configure(
+      String userMatch, Integer userLimit, Map<String, ArrayList<String>> narrow) {
     configServerUsingLocation();
-    limit = getCorrectLimit(placeName, limit);
-    QUERY = getCorrectQuery(placeName, limit);
-    ResultSet resultSet = makeQuery();
-    convertResultsToListOfMaps(resultSet);
-    resultsFound = (placeName == null) ? limit : queryResults.size();
-    trimResultsToLimit(limit);
+    filters = narrow;
+    match = userMatch;
+    limit = getCorrectLimit(match, userLimit);
+    QUERY = configureQueryString(match, limit, filters);
   }
 
   public static void configServerUsingLocation() {
@@ -56,34 +58,100 @@ public class QueryDatabase {
     }
   }
 
-  public Integer getCorrectLimit(String placeName, Integer limit) {
-    if (placeName != null) return (limit != null && limit <= 100 && limit > 0) ? limit : 100;
-    else if (limit != null) return (limit <= 100 && limit > 0) ? limit : 100;
+  public Integer getCorrectLimit(String match, Integer userLimit) {
+    if (match != null)
+      return (userLimit != null && userLimit <= 100 && userLimit > 0) ? userLimit : 100;
+    else if (userLimit != null) return (userLimit <= 100 && userLimit > 0) ? userLimit : 100;
     else return 1;
   }
 
-  public String getCorrectQuery(String placeName, Integer limit) {
-    if (placeName != null) {
+  public String configureQueryString(
+      String match, Integer limit, Map<String, ArrayList<String>> filters) {
+    if (filters != null) return queryWithFilters(match, limit, filters);
+    else return queryWithNoFilters(match, limit);
+  }
+
+  public String queryWithFilters(
+      String match, Integer limit, Map<String, ArrayList<String>> filters) {
+    String portFilter = constructPortFilter(filters);
+    String geoFilter = constructGeoFilter(filters);
+    if (match != null) {
+      return "SELECT "
+          + COLUMNS
+          + " FROM "
+          + TABLES
+          + " WHERE (("
+          + WHERECLAUSE1
+          + match
+          + "%\" OR "
+          + WHERECLAUSE2
+          + match
+          + "%\" OR "
+          + WHERECLAUSE3
+          + match
+          + "%\" OR "
+          + WHERECLAUSE4
+          + match
+          + "%\") AND "
+          + geoFilter
+          + " AND "
+          + portFilter
+          + ") ORDER BY world.name;";
+    } else {
+      return "SELECT " + COLUMNS + " FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
+    }
+  }
+
+  public String queryWithNoFilters(String match, Integer limit) {
+    if (match != null) {
       return "SELECT "
           + COLUMNS
           + " FROM "
           + TABLES
           + " WHERE ("
           + WHERECLAUSE1
-          + placeName
+          + match
           + "%\" OR "
           + WHERECLAUSE2
-          + placeName
+          + match
           + "%\" OR "
           + WHERECLAUSE3
-          + placeName
+          + match
           + "%\" OR "
           + WHERECLAUSE4
-          + placeName
+          + match
           + "%\") ORDER BY world.name;";
     } else {
       return "SELECT " + COLUMNS + " FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
     }
+  }
+
+  public String constructPortFilter(Map<String, ArrayList<String>> filters) {
+    ArrayList<String> ports = filters.get("type");
+    String portFilter = "(world.type LIKE \"%" + ports.get(0) + "%\"";
+    if (ports.size() > 1) portFilter += " OR world.type LIKE \"%" + ports.get(1) + "%\"";
+    if (ports.size() > 2) portFilter += " OR world.type LIKE \"%" + ports.get(2) + "%\"";
+    portFilter += ")";
+    return portFilter;
+  }
+
+  public String constructGeoFilter(Map<String, ArrayList<String>> filters) {
+    ArrayList<String> geos = filters.get("where");
+    StringBuilder geoFilter = new StringBuilder("(country.name = \"" + geos.get(0) + "\"");
+    if (geos.size() > 1) {
+      for (int i = 1; i < geos.size(); i++) {
+        geoFilter.append(" OR country.name = \"").append(geos.get(i)).append("\"");
+      }
+    }
+    geoFilter.append(")");
+    return geoFilter.toString();
+  }
+
+  public void executeQuery() throws SQLException {
+    ResultSet resultSet = makeQuery();
+    convertResultsToListOfMaps(resultSet);
+    resultsFound = (match == null) ? limit : queryResults.size();
+    trimResultsToLimit(limit);
   }
 
   private ResultSet makeQuery() throws SQLException {
@@ -109,19 +177,16 @@ public class QueryDatabase {
       map.put("id", resultSet.getString("id"));
       map.put("region", resultSet.getString("region.name"));
       map.put("country", resultSet.getString("country.name"));
-      map.put("url", String.format("https://aopa.org/destinations/airports/%s/details", resultSet.getString("id")));
+      map.put(
+          "url",
+          String.format(
+              "https://aopa.org/destinations/airports/%s/details", resultSet.getString("id")));
       queryResults.add(map);
     }
   }
 
   public List<Map<String, String>> getQueryResults() {
     return queryResults;
-  }
-
-  public ArrayList<String> getNamesList() {
-    ArrayList<String> names = new ArrayList<>();
-    for (Map<String, String> result : queryResults) names.add(result.getOrDefault("name", ""));
-    return names;
   }
 
   public void trimResultsToLimit(Integer limit) {
@@ -142,6 +207,22 @@ public class QueryDatabase {
 
   public Integer getTotalResultsFound() {
     return resultsFound;
+  }
+
+  public String getMatch() {
+    return match;
+  }
+
+  public Integer getLimit() {
+    return limit;
+  }
+
+  public String getQuery() {
+    return QUERY;
+  }
+
+  public Map<String, ArrayList<String>> getFilters() {
+    return filters;
   }
 
   public static boolean onTravis() {

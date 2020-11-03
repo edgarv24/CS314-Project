@@ -5,17 +5,12 @@
   "description": "config object for POST request",
   "type": "object",
   "properties": {
-    "requestVersion": {
-      "description": "the TIP protocol version",
-      "type": "integer",
-      "minimum": 1
-    },
     "requestType": {
-      "description": "the TIP object type should be config",
+      "description": "the object type should be config",
       "type": "string",
       "pattern": "^config$"
     }
   },
-  "required":["requestVersion","requestType"],
+  "required":["requestType"],
   "additionalProperties": true
 }
