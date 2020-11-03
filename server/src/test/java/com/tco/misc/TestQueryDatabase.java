@@ -1,15 +1,11 @@
 package com.tco.misc;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,8 +16,9 @@ public class TestQueryDatabase {
   private static String expectedUsername;
   private static String expectedPassword;
 
-  private QueryDatabase db;
-  private Connection conn;
+  private static QueryDatabase db;
+  private static Connection conn;
+  private static Map<String, ArrayList<String>> narrow;
 
   @BeforeAll
   public static void init() {
@@ -38,11 +35,17 @@ public class TestQueryDatabase {
       expectedUsername = "cs314-db";
       expectedPassword = "eiK5liet1uej";
     }
-  }
-
-  @BeforeEach
-  public void createConfigurationForTestCases() throws SQLException {
-    db = new QueryDatabase("Denver", 0);
+    ArrayList<String> port = new ArrayList<>();
+    port.add("airport");
+    port.add("heliport");
+    ArrayList<String> geo = new ArrayList<>();
+    geo.add("United States");
+    geo.add("Canada");
+    narrow = new HashMap<>();
+    narrow.put("type", port);
+    narrow.put("where", geo);
+    db = new QueryDatabase();
+    db.configure("denver", 0, narrow);
     conn = null;
   }
 
@@ -78,91 +81,97 @@ public class TestQueryDatabase {
   }
 
   @Test
-  @DisplayName("Query with \"Denver\" should return 30 results")
-  public void testReturnResults() {
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(30, results.size());
+  @DisplayName("Testing configure method sets properties correctly")
+  public void testConfigure() {
+    String expectedMatch = "denver";
+    assertEquals(expectedMatch, db.getMatch());
+
+    Integer expectedLimit = 100;
+    assertEquals(expectedLimit, db.getLimit());
+
+    Map<String, ArrayList<String>> filters = db.getFilters();
+    assertEquals(2, filters.size());
+    assertEquals("airport", filters.get("type").get(0));
+    assertEquals("heliport", filters.get("type").get(1));
+    assertEquals("United States", filters.get("where").get(0));
+    assertEquals("Canada", filters.get("where").get(1));
+
+    assertFalse(db.getQuery().isEmpty());
   }
 
   @Test
-  @DisplayName("Airport \"Denver International Airport\" should be in \"Denver\" query")
-  public void testDenverQueryForDIA() {
-    assertTrue(db.getNamesList().contains("Denver International Airport"));
+  @DisplayName("Testing query with no filter")
+  public void testQueryNoFilter() {
+    String actualQuery = db.queryWithNoFilters("denver", 0);
+    String sampleQuery =
+        "SELECT world.name, world.municipality, country.name, region.name, "
+            + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
+            + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = "
+            + "country.id WHERE (country.name LIKE \"%denver%\" OR region.name LIKE \"%denver%\" OR "
+            + "world.name LIKE \"%denver%\" OR world.municipality LIKE \"%denver%\") "
+            + "ORDER BY world.name;";
+    assertEquals(sampleQuery, actualQuery);
   }
 
   @Test
-  @DisplayName("Query with \"Squid\" should return 0 results")
-  public void testResultsSizeOfSquid() throws SQLException {
-    db = new QueryDatabase("Squid", 10);
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(0, results.size());
+  @DisplayName("Testing query with no filter and no match")
+  public void testQueryNoFilterNoMatch() {
+    String actualQuery = db.queryWithNoFilters(null, 10);
+    String sampleQuery2 =
+        "SELECT world.name, world.municipality, country.name, region.name, "
+            + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
+            + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = "
+            + "country.id ORDER BY RAND() LIMIT 10;";
+    assertEquals(sampleQuery2, actualQuery);
   }
 
   @Test
-  @DisplayName("Query with no limit should return 100 results")
-  public void testQueryWithNoLimit() throws SQLException {
-    db = new QueryDatabase("Airport", 0);
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(100, results.size());
+  @DisplayName("Testing query with filter")
+  public void testQueryWithFilter() {
+    String actualQuery = db.queryWithFilters("denver", 10, narrow);
+    String sampleQuery3 =
+        "SELECT world.name, world.municipality, country.name, region.name, "
+            + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
+            + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id "
+            + "WHERE ((country.name LIKE \"%denver%\" OR region.name LIKE \"%denver%\" OR world.name LIKE "
+            + "\"%denver%\" OR world.municipality LIKE \"%denver%\") AND (country.name = \"United States\" OR "
+            + "country.name = \"Canada\") AND (world.type LIKE \"%airport%\" OR world.type LIKE \"%heliport%\")) ORDER BY "
+            + "world.name;";
+    assertEquals(sampleQuery3, actualQuery);
   }
 
   @Test
-  @DisplayName("Test that query returns more results than limit")
-  public void testQueryResultsWithLowLimit() throws SQLException {
-    QueryDatabase db = new QueryDatabase("Denver", 3);
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(3, results.size());
-    assertEquals(30, db.getTotalResultsFound());
+  @DisplayName("Testing GeoFilter string is generated correctly")
+  public void testConstructGeoFilter() {
+    String expectedString = "(country.name = \"United States\" OR country.name = \"Canada\")";
+    String actualString = db.constructGeoFilter(narrow);
+    assertEquals(expectedString, actualString);
   }
 
   @Test
-  @DisplayName("Test that no match and no limit returns single result")
-  public void testNoMatchNoLimit() throws SQLException {
-    QueryDatabase db = new QueryDatabase(null, null);
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(1, results.size());
+  @DisplayName("Testing PortFilter string is generated correctly")
+  public void testConstructPortFilter() {
+    String expectedString = "(world.type LIKE \"%airport%\" OR world.type LIKE \"%heliport%\")";
+    String actualString = db.constructPortFilter(narrow);
+    assertEquals(expectedString, actualString);
   }
 
   @Test
-  @DisplayName("Test that no match and limit of 5 returns 5 random results and found equals 5")
-  public void testNoMatchWithLimit() throws SQLException {
-    QueryDatabase db = new QueryDatabase(null, 5);
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(5, results.size());
-    assertEquals(5, db.getTotalResultsFound());
+  @DisplayName("Test getCorrectLimit")
+  public void testGetCorrectLimit() {
+    assertEquals(50, db.getCorrectLimit("denver", 50));
+    assertEquals(100, db.getCorrectLimit("denver", 500));
+    assertEquals(100, db.getCorrectLimit("denver", null));
+    assertEquals(50, db.getCorrectLimit(null, 50));
+    assertEquals(100, db.getCorrectLimit(null, 500));
+    assertEquals(1, db.getCorrectLimit(null, null));
   }
 
   @Test
-  @DisplayName("Test that no match and limit of 1000 returns 100 random results and found equals 100")
-  public void testNoMatchHighLimit() throws SQLException {
-    QueryDatabase db = new QueryDatabase(null, 1000);
+  @DisplayName("Query with \"denver\" should return 29 results with added filters")
+  public void testReturnResults() throws SQLException {
+    db.executeQuery();
     List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(100, results.size());
-    assertEquals(100, db.getTotalResultsFound());
-  }
-
-  @Test
-  @DisplayName("Test that no match and limit of -1000 returns 100 random results and found equals 100")
-  public void testNoMatchNegLimit() throws SQLException {
-    QueryDatabase db = new QueryDatabase(null, -1000);
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(100, results.size());
-    assertEquals(100, db.getTotalResultsFound());
-  }
-
-  @Test
-  @DisplayName("Test that no match and limit of 0 returns 100 random results and found equals 100")
-  public void testNoMatchZeroLimit() throws SQLException {
-    QueryDatabase db = new QueryDatabase(null, 0);
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(100, results.size());
-    assertEquals(100, db.getTotalResultsFound());
-  }
-
-  @Test
-  @DisplayName("Test one of the results and length")
-  public void testResultsAndLength() throws SQLException{
-    List<Map<String, String>> results = db.getQueryResults();
-    assertEquals(results.get(1).size()-1, 9);
+    assertEquals(29, results.size());
   }
 }
