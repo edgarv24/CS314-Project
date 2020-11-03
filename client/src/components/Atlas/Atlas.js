@@ -65,7 +65,7 @@ export default class Atlas extends Component {
             distanceLabel: null,
             displayTripMarkers: true,
             displayTripLines: false,
-            optimizeOpen: false
+            optimizeEnabled: false
         };
     }
 
@@ -129,7 +129,7 @@ export default class Atlas extends Component {
             ['scroll-down-button', <ArrowDownwardIcon/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
                 () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})],
             ['optimize-button', <TrendingUp/>, TR, 'Optimize', TOOLTIP_LEFT, false, true,
-                () => this.setState({optimizeOpen: true})],];
+                () => this.setState({optimizeEnabled: true})],];
     }
 
     renderMapMarkers() {

@@ -140,9 +140,9 @@ describe('Atlas', () => {
     });
 
     test("Test button that performs optimize function", () => {
-        expect(atlasMounted.state().optimizeOpen).toBe(false);
+        expect(atlasMounted.state().optimizeEnabled).toBe(false);
         simulateButtonClickEvent(atlasMounted, '#optimize-button')
-        expect(atlasMounted.state().optimizeOpen).toBe(true);
+        expect(atlasMounted.state().optimizeEnabled).toBe(true);
     });
 
     test("Test renderDistanceLabel default", () => {
