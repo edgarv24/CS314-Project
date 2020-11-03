@@ -128,7 +128,7 @@ export default class Atlas extends Component {
                 () => this.setState({displayTripLines: !this.state.displayTripLines})],
             ['scroll-down-button', <ArrowDownwardIcon/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
                 () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})],
-            ['optimize-button', <TrendingUp/>, TR, 'Optimize', TOOLTIP_LEFT, false, true,
+            ['optimize-button', <TrendingUp/>, TR, 'Optimize', TOOLTIP_LEFT, false, this.state.optimizeEnabled,
                 () => this.setState({optimizeEnabled: true})],];
     }
 
