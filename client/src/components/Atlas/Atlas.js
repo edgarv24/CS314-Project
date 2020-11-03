@@ -26,6 +26,7 @@ import DistanceModal from "./Modals/DistanceModal";
 import FindModal from "./Modals/FindModal";
 
 import {LOG} from "../../utils/constants";
+import {TrendingUp} from "@material-ui/icons";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -63,7 +64,8 @@ export default class Atlas extends Component {
             findModalOpen: false,
             distanceLabel: null,
             displayTripMarkers: true,
-            displayTripLines: false
+            displayTripLines: false,
+            optimizeEnabled: false
         };
     }
 
@@ -125,7 +127,9 @@ export default class Atlas extends Component {
             ['toggle-trip-lines', <RemoveIcon/>, BL, 'Toggle Trip Lines', TOOLTIP_RIGHT, NO_TRIP_DATA, LINES_ON,
                 () => this.setState({displayTripLines: !this.state.displayTripLines})],
             ['scroll-down-button', <ArrowDownwardIcon/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
-                () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})]];
+                () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})],
+            ['optimize-button', <TrendingUp/>, TR, 'Optimize', TOOLTIP_LEFT, false, this.state.optimizeEnabled,
+                () => this.setState({optimizeEnabled: true})],];
     }
 
     renderMapMarkers() {
