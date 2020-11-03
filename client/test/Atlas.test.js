@@ -139,6 +139,12 @@ describe('Atlas', () => {
         expect(atlasMounted.state().displayTripLines).toBe(true);
     });
 
+    test("Test button that performs optimize function", () => {
+        expect(atlasMounted.state().optimizeOpen).toBe(false);
+        simulateButtonClickEvent(atlasMounted, '#optimize-button')
+        expect(atlasMounted.state().optimizeOpen).toBe(true);
+    });
+
     test("Test renderDistanceLabel default", () => {
         let distanceLabel = atlas.find('Input');
         expect(distanceLabel.props().value).toEqual('N/A');
