@@ -50,6 +50,13 @@ public class TestQueryDatabase {
   }
 
   @Test
+  @DisplayName("Connection successful")
+  public void testConnection() throws SQLException {
+    conn = DriverManager.getConnection(db.getDbUrl(), db.getDbUser(), db.getDbPassword());
+    assertNotNull(conn);
+  }
+
+  @Test
   @DisplayName("DB_URL will depend on environment")
   public void testGetDB_URL() {
     QueryDatabase.configServerUsingLocation();
@@ -96,7 +103,8 @@ public class TestQueryDatabase {
   @DisplayName("Testing query with no filter")
   public void testQueryNoFilter() {
     String actualQuery = db.queryWithNoFilters("denver", 0);
-    String sampleQuery = "SELECT world.name, world.municipality, country.name, region.name, "
+    String sampleQuery =
+        "SELECT world.name, world.municipality, country.name, region.name, "
             + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
             + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = "
             + "country.id WHERE (country.name LIKE \"%denver%\" OR region.name LIKE \"%denver%\" OR "
@@ -109,7 +117,8 @@ public class TestQueryDatabase {
   @DisplayName("Testing query with no filter and no match")
   public void testQueryNoFilterNoMatch() {
     String actualQuery = db.queryWithNoFilters(null, 10);
-    String sampleQuery2 = "SELECT world.name, world.municipality, country.name, region.name, "
+    String sampleQuery2 =
+        "SELECT world.name, world.municipality, country.name, region.name, "
             + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
             + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = "
             + "country.id ORDER BY RAND() LIMIT 10;";
@@ -120,7 +129,8 @@ public class TestQueryDatabase {
   @DisplayName("Testing query with filter")
   public void testQueryWithFilter() {
     String actualQuery = db.queryWithFilters("denver", 10, narrow);
-    String sampleQuery3 = "SELECT world.name, world.municipality, country.name, region.name, "
+    String sampleQuery3 =
+        "SELECT world.name, world.municipality, country.name, region.name, "
             + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
             + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id "
             + "WHERE ((country.name LIKE \"%denver%\" OR region.name LIKE \"%denver%\" OR world.name LIKE "
@@ -131,9 +141,30 @@ public class TestQueryDatabase {
   }
 
   @Test
+  @DisplayName("Testing GeoFilter string is generated correctly")
+  public void testConstructGeoFilter() {
+    String expectedString = "(country.name = \"United States\" OR country.name = \"Canada\")";
+    String actualString = db.constructGeoFilter(narrow);
+    assertEquals(expectedString, actualString);
+  }
+
+  @Test
+  @DisplayName("Testing PortFilter string is generated correctly")
+  public void testConstructPortFilter() {
+    String expectedString = "(world.type LIKE \"%airport%\" OR world.type LIKE \"%heliport%\")";
+    String actualString = db.constructPortFilter(narrow);
+    assertEquals(expectedString, actualString);
+  }
+
+  @Test
   @DisplayName("Test getCorrectLimit")
   public void testGetCorrectLimit() {
-    assertEquals(100, db.getCorrectLimit("denver", 0));
+    assertEquals(50, db.getCorrectLimit("denver", 50));
+    assertEquals(100, db.getCorrectLimit("denver", 500));
+    assertEquals(100, db.getCorrectLimit("denver", null));
+    assertEquals(50, db.getCorrectLimit(null, 50));
+    assertEquals(100, db.getCorrectLimit(null, 500));
+    assertEquals(1, db.getCorrectLimit(null, null));
   }
 
   @Test
@@ -143,5 +174,4 @@ public class TestQueryDatabase {
     List<Map<String, String>> results = db.getQueryResults();
     assertEquals(29, results.size());
   }
-
 }
