@@ -16,7 +16,11 @@ import {isJsonResponseValid, sendServerRequest} from "../../../utils/restfulAPI"
 import * as findSchema from "../../../../schemas/FindResponse.json";
 import {PROTOCOL_VERSION} from "../../../utils/constants";
 
-const DEFAULT_RESPONSE_LIMIT = 20;
+import {hasFlag} from 'country-flag-icons';
+import getUnicodeFlagIcon from 'country-flag-icons/unicode';
+
+const RESPONSE_LIMIT = 20;
+const TYPING_REQUEST_DELAY = 1000;
 
 export default class FindModal extends Component {
     constructor(props) {
@@ -28,6 +32,10 @@ export default class FindModal extends Component {
             inputText: "",
             selectedPlace: null
         };
+    }
+
+    componentDidMount() {
+        this.timer = null;
     }
 
     render() {
@@ -51,12 +59,7 @@ export default class FindModal extends Component {
                 <InputGroup >
                     <InputGroupAddon addonType="prepend">{`Name`}</InputGroupAddon>
                     <Input placeholder="Enter place"
-                           onChange={e => {
-                               const text = e.target.value;
-                               this.setState({inputText: text});
-                               text && this.requestFindFromServer(text);
-                               text || this.setState({places: [], selectedPlace: null});
-                           }}
+                           onChange={event => this.onInputChange(event.target.value)}
                            value={this.state.inputText || ""}
                     />
                 </InputGroup>
@@ -64,10 +67,23 @@ export default class FindModal extends Component {
         );
     }
 
+    onInputChange(newValue) {
+        clearTimeout(this.timer);
+        if (newValue) {
+            this.setState({inputText: newValue });
+            this.timer = setTimeout(
+                () => this.requestFindFromServer(newValue),
+                TYPING_REQUEST_DELAY);
+        }
+        else {
+            this.setState({inputText: newValue, places: [], selectedPlace: null });
+        }
+    }
+
     renderList() {
         const HEADING = (this.state.places.length > 0)
             ? `Matching results (showing ${this.state.places.length} of ${this.state.found})`
-            : 'No matching airports';
+            : 'No matching airports.';
         return (
             <>
                 <ListSubheader color='primary'>
@@ -91,12 +107,17 @@ export default class FindModal extends Component {
                     onClick={() => this.setState({selectedPlace: item})}
                 >
                     <ListItemText
-                        primary={`${item.name} - [${item.id}]`}
+                        primary={this.getAirportText(item)}
                         secondary={this.getLocationText(item)}
                     />
                 </ListItem>
             )
         );
+    }
+
+    getAirportText(item) {
+        const flag = hasFlag(item.country_id) ? getUnicodeFlagIcon(item.country_id) + ' ' : '';
+        return `${flag}${item.name} - [${item.id}]`;
     }
 
     getLocationText(item) {
@@ -162,7 +183,7 @@ export default class FindModal extends Component {
             requestVersion: PROTOCOL_VERSION,
             requestType: "find",
             match: placeName,
-            limit: DEFAULT_RESPONSE_LIMIT,
+            limit: RESPONSE_LIMIT,
         }
     }
 
