@@ -18,7 +18,7 @@ public class QueryDatabase {
   private static String DB_PASSWORD;
 
   private final String COLUMNS =
-      "world.name, world.municipality, country.name, region.name, world.altitude, world.latitude, world.longitude, world.id, world.type";
+      "world.name, world.municipality, country.name, country.id, region.name, world.altitude, world.latitude, world.longitude, world.id, world.type";
   private final String TABLES =
       "world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id";
   private final String WHERECLAUSE1 = "country.name LIKE \"%";
@@ -174,9 +174,10 @@ public class QueryDatabase {
       map.put("latitude", resultSet.getString("latitude"));
       map.put("longitude", resultSet.getString("longitude"));
       map.put("type", resultSet.getString("type"));
-      map.put("id", resultSet.getString("id"));
+      map.put("id", resultSet.getString("world.id"));
       map.put("region", resultSet.getString("region.name"));
       map.put("country", resultSet.getString("country.name"));
+      map.put("country_id", resultSet.getString("country.id"));
       map.put(
           "url",
           String.format(
