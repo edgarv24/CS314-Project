@@ -104,7 +104,7 @@ public class TestQueryDatabase {
   public void testQueryNoFilter() {
     String actualQuery = db.queryWithNoFilters("denver", 0);
     String sampleQuery =
-        "SELECT world.name, world.municipality, country.name, region.name, "
+        "SELECT world.name, world.municipality, country.name, country.id, region.name, "
             + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
             + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = "
             + "country.id WHERE (country.name LIKE \"%denver%\" OR region.name LIKE \"%denver%\" OR "
@@ -118,7 +118,7 @@ public class TestQueryDatabase {
   public void testQueryNoFilterNoMatch() {
     String actualQuery = db.queryWithNoFilters(null, 10);
     String sampleQuery2 =
-        "SELECT world.name, world.municipality, country.name, region.name, "
+        "SELECT world.name, world.municipality, country.name, country.id, region.name, "
             + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
             + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = "
             + "country.id ORDER BY RAND() LIMIT 10;";
@@ -130,7 +130,7 @@ public class TestQueryDatabase {
   public void testQueryWithFilter() {
     String actualQuery = db.queryWithFilters("denver", 10, narrow);
     String sampleQuery3 =
-        "SELECT world.name, world.municipality, country.name, region.name, "
+        "SELECT world.name, world.municipality, country.name, country.id, region.name, "
             + "world.altitude, world.latitude, world.longitude, world.id, world.type FROM world INNER JOIN "
             + "region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id "
             + "WHERE ((country.name LIKE \"%denver%\" OR region.name LIKE \"%denver%\" OR world.name LIKE "
