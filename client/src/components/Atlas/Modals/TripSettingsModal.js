@@ -1,5 +1,7 @@
 import React from "react";
-import {Button, Input, InputGroup, InputGroupAddon, Modal, ModalBody, ModalHeader, ModalFooter, Row, Col} from "reactstrap";
+import {Button, Input, InputGroup, InputGroupAddon, Modal, ModalBody, ModalFooter, Row, Col} from "reactstrap";
+
+import {renderModalTitleHeader, renderCancelButton} from "./modalHelper";
 
 import coBrews from "../../../../test/TripFiles/co-brews.json";
 import usBrews from "../../../../test/TripFiles/us-brews.json";
@@ -17,9 +19,7 @@ export default class TripSettingsModal extends React.Component {
     render() {
         return (
             <Modal isOpen={this.props.isOpen} toggle={() => this.resetState()}>
-                <ModalHeader className="mt-1" toggle={() => this.resetState()}>
-                    <span className="ml-4">Trip Settings</span>
-                </ModalHeader>
+                {renderModalTitleHeader("Trip Settings", () => this.resetState())}
                 {this.renderBody()}
                 {this.renderFooter()}
             </Modal>
@@ -56,9 +56,6 @@ export default class TripSettingsModal extends React.Component {
     renderFooter() {
         return (
             <ModalFooter>
-                <Button id="trip-settings-close" color="primary" type="button" onClick={() => {this.resetState()}}>
-                    Close
-                </Button>
                 <Button id="trip-settings-submit" color="primary" type="button"
                         onClick={() => {
                             if (this.state.titleInput.length > 0)
@@ -67,6 +64,7 @@ export default class TripSettingsModal extends React.Component {
                         }}>
                     Save Settings
                 </Button>
+                {renderCancelButton("close-trip-settings", () => this.resetState())}
             </ModalFooter>
         );
     }
