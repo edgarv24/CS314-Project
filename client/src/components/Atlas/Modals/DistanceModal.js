@@ -8,10 +8,10 @@ import {
     Modal,
     ModalBody,
     ModalFooter,
-    ModalHeader,
-    Row,
+    Row
 } from 'reactstrap';
 
+import {renderModalTitleHeader, renderCancelButton} from "./modalHelper";
 import {isJsonResponseValid, sendServerRequest} from "../../../utils/restfulAPI";
 import * as distanceSchema from "../../../../schemas/DistanceResponse.json";
 
@@ -22,7 +22,6 @@ const BOX_INPUT1 = 0;
 const BOX_INPUT2 = 1;
 
 export default class DistanceModal extends Component {
-
     constructor(props) {
         super(props);
 
@@ -42,10 +41,8 @@ export default class DistanceModal extends Component {
     render() {
         return (
             <div>
-                <Modal isOpen={this.props.isOpen} toggle={() => this.props.toggleOpen()}>
-                    <ModalHeader className="mt-1" toggle={() => this.props.toggleOpen()}>
-                        <span className="ml-4">Distance Between Coordinates</span>
-                    </ModalHeader>
+                <Modal isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
+                    {renderModalTitleHeader("Distance Between Coordinates", () => this.resetModalState())}
                     <ModalBody>
                         <div>
                             {this.renderCoordinateInput(BOX_INPUT1)}
@@ -85,8 +82,7 @@ export default class DistanceModal extends Component {
     renderActionButtons() {
         return (
             <ModalFooter>
-                <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
-                <Button color='primary' onClick={() => {
+                <Button className="mr-2" color="primary" onClick={() => {
                     this.props.processDistanceRequestSuccess(this.state.coordinatePairs[BOX_INPUT1],
                         this.state.coordinatePairs[BOX_INPUT2], this.state.calculatedDistance);
                     this.resetModalState();
@@ -95,6 +91,7 @@ export default class DistanceModal extends Component {
                 >
                     Submit
                 </Button>
+                {renderCancelButton("close-distance-modal", () => this.resetModalState())}
             </ModalFooter>
         );
     }
