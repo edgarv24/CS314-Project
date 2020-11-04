@@ -12,12 +12,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import {Paper} from '@material-ui/core';
 import {IconButton, Tooltip, Zoom} from '@material-ui/core';
-import GpsFixedIcon from '@material-ui/icons/GpsFixed';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import LinearScaleIcon from '@material-ui/icons/LinearScale';
-import SearchIcon from '@material-ui/icons/Search';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import RemoveIcon from '@material-ui/icons/Remove';
+import {ArrowDownward, GpsFixed, LinearScale, LocationOn, Remove, Search, TrendingUp} from '@material-ui/icons';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 
 import Trip from "./Trip";
@@ -26,7 +21,6 @@ import DistanceModal from "./Modals/DistanceModal";
 import FindModal from "./Modals/FindModal";
 
 import {LOG} from "../../utils/constants";
-import {TrendingUp} from "@material-ui/icons";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -115,21 +109,23 @@ export default class Atlas extends Component {
         const NO_TRIP_DATA = this.state.trip.places.length === 0;
         const MARKERS_ON = !NO_TRIP_DATA && this.state.displayTripMarkers;
         const LINES_ON = !NO_TRIP_DATA && this.state.displayTripLines;
+        const OPTIMIZE_ON = !NO_TRIP_DATA && this.state.optimizeEnabled;
         return [
-            ['home-button', <GpsFixedIcon/>, TL, 'Where am I?', TOOLTIP_RIGHT, false, true,
+            ['home-button', <GpsFixed/>, TL, 'Where am I?', TOOLTIP_RIGHT, false, true,
                 () => this.setMapToHome()],
-            ['distance-button', <LinearScaleIcon/>, TL, '2 Point Distance', TOOLTIP_RIGHT, false, true,
+            ['distance-button', <LinearScale/>, TL, '2 Point Distance', TOOLTIP_RIGHT, false, true,
                 () => this.setState({distModalOpen: true})],
-            ['find-button', <SearchIcon/>, TL, 'Find Place by Name', TOOLTIP_RIGHT, false, true,
+            ['find-button', <Search/>, TL, 'Find Place by Name', TOOLTIP_RIGHT, false, true,
                 () => this.setState({findModalOpen: true})],
-            ['toggle-trip-markers', <LocationOnIcon/>, BL, 'Toggle Trip Markers', TOOLTIP_RIGHT, NO_TRIP_DATA, MARKERS_ON,
-                () => this.setState({displayTripMarkers: !this.state.displayTripMarkers})],
-            ['toggle-trip-lines', <RemoveIcon/>, BL, 'Toggle Trip Lines', TOOLTIP_RIGHT, NO_TRIP_DATA, LINES_ON,
+            ['toggle-trip-lines', <Remove/>, BL, 'Toggle Trip Lines', TOOLTIP_RIGHT, NO_TRIP_DATA, LINES_ON,
                 () => this.setState({displayTripLines: !this.state.displayTripLines})],
-            ['scroll-down-button', <ArrowDownwardIcon/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
-                () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})],
-            ['optimize-button', <TrendingUp/>, TR, 'Optimize', TOOLTIP_LEFT, false, this.state.optimizeEnabled,
-                () => this.setState({optimizeEnabled: true})],];
+            ['toggle-trip-markers', <LocationOn/>, BL, 'Toggle Trip Markers', TOOLTIP_RIGHT, NO_TRIP_DATA, MARKERS_ON,
+                () => this.setState({displayTripMarkers: !this.state.displayTripMarkers})],
+            ['optimize-button', <TrendingUp/>, BL, 'Optimize Trip', TOOLTIP_RIGHT, NO_TRIP_DATA, OPTIMIZE_ON,
+                () => this.setState({optimizeEnabled: !this.state.optimizeEnabled})],
+            ['scroll-down-button', <ArrowDownward/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
+                () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})]
+        ];
     }
 
     renderMapMarkers() {
@@ -382,10 +378,11 @@ export default class Atlas extends Component {
 }
 
 const MapButton = ({buttonID, buttonIcon, mapPosition, tooltipText, tooltipPlacement, disabled, toggledOn, onClick}) => {
+    const disabledText = disabled ? " (disabled)" : "";
     const ICON_COLOR = toggledOn ? undefined : blueGrey[200];
     return (
         <Control position={mapPosition}>
-            <Tooltip title={tooltipText} placement={tooltipPlacement} TransitionComponent={Zoom} arrow>
+            <Tooltip title={tooltipText + disabledText} placement={tooltipPlacement} TransitionComponent={Zoom} arrow>
                 <Paper elevation={4}>
                     <IconButton id={buttonID} onClick={onClick} disabled={disabled} size="small"
                                 color="inherit" style={{ color: ICON_COLOR }}>

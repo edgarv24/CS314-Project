@@ -2,6 +2,7 @@ import './jestConfig/enzyme.config.js';
 
 import React from 'react';
 import {shallow} from 'enzyme';
+import {jest} from "@jest/globals";
 
 import DistanceModal from '../src/components/Atlas/Modals/DistanceModal';
 
@@ -16,6 +17,7 @@ function testInputBoxValues() {
     const distModal = shallow(<DistanceModal
         input1={"90, 90"}
         input2={"80, 80"}
+        processDistanceRequestSuccess={jest.fn}
         />);
     expect(distModal.find('Input').at(0).props().value).toEqual("90, 90");
     expect(distModal.find('Input').at(1).props().value).toEqual("80, 80");
@@ -28,9 +30,11 @@ function testCancelButton() {
         input1={"90, 90"}
         input2={"80, 80"}
         toggleOpen={() => {}}
+        processDistanceRequestSuccess={jest.fn}
     />);
-    expect(distModal.find('Button').length).toEqual(2);
-    distModal.find('Button').at(0).simulate('click');
+    const cancelButton = distModal.find('#close-distance-modal');
+    expect(cancelButton).toBeDefined();
+    cancelButton.simulate('click');
     expect(distModal.state().inputValues).toEqual([null, null]);
 }
 

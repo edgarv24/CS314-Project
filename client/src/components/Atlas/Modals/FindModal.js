@@ -6,10 +6,10 @@ import {
     InputGroupAddon,
     Modal,
     ModalBody,
-    ModalFooter,
-    ModalHeader
+    ModalFooter
 } from 'reactstrap';
 
+import {renderModalTitleHeader, renderCancelButton} from "./modalHelper";
 import {ListItem, ListItemText, ListSubheader} from "@material-ui/core";
 
 import {isJsonResponseValid, sendServerRequest} from "../../../utils/restfulAPI";
@@ -40,10 +40,8 @@ export default class FindModal extends Component {
 
     render() {
         return (
-            <Modal isOpen={this.props.isOpen} toggle={() => this.props.toggleOpen()}>
-                <ModalHeader className="mt-1" toggle={() => this.props.toggleOpen()}>
-                    <span className="ml-4">Find Places</span>
-                </ModalHeader>
+            <Modal isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
+                {renderModalTitleHeader("Find Places", () => this.resetModalState())}
                 <ModalBody>
                     {this.renderInputBox()}
                     {this.renderList()}
@@ -59,7 +57,7 @@ export default class FindModal extends Component {
                 <InputGroup >
                     <InputGroupAddon addonType="prepend">{`Name`}</InputGroupAddon>
                     <Input placeholder="Enter place"
-                           onChange={event => this.onInputChange(event.target.value)}
+                           onChange={e => this.onInputChange(e.target.value)}
                            value={this.state.inputText || ""}
                     />
                 </InputGroup>
@@ -130,24 +128,24 @@ export default class FindModal extends Component {
     renderFooter() {
         return (
             <ModalFooter>
-                {this.renderLocateButton()}
-                <Button className="mr-2" color='primary' onClick={() => this.resetModalState()}>Cancel</Button>
+                {this.renderActionButton("locate-button", "Locate",
+                    () => this.props.processFindRequestViewLocation(this.getSelectedPlaceLatLng()))}
+                {this.renderActionButton("add-to-trip-button", "Add to Trip",
+                    () => undefined)}
+                {renderCancelButton("close-find-modal", () => this.resetModalState())}
             </ModalFooter>
         );
     }
 
-    renderLocateButton(){
+    renderActionButton(id, name, action) {
         return(
-            <Button
-                id="locate-button"
-                className="mr-2" color='primary'
-                disabled={!this.state.selectedPlace}
+            <Button id={id} className="mr-2" color="primary" disabled={!this.state.selectedPlace}
                 onClick={() => {
-                    this.props.processFindRequestViewLocation(this.getSelectedPlaceLatLng());
+                    action();
                     this.resetModalState();
                 }}
             >
-                Locate
+                {name}
             </Button>
         );
     }

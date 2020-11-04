@@ -142,6 +142,8 @@ describe('Atlas', () => {
     test("Test button that performs optimize function", () => {
         expect(atlasMounted.state().optimizeEnabled).toBe(false);
         simulateButtonClickEvent(atlasMounted, '#optimize-button')
+        expect(atlasMounted.state().optimizeEnabled).toBe(false);
+        atlasMounted.find('#optimize-button').at(0).props()['onClick']();
         expect(atlasMounted.state().optimizeEnabled).toBe(true);
     });
 
