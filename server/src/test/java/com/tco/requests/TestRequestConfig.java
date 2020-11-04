@@ -1,5 +1,6 @@
 package com.tco.requests;
 
+import com.tco.misc.BadRequestException;
 import com.tco.requests.RequestConfig;
 
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ public class TestRequestConfig {
   private RequestConfig conf;
 
   @BeforeEach
-  public void createConfigurationForTestCases() {
+  public void createConfigurationForTestCases() throws BadRequestException {
     conf = new RequestConfig();
     conf.buildResponse();
   }
