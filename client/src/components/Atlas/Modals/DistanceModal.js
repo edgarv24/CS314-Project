@@ -129,7 +129,6 @@ export default class DistanceModal extends Component {
             sendServerRequest(this.constructRequestBody(this.state.coordinatePairs, earthRadius))
                 .then(responseJSON => {
                     if (responseJSON) this.processDistanceResponse(responseJSON);
-                    else this.setState({calculatedDistance: null});
                 });
         } else {
             this.setState({calculatedDistance: null});
