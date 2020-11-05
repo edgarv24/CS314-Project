@@ -4,6 +4,8 @@ import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as tripSchema from "../../../schemas/TripResponse.json";
 import * as tripFileSchema from "../../../schemas/TripFile.json";
 
+import {LOG} from '../../utils/constants';
+
 const DEFAULT_TRIP_TITLE = 'My Trip';
 const EARTH_RADIUS = '3959.0'
 
@@ -16,16 +18,19 @@ export default class Trip {
         this.distances = [];
     }
 
-    updateDistance(onFinish=() => undefined) {
+    async updateDistance() {
         sendServerRequest(this.constructRequestBody()).then(responseJSON => {
-            if (responseJSON) {
-                const responseBody = responseJSON.data;
-                if (isJsonResponseValid(responseBody, tripSchema)) {
-                    this.distances = responseBody.distances;
-                    onFinish();
-                }
-            }
+            if (responseJSON) this.processTripResponse(responseJSON);
         });
+    }
+
+    processTripResponse(responseJSON) {
+        const responseBody = responseJSON.data;
+        if (isJsonResponseValid(responseBody, tripSchema)) {
+            LOG.info('setting distances');
+            LOG.info(this.places);
+            this.distances = responseBody.distances;
+        }
     }
 
     constructRequestBody() {

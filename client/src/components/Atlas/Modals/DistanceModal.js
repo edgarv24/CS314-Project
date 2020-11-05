@@ -41,7 +41,7 @@ export default class DistanceModal extends Component {
     render() {
         return (
             <div>
-                <Modal isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
+                <Modal id="distance-modal" isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
                     {renderModalTitleHeader("Distance Between Coordinates", () => this.resetModalState())}
                     <ModalBody>
                         <div>
@@ -64,7 +64,7 @@ export default class DistanceModal extends Component {
                 <Col>
                     <InputGroup>
                         <InputGroupAddon addonType="prepend">{`Point ${index + 1}`}</InputGroupAddon>
-                        <Input placeholder="Latitude, Longitude"
+                        <Input id={`coordinate-input-${index}`} placeholder="Latitude, Longitude"
                                onChange={(e) => {
                                    this.updateInputValueAndAttemptConvert(index, e.target.value);
                                    this.requestDistanceFromServer();
@@ -82,7 +82,7 @@ export default class DistanceModal extends Component {
     renderActionButtons() {
         return (
             <ModalFooter>
-                <Button className="mr-2" color="primary" onClick={() => {
+                <Button id="distance-submit-button" className="mr-2" color="primary" onClick={() => {
                     this.props.processDistanceRequestSuccess(this.state.coordinatePairs[BOX_INPUT1],
                         this.state.coordinatePairs[BOX_INPUT2], this.state.calculatedDistance);
                     this.resetModalState();
@@ -128,11 +128,7 @@ export default class DistanceModal extends Component {
         if (this.checkValidCoordinates()) {
             sendServerRequest(this.constructRequestBody(this.state.coordinatePairs, earthRadius))
                 .then(responseJSON => {
-                    if (responseJSON) {
-                        this.processDistanceResponse(responseJSON)
-                    } else {
-                        this.setState({calculatedDistance: null});
-                    }
+                    if (responseJSON) this.processDistanceResponse(responseJSON);
                 });
         } else {
             this.setState({calculatedDistance: null});

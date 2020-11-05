@@ -7,6 +7,8 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import {DestinationTable} from "./DestinationTable";
 import TripSettingsModal from '../Modals/TripSettingsModal';
 
+import {LOG} from '../../../utils/constants';
+
 export default class Itinerary extends React.Component {
     constructor(props) {
         super(props);
@@ -23,13 +25,14 @@ export default class Itinerary extends React.Component {
         // Send new server request in Trip to make sure values are updated.
         // When the asynchronous request finishes, the callback will update
         // placeData here and also re-render this component.
-        this.props.trip.updateDistance(() => {
+        this.props.trip.updateDistance().then(() => {
             const newPlaceData = this.props.trip.itineraryPlaceData;
             this.setState({placeData: newPlaceData});
         });
     }
 
     render() {
+        LOG.info(JSON.parse(JSON.stringify(this.state.placeData)));
         return (
             <Paper id="itinerary" elevation={3}>
                 {this.renderHeader()}

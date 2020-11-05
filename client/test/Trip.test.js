@@ -263,6 +263,13 @@ describe('Trip', () => {
         expect(trip.distances).toEqual(expectedDistances);
     });
 
+    it('processes JSON response correctly', () => {
+        const response = mockTripResponse;
+        expect(trip.distances.length).toEqual(0);
+        trip.processTripResponse(response);
+        expect(trip.distances).toEqual(response.data.distances);
+    });
+
     it('does not alter distances with bad coordinates', () => {
         const invalidPlace = {"name": "place1", "latitude": "40 W", "longitude": "40 N"};
 
@@ -297,5 +304,18 @@ describe('Trip', () => {
         let newTrip = trip.loadJSON(mockTripFile)
         expect(newTrip.title).toEqual('My Trip');
         expect(newTrip.places.length).toEqual(0);
+    });
+
+    it('prevents removing an invalid index', () => {
+        const newTrip = trip.removeAtIndex(200);
+        expect(newTrip).toEqual(trip);
+    });
+
+    it('handles itinerary place data for one place', () => {
+        const place = {name: 'Fort Collins', latitude: '40.5853', longitude: '-105.0844'};
+        const newTrip = trip.addPlace(place);
+        const itineraryData = newTrip.itineraryPlaceData;
+
+        expect(itineraryData.length).toEqual(1);
     });
 });
