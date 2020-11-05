@@ -18,7 +18,7 @@ export default class TripSettingsModal extends React.Component {
 
     render() {
         return (
-            <Modal isOpen={this.props.isOpen} toggle={() => this.resetState()}>
+            <Modal id="trip-settings-modal" isOpen={this.props.isOpen} toggle={() => this.resetState()}>
                 {renderModalTitleHeader("Trip Settings", () => this.resetState())}
                 {this.renderBody()}
                 {this.renderFooter()}
@@ -32,7 +32,7 @@ export default class TripSettingsModal extends React.Component {
                 {this.renderInputRow(
                     <InputGroup>
                         <InputGroupAddon addonType="prepend">Trip Title</InputGroupAddon>
-                        <Input placeholder={this.props.trip.title} value={this.state.titleInput}
+                        <Input id="settings-title-input" placeholder={this.props.trip.title} value={this.state.titleInput}
                                onChange={(e) => this.setState({titleInput: e.target.value})} />
                     </InputGroup>)}
                 {this.renderInputRow(
@@ -44,9 +44,9 @@ export default class TripSettingsModal extends React.Component {
                     </InputGroup>)}
                 {this.renderInputRow(
                     <>
-                        {this.renderLoadButton("Load CO-Brews", coBrews)}
-                        {this.renderLoadButton("Load US-Brews", usBrews)}
-                        {this.renderLoadButton("Load World-Brews", worldBrews)}
+                        {this.renderLoadButton("load-co-brews", "Load CO-Brews", coBrews)}
+                        {this.renderLoadButton("load-us-brews", "Load US-Brews", usBrews)}
+                        {this.renderLoadButton("load-world-brews", "Load World-Brews", worldBrews)}
                     </>
                 )}
             </ModalBody>
@@ -79,9 +79,9 @@ export default class TripSettingsModal extends React.Component {
         );
     };
 
-    renderLoadButton(name, tripFile) {
+    renderLoadButton(id, name, tripFile) {
         return (
-            <Button id={`load-${name}`} className="mr-3 mb-3" size="sm" color="primary" type="button" outline onClick={() => {
+            <Button id={id} className="mr-3 mb-3" size="sm" color="primary" type="button" outline onClick={() => {
                 const newTrip = this.props.trip.loadJSON(tripFile);
                 this.props.setTrip(newTrip);
                 this.props.updatePlaceData();
