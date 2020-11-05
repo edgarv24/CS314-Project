@@ -1,13 +1,15 @@
-import React, { Component } from "react";
-import { Button, Col, Input, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap";
+import React from "react";
+import { Button, Col, Input, Modal, ModalBody, ModalFooter, Row } from "reactstrap";
 
 import { sendServerRequest, isJsonResponseValid } from "../../utils/restfulAPI";
+import {renderModalTitleHeader, renderCancelButton} from "../Atlas/Modals/modalHelper";
 
 import * as configSchema from "../../../schemas/ConfigResponse";
 import {PROTOCOL_VERSION} from "../../utils/constants";
 
-export default class ServerSettings extends Component {
+import {LOG} from "../../utils/constants";
 
+export default class ServerSettings extends React.Component {
     constructor(props) {
         super(props);
 
@@ -22,15 +24,11 @@ export default class ServerSettings extends Component {
 
     render() {
         return (
-            <div>
-                <Modal isOpen={this.props.isOpen} toggle={() => this.props.toggleOpen()}>
-                    <ModalHeader className="mt-1" toggle={() => this.props.toggleOpen()}>
-                        <span className="ml-4">Server Connection</span>
-                    </ModalHeader>
-                    {this.renderSettings(this.getCurrentServerName())}
-                    {this.renderActions()}
-                </Modal>
-            </div>
+            <Modal id="server-settings-modal" isOpen={this.props.isOpen} toggle={() => this.props.toggleOpen()}>
+                {renderModalTitleHeader("Server Connection", () => this.props.toggleOpen())}
+                {this.renderSettings(this.getCurrentServerName())}
+                {this.renderActions()}
+            </Modal>
         );
     }
 
@@ -77,7 +75,6 @@ export default class ServerSettings extends Component {
     renderActions() {
         return (
             <ModalFooter>
-                <Button color="primary" onClick={() => this.resetServerSettingsState()}>Cancel</Button>
                 <Button color="primary" onClick={() =>
                 {
                     this.props.processServerConfigSuccess(this.state.config, this.state.inputText);
@@ -87,6 +84,7 @@ export default class ServerSettings extends Component {
                 >
                     Save
                 </Button>
+                {renderCancelButton('close-server-settings', () => this.resetServerSettingsState())}
             </ModalFooter>
         );
     }
@@ -134,7 +132,8 @@ export default class ServerSettings extends Component {
     }
 
     processConfigResponse(config) {
-        if(!isJsonResponseValid(config, configSchema)) {
+        LOG.info(config);
+        if (!isJsonResponseValid(config, configSchema)) {
             this.setState({validServer: false, config: false});
         } else {
             this.setState({validServer: true, config: config});
