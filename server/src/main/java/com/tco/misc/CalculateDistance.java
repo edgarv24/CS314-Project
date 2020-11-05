@@ -7,7 +7,7 @@ import static java.lang.Math.*;
 public class CalculateDistance {
   private double earthRadius;
 
-  private CalculateDistance() {}
+  CalculateDistance() {}
 
   public static CalculateDistance usingRadius(double earthRadius) {
     CalculateDistance cd = new CalculateDistance();
