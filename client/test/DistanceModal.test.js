@@ -2,86 +2,142 @@ import './jestConfig/enzyme.config.js';
 
 import React from 'react';
 import {shallow} from 'enzyme';
-import {jest} from "@jest/globals";
+import {beforeEach, describe, it} from "@jest/globals";
 
 import DistanceModal from '../src/components/Atlas/Modals/DistanceModal';
+import {ModalHeader} from "reactstrap";
 
-function testInputBoxes() {
-    const distModal = shallow(<DistanceModal/>);
-    expect(distModal.find('Input').length).toEqual(2);
-}
+describe('Distance Modal', () => {
+    let wrapper;
+    let isOpen;
+    let calculatedDistance;
 
-test("Test that both input boxes rendered", testInputBoxes);
+    const toggleOpen = () => isOpen = !isOpen;
+    const processDistanceRequestSuccess = (c1, c2, distance) => calculatedDistance = distance;
 
-function testInputBoxValues() {
-    const distModal = shallow(<DistanceModal
-        input1={"90, 90"}
-        input2={"80, 80"}
-        processDistanceRequestSuccess={jest.fn}
-        />);
-    expect(distModal.find('Input').at(0).props().value).toEqual("90, 90");
-    expect(distModal.find('Input').at(1).props().value).toEqual("80, 80");
-}
+    beforeEach(() => {
+        isOpen = true;
+        calculatedDistance = null;
+        wrapper = shallow(
+            <DistanceModal
+                isOpen={isOpen}
+                toggleOpen={toggleOpen}
+                processDistanceRequestSuccess={processDistanceRequestSuccess}
+                input1={"90, 90"}
+                input2={"80, 80"}
+            />);
+    });
 
-test("Test text in input boxes", testInputBoxValues);
+    it("renders both input boxes", () => {
+        expect(wrapper.find('Input').length).toEqual(2);
+    });
 
-function testCancelButton() {
-    const distModal = shallow(<DistanceModal
-        input1={"90, 90"}
-        input2={"80, 80"}
-        toggleOpen={() => {}}
-        processDistanceRequestSuccess={jest.fn}
-    />);
-    const cancelButton = distModal.find('#close-distance-modal');
-    expect(cancelButton).toBeDefined();
-    cancelButton.simulate('click');
-    expect(distModal.state().inputValues).toEqual([null, null]);
-}
+    it("auto-fills inputs on open", () => {
+        expect(wrapper.find('Input').at(0).props().value).toEqual("90, 90");
+        expect(wrapper.find('Input').at(1).props().value).toEqual("80, 80");
+    });
 
-test("Testing that cancel button sets input values to null", testCancelButton);
+    it("clears input boxes on cancel", () => {
+        const cancelButton = wrapper.find('#close-distance-modal');
+        expect(cancelButton).toBeDefined();
+        cancelButton.simulate('click');
+        expect(wrapper.state().inputValues).toEqual([null, null]);
+    });
 
-function testDistance() {
-    const distModal = shallow(<DistanceModal/>);
-    let response = '{"data": {"requestType": "distance", "requestVersion": 3, ' +
-        '                "place1": {"latitude": "90", "longitude": "100"}, ' +
-        '                "place2": {"latitude": "90", "longitude": "100"}, ' +
-        '                 "earthRadius": 6371.0, "distance": 1989}}';
-    distModal.instance().processDistanceResponse(JSON.parse(response));
-    expect(distModal.state().calculatedDistance).toEqual(1989);
-}
+    it("updates calculatedDistance correctly", () => {
+        let response = '{"data": {"requestType": "distance", "requestVersion": 3, ' +
+            '                "place1": {"latitude": "90", "longitude": "100"}, ' +
+            '                "place2": {"latitude": "90", "longitude": "100"}, ' +
+            '                 "earthRadius": 6371.0, "distance": 1989}}';
+        wrapper.instance().processDistanceResponse(JSON.parse(response));
+        expect(wrapper.state().calculatedDistance).toEqual(1989);
+    });
 
-test("Test that calculatedDistance is updated correctly", testDistance);
+    it("Test updateInputValueAndAttemptConvert function", () => {
+        let denverCoords = "39.744137, -104.950050";
+        let focoCoords = "40.5853, -105.0844";
+        let invalidCoords = "lat, lng";
 
-function testUpdateAndConvert() {
-    const distModal = shallow(<DistanceModal/>);
+        wrapper.instance().updateInputValueAndAttemptConvert(0, denverCoords);
+        wrapper.instance().updateInputValueAndAttemptConvert(1, focoCoords);
 
-    let denverCoords = "39.744137, -104.950050";
-    let focoCoords = "40.5853, -105.0844";
-    let invalidCoords = "lat, lng";
+        let actualInputValues1 = wrapper.state().inputValues[0];
+        let actualInputValues2 = wrapper.state().inputValues[1];
+        let actualCoordPairs1 = wrapper.state().coordinatePairs[0];
+        let expectedCoordPairs1 = {lat: 39.744137, lng: -104.950050};
+        let actualCoordPairs2 = wrapper.state().coordinatePairs[1];
+        let expectedCoordPairs2 = {lat: 40.5853, lng: -105.0844};
 
-    distModal.instance().updateInputValueAndAttemptConvert(0, denverCoords);
-    distModal.instance().updateInputValueAndAttemptConvert(1, focoCoords);
+        expect(actualInputValues1).toEqual(denverCoords);
+        expect(actualInputValues2).toEqual(focoCoords);
+        expect(actualCoordPairs1).toEqual(expectedCoordPairs1);
+        expect(actualCoordPairs2).toEqual(expectedCoordPairs2);
 
-    let actualInputValues1 = distModal.state().inputValues[0];
-    let actualInputValues2 = distModal.state().inputValues[1];
-    let actualCoordPairs1 = distModal.state().coordinatePairs[0];
-    let expectedCoordPairs1 = {lat: 39.744137, lng: -104.950050};
-    let actualCoordPairs2 = distModal.state().coordinatePairs[1];
-    let expectedCoordPairs2 = {lat: 40.5853, lng: -105.0844};
+        wrapper.instance().updateInputValueAndAttemptConvert(1, invalidCoords);
+        let actualInvalidValues = wrapper.state().inputValues[1];
+        let actualInvalidCoords = wrapper.state().coordinatePairs[1];
 
-    expect(actualInputValues1).toEqual(denverCoords);
-    expect(actualInputValues2).toEqual(focoCoords);
-    expect(actualCoordPairs1).toEqual(expectedCoordPairs1);
-    expect(actualCoordPairs2).toEqual(expectedCoordPairs2);
+        expect(actualInputValues1).toEqual(denverCoords);
+        expect(actualCoordPairs1).toEqual(expectedCoordPairs1);
+        expect(actualInvalidValues).toEqual(invalidCoords);
+        expect(actualInvalidCoords).toEqual(null);
+    });
 
-    distModal.instance().updateInputValueAndAttemptConvert(1, invalidCoords);
-    let actualInvalidValues = distModal.state().inputValues[1];
-    let actualInvalidCoords = distModal.state().coordinatePairs[1];
+    it('updates inputValues on input box change', () => {
+        const input = wrapper.find('#coordinate-input-0');
+        expect(input).toBeDefined();
+        const input2 = wrapper.find('#coordinate-input-1');
+        expect(input2).toBeDefined();
 
-    expect(actualInputValues1).toEqual(denverCoords);
-    expect(actualCoordPairs1).toEqual(expectedCoordPairs1);
-    expect(actualInvalidValues).toEqual(invalidCoords);
-    expect(actualInvalidCoords).toEqual(null);
-}
+        wrapper.setState({inputValues: [null, null]})
+        input.simulate('change', {target: { value: '10, 20' }});
+        expect(wrapper.state().inputValues).toEqual(['10, 20', null]);
 
-test("Test updateInputValueAndAttemptConvert function", testUpdateAndConvert);
+        input2.simulate('change', {target: { value: '30, 40' }});
+        expect(wrapper.state().inputValues).toEqual(['10, 20', '30, 40']);
+    });
+
+    it('has a functioning submit button', () => {
+        const submitButton = wrapper.find('#distance-submit-button');
+        wrapper.setState({calculatedDistance: 20});
+        submitButton.simulate('click');
+        expect(calculatedDistance).toEqual(20);
+        expect(wrapper.state().inputValues[0]).toEqual(null);
+        expect(wrapper.state().inputValues[1]).toEqual(null);
+        expect(isOpen).toBe(false);
+    });
+
+    it("has a functioning close button", () => {
+        const closeButton = wrapper.find('#close-distance-modal');
+
+        expect(isOpen).toBe(true);
+        closeButton.simulate('click');
+        expect(isOpen).toBe(false);
+    });
+
+    it('toggles isOpen correctly', () => {
+        const modal = wrapper.find('#distance-modal');
+        expect(modal).toBeDefined();
+
+        expect(isOpen).toBe(true);
+        modal.props()['toggle']();
+        expect(isOpen).toBe(false);
+
+        const header = wrapper.find(ModalHeader);
+        expect(header).toBeDefined();
+        expect(header.find('span').props()['children']).toEqual('Distance Between Coordinates');
+
+        expect(isOpen).toBe(false);
+        header.props().toggle();
+        expect(isOpen).toBe(true);
+    });
+
+    it('correctly handles invalid distance response', () => {
+        const response = {'name': 'This will not pass the schema.'}
+
+        wrapper.setState({coordinatePairs: [{lat: 0, lng: 0}, {lat: 1, lng: 1}]});
+        wrapper.instance().processDistanceResponse(response);
+        expect(wrapper.state().coordinatePairs[0]).toEqual(null);
+        expect(wrapper.state().coordinatePairs[1]).toEqual(null);
+    })
+});
