@@ -40,7 +40,7 @@ export default class FindModal extends Component {
 
     render() {
         return (
-            <Modal isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
+            <Modal id="find-modal" isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
                 {renderModalTitleHeader("Find Places", () => this.resetModalState())}
                 <ModalBody>
                     {this.renderInputBox()}
@@ -169,11 +169,8 @@ export default class FindModal extends Component {
     requestFindFromServer(placeName) {
         sendServerRequest(this.constructRequestBody(placeName))
             .then(responseJSON => {
-                if (responseJSON) {
-                    this.processFindResponse(responseJSON)
-                }
-            }
-        );
+                if (responseJSON) this.processFindResponse(responseJSON);
+            });
     }
 
     constructRequestBody(placeName) {
@@ -181,7 +178,7 @@ export default class FindModal extends Component {
             requestVersion: PROTOCOL_VERSION,
             requestType: "find",
             match: placeName,
-            limit: RESPONSE_LIMIT,
+            limit: RESPONSE_LIMIT
         }
     }
 

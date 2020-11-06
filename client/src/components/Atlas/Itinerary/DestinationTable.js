@@ -4,56 +4,47 @@ import {Button} from "reactstrap";
 import {Table, TableBody, TableCell, TableContainer, TableFooter, TablePagination, TableRow} from '@material-ui/core';
 import {Box, Collapse, IconButton, ListItemText, Paper, Typography} from '@material-ui/core';
 
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import {FirstPage, LastPage, Edit, Delete} from '@material-ui/icons';
+import {KeyboardArrowUp, KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight} from '@material-ui/icons';
 
-export const DestinationTable = ({data}) => {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [openRow, setOpenRow] = React.useState(-1);
+export class DestinationTable extends React.Component {
+    constructor(props) {
+        super(props);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+        this.handleChangePage = this.handleChangePage.bind(this);
+        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+        this.state = {
+            page: 0,
+            rowsPerPage: 5,
+            openRow: -1
+        };
+    }
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
+    render() {
+        return (
+            <TableContainer component={Paper}>
+                <Table>
+                    {this.renderBody()}
+                    {this.renderFooter()}
+                </Table>
+            </TableContainer>
+        );
+    }
 
-    const realIndex = (index) => {
-        return index + rowsPerPage * page;
-    };
-
-    const rowData = (index) => {
-        return data[realIndex(index)];
-    };
-
-    const calculateRowsToRender = () => {
-        return (rowsPerPage > 0)
-            ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : data;
-    };
-
-    const renderBody = () => {
+    renderBody() {
         return (
             <TableBody>
-                {calculateRowsToRender().map((_, index) => (
-                    <DestinationTableRow key={rowData(index).id} rowData={rowData(index)} index={realIndex(index)}
-                                         collapseIsOpen={openRow === realIndex(index)}
-                                         setOpenRow={(row) => setOpenRow(row)}/>
+                {this.calculateRowsToRender().map((_, index) => (
+                    <DestinationTableRow key={this.rowData(index).id}
+                                         rowData={this.rowData(index)}
+                                         index={this.realIndex(index)}
+                                         collapseIsOpen={this.state.openRow === this.realIndex(index)}
+                                         setOpenRow={(row) => this.setState({openRow: row})}/>
                 ))}
 
-                {emptyRows > 0 && (
-                    <TableRow style={{height: 89 * emptyRows}}>
+                {this.emptyRows() > 0 && (
+                    <TableRow style={{height: 89 * this.emptyRows()}}>
                         <TableCell colSpan={6}/>
                     </TableRow>
                 )}
@@ -61,7 +52,7 @@ export const DestinationTable = ({data}) => {
         );
     }
 
-    const renderFooter = () => {
+    renderFooter() {
         return (
             <TableFooter>
                 <TableRow>
@@ -69,11 +60,11 @@ export const DestinationTable = ({data}) => {
                         size={'small'}
                         rowsPerPageOptions={[5, 10, 20, {label: 'All', value: -1}]}
                         colSpan={4}
-                        count={data.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onChangePage={handleChangePage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        count={this.props.data.length}
+                        rowsPerPage={this.state.rowsPerPage}
+                        page={this.state.page}
+                        onChangePage={this.handleChangePage}
+                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
                         ActionsComponent={TableActions}
                     />
                 </TableRow>
@@ -81,57 +72,92 @@ export const DestinationTable = ({data}) => {
         );
     }
 
-    return (
-        <TableContainer component={Paper}>
-            <Table>
-                {renderBody()}
-                {renderFooter()}
-            </Table>
-        </TableContainer>
-    );
+    emptyRows() {
+        const rowsPerPage = this.state.rowsPerPage;
+        const page = this.state.page;
+        return rowsPerPage - Math.min(rowsPerPage, this.props.data.length - page * rowsPerPage);
+    }
+
+    handleChangePage(event, newPage) {
+        this.setState({page: newPage});
+    };
+
+    handleChangeRowsPerPage(event) {
+        const newRowsPerPage = parseInt(event.target.value, 10);
+        this.setState({rowsPerPage: newRowsPerPage, page: 0})
+    };
+
+    realIndex(index) {
+        return index + this.state.rowsPerPage * this.state.page;
+    };
+
+    rowData(index) {
+        return this.props.data[this.realIndex(index)];
+    };
+
+    calculateRowsToRender() {
+        const rowsPerPage = this.state.rowsPerPage;
+        const page = this.state.page;
+        return (rowsPerPage > 0)
+            ? this.props.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : this.props.data;
+    };
 }
 
-export function DestinationTableRow({rowData, index, collapseIsOpen, setOpenRow}) {
-    const renderBody = () => {
+export class DestinationTableRow extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
         return (
-            <TableRow hover onClick={() => setOpenRow(collapseIsOpen ? -1 : index)}>
+            <>
+                {this.renderBody()}
+                {this.renderCollapseSection()}
+            </>
+        );
+    }
+
+    renderBody() {
+        return (
+            <TableRow hover onClick={() => this.props.setOpenRow(this.props.collapseIsOpen ? -1 : this.props.index)}>
                 <TableCell style={{width: "5%"}}>
-                    {collapseIsOpen ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+                    {this.props.collapseIsOpen ? <KeyboardArrowUp/> : <KeyboardArrowDown/>}
                 </TableCell>
                 <TableCell style={{width: "5%"}} component="th" scope="row">
-                    {index + 1}
+                    {this.props.index + 1}
                 </TableCell>
                 <TableCell style={{width: "60%"}}>
-                    <ListItemText primary={rowData.primary_text} secondary={rowData.location_text}/>
+                    <ListItemText primary={this.props.rowData.primary_text} secondary={this.props.rowData.location_text}/>
                 </TableCell>
                 <TableCell style={{width: "20%"}} align="right">
                     <ListItemText
-                        primary={rowData.cumulative_dist + " miles"}
-                        secondary={(index > 0) ? `(+${rowData.leg_dist})` : "(origin)"}
+                        primary={this.props.rowData.cumulative_dist + " miles"}
+                        secondary={(this.props.index > 0) ? `(+${this.props.rowData.leg_dist})` : "(origin)"}
                     />
                 </TableCell>
             </TableRow>
         );
     }
 
-    const renderCollapseSection = () => {
+    renderCollapseSection() {
         return (
             <TableRow>
                 <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={4}>
-                    <Collapse in={collapseIsOpen} timeout="auto" unmountOnExit>
+                    <Collapse in={this.props.collapseIsOpen} timeout="auto" unmountOnExit>
                         <Box margin={2}>
                             <Typography className="d-inline-block" variant="h6" gutterBottom component="div">
                                 Details
                             </Typography>
-                            <Button className="float-right" id={`remove-${rowData.id}`} outline size="sm"
+                            <Button className="float-right" id={`remove-${this.props.rowData.id}`} outline size="sm"
                                     color="danger" onClick={() => undefined}>
-                                <DeleteIcon/>
+                                <Delete/>
                             </Button>
-                            <Button className="float-right mr-3" id={`edit-${rowData.id}`} outline size="sm"
+                            <Button className="float-right mr-3" id={`edit-${this.props.rowData.id}`} outline size="sm"
                                     color="primary" onClick={() => undefined}>
-                                <EditIcon/>
+                                <Edit/>
                             </Button>
-                            {renderDetailsTable()}
+                            {this.renderDetailsTable()}
                         </Box>
                     </Collapse>
                 </TableCell>
@@ -139,18 +165,18 @@ export function DestinationTableRow({rowData, index, collapseIsOpen, setOpenRow}
         );
     }
 
-    const renderDetailsTable = () => {
+    renderDetailsTable() {
         return (
             <Table size="small">
                 <TableBody>
                     {['name', 'latitude', 'longitude', 'state', 'municipality', 'country', 'altitude', 'notes']
-                        .filter(item => rowData[item]).map(key =>
-                            <TableRow key={key + index}>
+                        .filter(item => this.props.rowData[item]).map(key =>
+                            <TableRow key={key + this.props.index}>
                                 <TableCell component="th" scope="row">
                                     {`${key.charAt(0).toUpperCase() + key.slice(1)}`}
                                 </TableCell>
                                 <TableCell>
-                                    {`${rowData[key]}`}
+                                    {`${this.props.rowData[key]}`}
                                 </TableCell>
                             </TableRow>
                         )}
@@ -158,13 +184,6 @@ export function DestinationTableRow({rowData, index, collapseIsOpen, setOpenRow}
             </Table>
         );
     }
-
-    return (
-        <>
-            {renderBody()}
-            {renderCollapseSection()}
-        </>
-    );
 }
 
 export function TableActions({count, page, rowsPerPage, onChangePage}) {
@@ -177,10 +196,10 @@ export function TableActions({count, page, rowsPerPage, onChangePage}) {
     const FORWARD_DISABLED = page >= Math.ceil(count / rowsPerPage) - 1;
     return (
         <div style={{flexShrink: 0}}>
-            <IconButton onClick={handleFirstPageButtonClick} disabled={BACK_DISABLED}><FirstPageIcon/></IconButton>
+            <IconButton onClick={handleFirstPageButtonClick} disabled={BACK_DISABLED}><FirstPage/></IconButton>
             <IconButton onClick={handleBackButtonClick} disabled={BACK_DISABLED}><KeyboardArrowLeft/></IconButton>
             <IconButton onClick={handleNextButtonClick} disabled={FORWARD_DISABLED}><KeyboardArrowRight/></IconButton>
-            <IconButton onClick={handleLastPageButtonClick} disabled={FORWARD_DISABLED}><LastPageIcon/></IconButton>
+            <IconButton onClick={handleLastPageButtonClick} disabled={FORWARD_DISABLED}><LastPage/></IconButton>
         </div>
     );
 }
