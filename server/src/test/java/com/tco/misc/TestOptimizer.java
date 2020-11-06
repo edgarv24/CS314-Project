@@ -2,10 +2,7 @@ package com.tco.misc;
 
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,9 +36,9 @@ public class TestOptimizer {
     placesEntry4.put("longitude", "-104.8");
 
     places.add(placesEntry1);
-    places.add(placesEntry2);
-    places.add(placesEntry3);
     places.add(placesEntry4);
+    places.add(placesEntry3);
+    places.add(placesEntry2);
   }
 
   @Test
@@ -106,5 +103,72 @@ public class TestOptimizer {
     for (int i = 0; i < places.size(); i++)
       for (int j = 0; j < places.size(); j++)
         assertEquals(cd.distBetween(places.get(i), places.get(j)), opt.getDistancesMatrix()[i][j]);
+  }
+
+  @Test
+  @DisplayName("Testing configure method sets all properties at once")
+  public void testConfigure() {
+    opt.configure(places);
+    assertEquals(4, opt.getPlaces().size());
+    assertEquals(4, opt.getTour().length);
+    assertEquals(4, opt.getVisitedCities().length);
+    for (int i = 0; i < places.size(); i++) assertEquals(4, opt.getDistancesMatrix()[i].length);
+    CalculateDistance cd = CalculateDistance.usingRadius(3959.0);
+    for (int i = 0; i < places.size(); i++)
+      for (int j = 0; j < places.size(); j++)
+        assertEquals(cd.distBetween(places.get(i), places.get(j)), opt.getDistancesMatrix()[i][j]);
+  }
+
+  @Test
+  @DisplayName("Testing Nearest Neighbor method")
+  public void testNearestNeighbor() {
+    opt.configure(places);
+    opt.findNearestNeighborTour();
+    int[] actualTour = opt.getTour();
+    int[] expectedTour = {0, 1, 2, 3};
+    assertTrue(Arrays.equals(actualTour, expectedTour));
+  }
+
+  @Test
+  @DisplayName("Testing buildNearestNeighbor should match hand-solved solutions")
+  public void testBuildNearestNeighbor() {
+    opt.configure(places);
+    int[] expectedArray1 = {0, 3, 2, 1};
+    assertTrue(Arrays.equals(expectedArray1, opt.buildNearestNeighborTour(0)));
+    int[] expectedArray2 = {1, 0, 3, 2};
+    assertTrue(Arrays.equals(expectedArray2, opt.buildNearestNeighborTour(1)));
+    int[] expectedArray3 = {2, 3, 0, 1};
+    assertTrue(Arrays.equals(expectedArray3, opt.buildNearestNeighborTour(2)));
+    int[] expectedArray4 = {3, 0, 2, 1};
+    assertTrue(Arrays.equals(expectedArray4, opt.buildNearestNeighborTour(3)));
+  }
+
+  @Test
+  @DisplayName("Test visitedContainsFalse works correctly")
+  public void testVisitedContainsFalse() {
+    boolean[] allTrue = {true, true, true};
+    assertFalse(opt.visitedContainsFalse(allTrue));
+    boolean[] lastFalse = {true, true, true, true, false};
+    assertTrue(opt.visitedContainsFalse(lastFalse));
+    lastFalse[4] = true;
+    assertFalse(opt.visitedContainsFalse(lastFalse));
+  }
+
+  @Test
+  @DisplayName("Test totalDistance returns correct distances")
+  public void testTotalDistance() {
+    opt.configure(places);
+    int[] tour1 = {0, 1, 2, 3};
+    int expectedDistance = 262;
+    assertEquals(expectedDistance, opt.totalDistance(tour1));
+    int[] tour2 = {0, 3, 2, 1};
+    assertEquals(expectedDistance, opt.totalDistance(tour2));
+    int[] tour3 = {1, 0, 3, 2};
+    assertEquals(expectedDistance, opt.totalDistance(tour3));
+    int[] tour4 = {2, 3, 0, 1};
+    assertEquals(expectedDistance, opt.totalDistance(tour4));
+    int[] tour5 = {3, 0, 2, 1};
+    expectedDistance = 306;
+    assertEquals(expectedDistance, opt.totalDistance(tour5));
   }
 }
