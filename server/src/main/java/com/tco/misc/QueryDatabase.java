@@ -156,6 +156,19 @@ public class QueryDatabase {
     Statement query = conn.createStatement();
     return query.executeQuery(QUERY);
   }
+  
+  public static ArrayList<String> getCountryList() throws SQLException {
+    configServerUsingLocation();
+    Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    Statement query = conn.createStatement();
+    ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
+    ArrayList<String> allCountries = new ArrayList<>();
+    while (countryResultSet.next()){
+      String countryName = countryResultSet.getString("country.name");
+      allCountries.add(countryName);
+    }
+    return allCountries;
+  }
 
   private void convertResultsToListOfMaps(ResultSet resultSet) throws SQLException {
     queryResults = new ArrayList<>();
@@ -232,20 +245,4 @@ public class QueryDatabase {
     String var = System.getenv("CS314_USE_DATABASE_TUNNEL");
     return var != null && var.equals("true");
   }
-
-
-  public static ArrayList<String> getCountryList() throws SQLException {
-    configServerUsingLocation();
-    Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-    Statement query = conn.createStatement();
-    ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
-    ArrayList<String> allCountries = new ArrayList<>();
-    while (countryResultSet.next()){
-      String countryName = countryResultSet.getString("country.name");
-      allCountries.add(countryName);
-    }
-    return allCountries;
-  }
-
-
 }
