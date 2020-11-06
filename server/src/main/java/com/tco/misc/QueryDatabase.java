@@ -163,7 +163,7 @@ public class QueryDatabase {
     Statement query = conn.createStatement();
     ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
     ArrayList<String> allCountries = new ArrayList<>();
-    while (countryResultSet.next()){
+    while (countryResultSet.next()) {
       String countryName = countryResultSet.getString("country.name");
       allCountries.add(countryName);
     }
