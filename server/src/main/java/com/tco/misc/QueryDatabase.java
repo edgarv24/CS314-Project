@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class QueryDatabase {
 
@@ -158,6 +155,19 @@ public class QueryDatabase {
     Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     Statement query = conn.createStatement();
     return query.executeQuery(QUERY);
+  }
+  
+  public static ArrayList<String> getCountryList() throws SQLException {
+    configServerUsingLocation();
+    Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    Statement query = conn.createStatement();
+    ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
+    ArrayList<String> allCountries = new ArrayList<>();
+    while (countryResultSet.next()) {
+      String countryName = countryResultSet.getString("country.name");
+      allCountries.add(countryName);
+    }
+    return allCountries;
   }
 
   private void convertResultsToListOfMaps(ResultSet resultSet) throws SQLException {

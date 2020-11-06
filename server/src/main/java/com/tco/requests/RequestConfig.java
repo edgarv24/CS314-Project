@@ -1,9 +1,12 @@
 package com.tco.requests;
 
 import com.tco.misc.BadRequestException;
+import com.tco.misc.QueryDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.Query;
+import java.sql.SQLException;
 import java.util.*;
 
 public class RequestConfig extends RequestHeader {
@@ -19,14 +22,20 @@ public class RequestConfig extends RequestHeader {
   }
 
   @Override
-  public void buildResponse() {
-    this.serverName = "t14 The Fourteeners";
-    this.supportedRequests.add("config");
-    this.supportedRequests.add("distance");
-    this.supportedRequests.add("find");
-    this.supportedRequests.add("trip");
-    log.trace("buildResponse -> {}", this);
-    filters.put("type", Arrays.asList("airport", "balloonport", "heliport"));
+  public void buildResponse() throws BadRequestException{
+      this.serverName = "t14 The Fourteeners";
+      this.supportedRequests.add("config");
+      this.supportedRequests.add("distance");
+      this.supportedRequests.add("find");
+      this.supportedRequests.add("trip");
+      log.trace("buildResponse -> {}", this);
+      filters.put("type", Arrays.asList("airport", "balloonport", "heliport"));
+      try {
+        filters.put("where", QueryDatabase.getCountryList());
+      }
+      catch (SQLException e) {
+        throw new BadRequestException();
+      }
   }
 
   public String getServerName() {
