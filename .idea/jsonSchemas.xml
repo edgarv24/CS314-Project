@@ -22,6 +22,9 @@
                   <Item>
                     <option name="path" value="client/test/TripFiles/us-brews.json" />
                   </Item>
+                  <Item>
+                    <option name="path" value="client/test/TripFiles/world-peaks.json" />
+                  </Item>
                 </list>
               </option>
             </SchemaInfo>
