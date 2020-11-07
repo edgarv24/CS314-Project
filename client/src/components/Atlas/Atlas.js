@@ -20,7 +20,7 @@ import Itinerary from "./Itinerary/Itinerary";
 import DistanceModal from "./Modals/DistanceModal";
 import FindModal from "./Modals/FindModal";
 
-import {LOG} from "../../utils/constants";
+import {correctUnits, LOG} from "../../utils/constants";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -109,7 +109,6 @@ export default class Atlas extends Component {
         const NO_TRIP_DATA = this.state.trip.places.length === 0;
         const MARKERS_ON = !NO_TRIP_DATA && this.state.displayTripMarkers;
         const LINES_ON = !NO_TRIP_DATA && this.state.displayTripLines;
-        const OPTIMIZE_ON = !NO_TRIP_DATA && this.state.optimizeEnabled;
         return [
             ['home-button', <GpsFixed/>, TL, 'Where am I?', TOOLTIP_RIGHT, false, true,
                 () => this.setMapToHome()],
@@ -121,8 +120,8 @@ export default class Atlas extends Component {
                 () => this.setState({displayTripLines: !this.state.displayTripLines})],
             ['toggle-trip-markers', <LocationOn/>, BL, 'Toggle Trip Markers', TOOLTIP_RIGHT, NO_TRIP_DATA, MARKERS_ON,
                 () => this.setState({displayTripMarkers: !this.state.displayTripMarkers})],
-            ['optimize-button', <TrendingUp/>, BL, 'Optimize Trip', TOOLTIP_RIGHT, NO_TRIP_DATA, OPTIMIZE_ON,
-                () => this.setState({optimizeEnabled: !this.state.optimizeEnabled})],
+            ['optimize-button', <TrendingUp/>, BR, 'Optimize Trip', TOOLTIP_LEFT, NO_TRIP_DATA, true,
+                () => undefined],
             ['scroll-down-button', <ArrowDownward/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
                 () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})]
         ];
@@ -215,11 +214,10 @@ export default class Atlas extends Component {
     }
 
     getDistanceLabelText() {
-        if (this.state.distanceLabel === null)
+        const distance = this.state.distanceLabel;
+        if (distance === null)
             return "N/A";
-        else if (this.state.distanceLabel === "1")
-            return "1 mile";
-        return `${this.state.distanceLabel} miles`;
+        return `${distance} ${correctUnits("miles", parseInt(distance))}`;
     }
 
     renderDistanceModal() {
