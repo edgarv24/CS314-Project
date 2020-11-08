@@ -4,7 +4,7 @@ import {Button, ModalHeader} from "reactstrap";
 export const renderModalTitleHeader = (title, toggle) => {
     return (
         <ModalHeader className="mt-1" toggle={toggle}>
-            <span className="ml-4">{title}</span>
+            <span className="ml-3">{title}</span>
         </ModalHeader>
     );
 }

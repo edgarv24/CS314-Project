@@ -44,10 +44,8 @@ export default class DistanceModal extends Component {
                 <Modal id="distance-modal" isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
                     {renderModalTitleHeader("Distance Between Coordinates", () => this.resetModalState())}
                     <ModalBody>
-                        <div>
-                            {this.renderCoordinateInput(BOX_INPUT1)}
-                            {this.renderCoordinateInput(BOX_INPUT2)}
-                        </div>
+                        {this.renderCoordinateInput(BOX_INPUT1)}
+                        {this.renderCoordinateInput(BOX_INPUT2)}
                     </ModalBody>
                     {this.renderActionButtons()}
                 </Modal>
@@ -60,7 +58,7 @@ export default class DistanceModal extends Component {
         const inputBoxEmpty = this.state.inputValues[index] === "" || this.state.inputValues[index] == null;
 
         return (
-            <Row className="ml-2 mr-2 mt-3 mb-4">
+            <Row className="ml-1 mr-1 mt-3 mb-4">
                 <Col>
                     <InputGroup>
                         <InputGroupAddon addonType="prepend">{`Point ${index + 1}`}</InputGroupAddon>

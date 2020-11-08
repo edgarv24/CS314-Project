@@ -74,7 +74,7 @@ test('onClick event for Save Button should update server port in Page component'
 
     let inputText = 'https://black-bottle.cs.colostate.edu:31400';
     simulateOnChangeEvent(settings, {target: {value: inputText}});
-    settings.find('Button').at(0).simulate('click');
+    settings.find('Button').at(1).simulate('click');
 
     let actualAfterServerPort = page.state().serverSettings.serverPort;
 
@@ -95,7 +95,7 @@ test('SettingsRow should have 5 rows and the correct values for the labels', () 
     expect(settings.find('Row').at(2).text()).toMatch("Version:" + PROTOCOL_VERSION);
     expect(settings.find('Row').at(3).text()).toMatch("Supported:config, distance, find, trip");
     expect(settings.find('Row').at(4).text()).toMatch("Airport Filters:airport, balloonport, heliport");
-    expect(settings.find('Row').at(5).text()).toMatch("Geographic Filters:country");
+    expect(settings.find('Row').at(5).text()).toContain("Geographic Filters:");
 });
 
 test('Toggle should open and close modal', () => {
@@ -115,6 +115,24 @@ test('Toggle should open and close modal', () => {
     expect(isOpen).toBe(true);
 });
 
+test('Show filters button works correctly', () => {
+    const button = settings.find('#view-filters-button');
+    expect(button).toBeDefined();
+
+    expect(settings.state().filtersOpen).toBe(false);
+    button.simulate('click');
+    expect(settings.state().filtersOpen).toBe(true);
+});
+
+test('Filters dialog toggles close correctly', () => {
+    const dialog = settings.find('#filters-dialog');
+    expect(dialog).toBeDefined();
+
+    settings.setState({filtersOpen: true});
+    dialog.props()['onClose']();
+    expect(settings.state().filtersOpen).toBe(false);
+});
+
 test('Close button functions correctly', () => {
     const closeButton = settings.find('#close-server-settings');
 
@@ -125,7 +143,7 @@ test('Close button functions correctly', () => {
 
 test('Config response success', () => {
     const response = {serverName: "t14 The Fourteeners", supportedRequests: [],
-        filters: {}, requestType: "config", requestVersion: 4};
+        filters: {"type": [], "where": []}, requestType: "config", requestVersion: PROTOCOL_VERSION};
     settings.instance().processConfigResponse(response);
     expect(settings.state().validServer).toBe(true);
     expect(settings.state().config).toEqual(response);
