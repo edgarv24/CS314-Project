@@ -7,6 +7,8 @@ import {Box, Collapse, IconButton, ListItemText, Paper, Typography} from '@mater
 import {FirstPage, LastPage, Edit, Delete} from '@material-ui/icons';
 import {KeyboardArrowUp, KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight} from '@material-ui/icons';
 
+import {capitalize, correctUnits} from "../../../utils/constants";
+
 export class DestinationTable extends React.Component {
     constructor(props) {
         super(props);
@@ -39,6 +41,7 @@ export class DestinationTable extends React.Component {
                     <DestinationTableRow key={this.rowData(index).id}
                                          rowData={this.rowData(index)}
                                          index={this.realIndex(index)}
+                                         units={this.props.units}
                                          collapseIsOpen={this.state.openRow === this.realIndex(index)}
                                          setOpenRow={(row) => this.setState({openRow: row})}/>
                 ))}
@@ -102,6 +105,10 @@ export class DestinationTable extends React.Component {
             ? this.props.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : this.props.data;
     };
+
+    resetState() {
+        this.setState({page: 0, rowsPerPage: 5, openRow: -1})
+    }
 }
 
 export class DestinationTableRow extends React.Component {
@@ -132,7 +139,7 @@ export class DestinationTableRow extends React.Component {
                 </TableCell>
                 <TableCell style={{width: "20%"}} align="right">
                     <ListItemText
-                        primary={this.props.rowData.cumulative_dist + " miles"}
+                        primary={this.props.rowData.cumulative_dist + " " + correctUnits(this.props.units, this.props.rowData.cumulative_dist)}
                         secondary={(this.props.index > 0) ? `(+${this.props.rowData.leg_dist})` : "(origin)"}
                     />
                 </TableCell>
@@ -173,7 +180,7 @@ export class DestinationTableRow extends React.Component {
                         .filter(item => this.props.rowData[item]).map(key =>
                             <TableRow key={key + this.props.index}>
                                 <TableCell component="th" scope="row">
-                                    {`${key.charAt(0).toUpperCase() + key.slice(1)}`}
+                                    {`${capitalize(key)}`}
                                 </TableCell>
                                 <TableCell>
                                     {`${this.props.rowData[key]}`}
