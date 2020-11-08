@@ -120,8 +120,10 @@ export default class TripSettingsModal extends React.Component {
             try {
                 const loadedData = JSON.parse(contentString);
                 const newTrip = this.props.trip.loadJSON(loadedData);
-                if (newTrip !== this.props.trip) this.updateTrip(newTrip);
-                else this.setState({invalidUploadText: "File must match TripFile.json schema."});
+                if (newTrip !== this.props.trip)
+                    this.updateTrip(newTrip);
+                else
+                    this.setState({invalidUploadText: "File must match TripFile.json schema."});
             } catch (error) {
                 this.setState({invalidUploadText: "Not a valid JSON file."});
             }
@@ -170,18 +172,7 @@ export default class TripSettingsModal extends React.Component {
             <ModalFooter>
                 <Button id="trip-settings-submit" color="primary" type="button"
                         onClick={() => {
-                            const trip = this.props.trip;
-                            const newTitle = this.state.titleInput;
-                            const newUnitName = this.state.selectedUnit;
-                            const newUnitValue = EARTH_RADIUS_UNITS_DEFAULT[this.state.selectedUnit].toString();
-                            const titleChanged = newTitle.length > 0;
-                            const unitChanged = trip.units !== newUnitName || trip.earthRadius !== newUnitValue;
-
-                            let newTrip = trip;
-                            if (titleChanged) newTrip = newTrip.setTitle(newTitle);
-                            if (unitChanged) newTrip = newTrip.setUnits(newUnitName, newUnitValue);
-
-                            if (newTrip !== trip) this.props.setTrip(newTrip);
+                            this.props.setTrip(this.getUpdatedTripFromChanges());
                             this.resetState();
                         }}>
                     Save Settings
@@ -189,6 +180,26 @@ export default class TripSettingsModal extends React.Component {
                 {renderCancelButton("close-trip-settings", () => this.resetState())}
             </ModalFooter>
         );
+    }
+
+    getUpdatedTripFromChanges() {
+        const trip = this.props.trip;
+        const newTitle = this.state.titleInput;
+        const newUnitName = this.state.selectedUnit;
+        const newUnitValue = EARTH_RADIUS_UNITS_DEFAULT[this.state.selectedUnit];
+
+        const titleChanged = newTitle.length > 0;
+        const unitChanged = trip.units !== newUnitName || trip.earthRadius !== newUnitValue;
+
+        let newTrip = trip;
+        if (titleChanged)
+            newTrip = newTrip.setTitle(newTitle);
+        if (unitChanged)
+            newTrip = newTrip.setUnits(newUnitName, newUnitValue);
+
+        if (newTrip !== trip)
+            return newTrip;
+        return trip;
     }
 
     updateTrip(newTrip) {

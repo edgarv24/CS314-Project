@@ -11,6 +11,7 @@ const TRIP = new Trip().loadJSON(peaksTrip);
 
 import TripSettingsModal from '../src/components/Atlas/Modals/TripSettingsModal';
 import {ModalHeader} from "reactstrap";
+import {EARTH_RADIUS_UNITS_DEFAULT} from "../src/utils/constants";
 
 describe('Itinerary', () => {
     let wrapper;
@@ -124,5 +125,22 @@ describe('Itinerary', () => {
         const submit = wrapper.find('#trip-settings-submit');
         submit.simulate('click');
         expect(trip.units).toEqual("kilometers");
+    });
+
+    it('updates trip if settings inputs changed', () => {
+        expect(trip.title).toEqual("Popular Peaks Round Trip");
+        let updatedTrip = wrapper.instance().getUpdatedTripFromChanges();
+        expect(updatedTrip).toEqual(trip);
+
+        wrapper.setState({titleInput: "Mexican Food Round Trip"});
+        updatedTrip = wrapper.instance().getUpdatedTripFromChanges();
+        expect(updatedTrip).not.toEqual(trip);
+        expect(updatedTrip.title).toEqual("Mexican Food Round Trip");
+
+        wrapper.setState({selectedUnit: "inches"});
+        updatedTrip = wrapper.instance().getUpdatedTripFromChanges();
+        expect(updatedTrip).not.toEqual(trip);
+        expect(updatedTrip.units).toEqual("inches");
+        expect(updatedTrip.earthRadius).toEqual(EARTH_RADIUS_UNITS_DEFAULT["inches"]);
     });
 });
