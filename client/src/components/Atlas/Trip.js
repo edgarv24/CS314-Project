@@ -6,14 +6,11 @@ import * as tripFileSchema from "../../../schemas/TripFile.json";
 
 import {LOG} from '../../utils/constants';
 
-const DEFAULT_TRIP_TITLE = 'My Trip';
-const EARTH_RADIUS = '3959.0';
-
 export default class Trip {
     constructor() {
         this.requestVersion = PROTOCOL_VERSION;
         this.requestType = 'trip';
-        this.options = {title: DEFAULT_TRIP_TITLE, earthRadius: EARTH_RADIUS, units: "miles", response: "0.0"};
+        this.options = {title: 'My Trip', earthRadius: '3959.0', units: "miles", response: "0.0"};
         this.places = [];
         this.distances = [];
     }
@@ -82,7 +79,7 @@ export default class Trip {
         let newTrip = new Trip();
         newTrip.requestVersion = this.requestVersion;
         newTrip.requestType = this.requestType;
-        newTrip.options = {title: this.title, earthRadius: this.earthRadius, units: this.units, response: "0.0"};
+        newTrip.options = {title: this.title, earthRadius: this.earthRadius, units: this.units, response: this.response};
         newTrip.places = [];
         this.places.forEach(item => {
             newTrip.places.push(JSON.parse(JSON.stringify(item)));
@@ -122,14 +119,16 @@ export default class Trip {
         for (const property in tripFile)
             newTrip[property] = tripFile[property];
 
+        if (!tripFile.options.response)
+            newTrip.options.response = "0.0";
         if (!tripFile.options.units)
-            newTrip.options.units = this.selectUnitFromRadius(parseInt(tripFile.options.earthRadius));
+            newTrip.options.units = this.selectUnitFromRadius(tripFile.options.earthRadius);
 
         return newTrip;
     }
 
     selectUnitFromRadius(radius) {
-        const index = Object.values(EARTH_RADIUS_UNITS_DEFAULT).indexOf(radius);
+        const index = Object.values(EARTH_RADIUS_UNITS_DEFAULT).map(parseFloat).indexOf(parseFloat(radius));
         if (index === -1)
             return "miles";
         return Object.keys(EARTH_RADIUS_UNITS_DEFAULT)[index];
@@ -149,6 +148,10 @@ export default class Trip {
 
     get units() {
         return this.options.units;
+    }
+
+    get response() {
+        return this.options.response;
     }
 
     get totalDistance() {

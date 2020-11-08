@@ -15,8 +15,8 @@ export const LOG = ulog("App");
 export const PROTOCOL_VERSION = 4;
 export const CLIENT_TEAM_NAME = "T14 The Fourteeners";
 
-export const EARTH_RADIUS_UNITS_DEFAULT = {"nautical miles": 3440.0, "miles": 3959.0, "kilometers": 6371.0,
-    "yards": 6967420.0, "feet": 20902260.0, "inches": 250827116.0};
+export const EARTH_RADIUS_UNITS_DEFAULT = {"nautical miles": "3440.0", "miles": "3959.0", "kilometers": "6371.0",
+    "yards": "6967420.0", "feet": "20902260.0", "inches": "250827116.0"};
 
 export const UNITS_SINGULAR = {"nautical miles": "nautical mile", "miles": "mile", "kilometers": "kilometer",
     "yards": "yard", "feet": "foot", "inches": "inch"};

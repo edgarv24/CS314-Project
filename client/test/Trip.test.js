@@ -315,10 +315,10 @@ describe('Trip', () => {
     });
 
     it("selects correct unit from radius", () => {
-        const unitNoMatch = trip.selectUnitFromRadius(42);
+        const unitNoMatch = trip.selectUnitFromRadius("42.0");
         expect(unitNoMatch).toEqual("miles");
 
-        const unitHasMatch = trip.selectUnitFromRadius(6371);
+        const unitHasMatch = trip.selectUnitFromRadius("6371.0");
         expect(unitHasMatch).toEqual("kilometers");
     });
 });
