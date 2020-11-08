@@ -164,13 +164,6 @@ describe('Trip', () => {
         expect(newTrip).toEqual(temp);
     })
 
-    it('sets distances', () => {
-        let expectedDistances = [1, 2, 3];
-        let newTrip = trip.setDistances(expectedDistances);
-        let actualDistances = newTrip.distances;
-        expect(actualDistances).toEqual(expectedDistances);
-    });
-
     it('loads a JSON file into properties', () => {
         let tripFile = {
             "requestType": "trip",
@@ -211,7 +204,9 @@ describe('Trip', () => {
             "requestVersion": 4,
             "options": {
                 "title": "My Trip",
-                "earthRadius": "3959.0"
+                "earthRadius": "3959.0",
+                "units": "miles",
+                "response": "0.0"
             },
             "places": [],
             "distances": []
@@ -317,5 +312,13 @@ describe('Trip', () => {
         const itineraryData = newTrip.itineraryPlaceData;
 
         expect(itineraryData.length).toEqual(1);
+    });
+
+    it("selects correct unit from radius", () => {
+        const unitNoMatch = trip.selectUnitFromRadius(42);
+        expect(unitNoMatch).toEqual("miles");
+
+        const unitHasMatch = trip.selectUnitFromRadius(6371);
+        expect(unitHasMatch).toEqual("kilometers");
     });
 });
