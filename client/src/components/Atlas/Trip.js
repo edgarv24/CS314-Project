@@ -1,4 +1,4 @@
-import {PROTOCOL_VERSION} from "../../utils/constants";
+import {EARTH_RADIUS_UNITS_DEFAULT, PROTOCOL_VERSION} from "../../utils/constants";
 import Coordinates from "coordinate-parser";
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as tripSchema from "../../../schemas/TripResponse.json";
@@ -7,13 +7,13 @@ import * as tripFileSchema from "../../../schemas/TripFile.json";
 import {LOG} from '../../utils/constants';
 
 const DEFAULT_TRIP_TITLE = 'My Trip';
-const EARTH_RADIUS = '3959.0'
+const EARTH_RADIUS = '3959.0';
 
 export default class Trip {
     constructor() {
         this.requestVersion = PROTOCOL_VERSION;
         this.requestType = 'trip';
-        this.options = {'title': DEFAULT_TRIP_TITLE, 'earthRadius': EARTH_RADIUS};
+        this.options = {title: DEFAULT_TRIP_TITLE, earthRadius: EARTH_RADIUS, units: "miles", response: "0.0"};
         this.places = [];
         this.distances = [];
     }
@@ -38,7 +38,7 @@ export default class Trip {
             requestVersion: this.requestVersion,
             requestType: this.requestType,
             options: this.options,
-            places: this.places,
+            places: this.places
         }
     }
 
@@ -82,7 +82,7 @@ export default class Trip {
         let newTrip = new Trip();
         newTrip.requestVersion = this.requestVersion;
         newTrip.requestType = this.requestType;
-        newTrip.options = {title: this.title, earthRadius: this.options.earthRadius};
+        newTrip.options = {title: this.title, earthRadius: this.earthRadius, units: this.units, response: "0.0"};
         newTrip.places = [];
         this.places.forEach(item => {
             newTrip.places.push(JSON.parse(JSON.stringify(item)));
@@ -97,9 +97,10 @@ export default class Trip {
         return newTrip;
     }
 
-    setDistances(distances) {
+    setUnits(unitName, earthRadius) {
         let newTrip = this.copy();
-        newTrip.distances = distances;
+        newTrip.options.earthRadius = earthRadius;
+        newTrip.options.units = unitName;
         return newTrip;
     }
 
@@ -121,7 +122,17 @@ export default class Trip {
         for (const property in tripFile)
             newTrip[property] = tripFile[property];
 
+        if (!tripFile.options.units)
+            newTrip.options.units = this.selectUnitFromRadius(parseInt(tripFile.options.earthRadius));
+
         return newTrip;
+    }
+
+    selectUnitFromRadius(radius) {
+        const index = Object.values(EARTH_RADIUS_UNITS_DEFAULT).indexOf(radius);
+        if (index === -1)
+            return "miles";
+        return Object.keys(EARTH_RADIUS_UNITS_DEFAULT)[index];
     }
 
     build() {
@@ -134,6 +145,14 @@ export default class Trip {
 
     get earthRadius() {
         return this.options.earthRadius;
+    }
+
+    get units() {
+        return this.options.units;
+    }
+
+    get totalDistance() {
+        return this.distances.reduce((partial_sum, next) => partial_sum + next, 0);
     }
 
     get coordinatesList() {
@@ -202,5 +221,18 @@ export default class Trip {
             result = result.substring(0, MAX_LENGTH) + "...";
 
         return result;
+    }
+
+    // credit: https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+    downloadAsJson() {
+        const fileName = this.title.replace(/ /g,"_").toLowerCase();
+        const savedJSON = this.build();
+        const fileData = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(savedJSON, null, 2));
+        const downloadNode = document.createElement('a');
+        downloadNode.setAttribute("href", fileData);
+        downloadNode.setAttribute("download", fileName + ".json");
+        document.body.appendChild(downloadNode);
+        downloadNode.click();
+        downloadNode.remove();
     }
 }
