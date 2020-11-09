@@ -1,7 +1,8 @@
 import React from "react";
-import { Button, Col, Input, Modal, ModalBody, ModalFooter, Row } from "reactstrap";
+import {Button, Col, Input, Modal, ModalBody, ModalFooter, Row} from "reactstrap";
+import {Dialog, DialogTitle, DialogContent, Divider} from "@material-ui/core";
 
-import { sendServerRequest, isJsonResponseValid } from "../../utils/restfulAPI";
+import {sendServerRequest, isJsonResponseValid} from "../../utils/restfulAPI";
 import {renderModalTitleHeader, renderCancelButton} from "../Atlas/Modals/modalHelper";
 
 import * as configSchema from "../../../schemas/ConfigResponse";
@@ -16,7 +17,8 @@ export default class ServerSettings extends React.Component {
         this.state = {
             inputText: this.props.serverSettings.serverPort,
             validServer: null,
-            config: {}
+            config: {},
+            filtersOpen: false
         };
 
         this.saveInputText = this.state.inputText;
@@ -40,7 +42,19 @@ export default class ServerSettings extends React.Component {
                 {this.renderSettingsRow("Version:", PROTOCOL_VERSION)}
                 {this.renderSettingsRow("Supported:", this.getSupportedRequestTypes())}
                 {this.renderSettingsRow("Airport Filters:", this.getAirportFilters())}
-                {this.renderSettingsRow("Geographic Filters:", "country")}
+                {this.renderSettingsRow("Geographic Filters:",
+                    <Button id="view-filters-button" size="sm" outline disabled={!this.getCurrentServerName()}
+                            onClick={() => {
+                                if (Object.keys(this.state.config).length === 0)
+                                    this.updateInput(this.state.inputText);
+                                this.setState({filtersOpen: true})
+                            }
+                    }>
+                        show filters
+                    </Button>
+                )}
+                {this.renderFiltersDialog()}
+                <Divider className="mt-4 mb-4" variant="middle" light />
                 {this.renderSettingsRow("URL:", this.renderInputField())}
             </ModalBody>
         );
@@ -48,7 +62,7 @@ export default class ServerSettings extends React.Component {
 
     renderSettingsRow(label, value) {
         return (
-            <Row className="m-2">
+            <Row className="ml-1 mr-1 mt-2 mb-2">
                 <Col xs={5}>
                     {label}
                 </Col>
@@ -57,6 +71,25 @@ export default class ServerSettings extends React.Component {
                 </Col>
             </Row>
         );
+    }
+
+    renderFiltersDialog() {
+        return (
+            <Dialog id="filters-dialog" open={this.state.filtersOpen} onClose={() => this.setState({filtersOpen: false})}>
+                <DialogTitle>Server Filters</DialogTitle>
+                <DialogContent dividers>
+                    {this.getGeographicFilters().map(item => <p key={item} className="text-muted">{item}</p>)}
+                </DialogContent>
+            </Dialog>
+        );
+    }
+
+    getGeographicFilters() {
+        if (!this.state.config || Object.keys(this.state.config).length === 0
+            || !this.state.config.filters || !this.state.config.filters.where)
+            return ["No filters loaded."];
+
+        return this.state.config.filters.where;
     }
 
     renderInputField() {
@@ -145,7 +178,8 @@ export default class ServerSettings extends React.Component {
         this.setState({
             inputText: inputText,
             validServer: null,
-            config: false
+            config: false,
+            filtersOpen: false
         });
     }
 }

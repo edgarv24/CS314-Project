@@ -5,7 +5,6 @@ import com.tco.misc.QueryDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.Query;
 import java.sql.SQLException;
 import java.util.*;
 
