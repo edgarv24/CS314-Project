@@ -10,8 +10,8 @@
 
 | Name | Preparation Time |
 | ---- | ---- |
-| Rylie | 2:30 - 3:10 |
-|  |  |
+| Rylie | 14:30 - 15:10 |
+| Edgar | 15:00 - 15:19 |
 
 ### Problems found
 
@@ -21,4 +21,5 @@
 | QueryDatabase.java:244 | move usingTunnel() to be under configServerUsingLocation() for readability | lo | ryliedd | |
 | QueryDatabase.java:76 | same code as line 104 | lo | ryliedd | |
 | QueryDatabase.java:9 | class QueryDatabse exceeds the limit of 20 methods with 24 methods | med | ryliedd | |
-| | | | | |
+| QueryDatabase.java:61 | duplication on limit range check and check for null limit | lo | edvarela | |
+| QueryDatabase.java:98 | duplicated rand string | lo | edvarela | |
