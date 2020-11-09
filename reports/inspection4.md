@@ -12,6 +12,7 @@
 | ---- | ---- |
 | Rylie | 14:30 - 15:10 |
 | Edgar | 15:00 - 15:19 |
+| Mikayla | 15:15 - 16:00 |
 
 ### Problems found
 
@@ -23,3 +24,6 @@
 | QueryDatabase.java:9 | class QueryDatabse exceeds the limit of 20 methods with 24 methods | med | ryliedd | |
 | QueryDatabase.java:61 | duplication on limit range check and check for null limit | lo | edvarela | |
 | QueryDatabase.java:98 | duplicated rand string | lo | edvarela | |
+| QueryDatabase.java:192 | ununiformed tab sizes to the rest of the document | low | cessna17 | |
+| QueryDatabase.java:34 | extra tab before the start of the line | low | cessna17 | |
+| QueryDatabase.java:104 | repetitive code from the queryWithFiltersMethod | low | cessna17 | |
