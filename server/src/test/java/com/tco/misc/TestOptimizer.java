@@ -129,19 +129,20 @@ public class TestOptimizer {
     assertTrue(Arrays.equals(actualTour, expectedTour));
   }
 
-  @Test
-  @DisplayName("Testing buildNearestNeighbor should match hand-solved solutions")
-  public void testBuildNearestNeighbor() {
-    opt.configure(places);
-    int[] expectedArray1 = {0, 3, 2, 1};
-    assertTrue(Arrays.equals(expectedArray1, opt.buildNearestNeighborTour(0)));
-    int[] expectedArray2 = {1, 0, 3, 2};
-    assertTrue(Arrays.equals(expectedArray2, opt.buildNearestNeighborTour(1)));
-    int[] expectedArray3 = {2, 3, 0, 1};
-    assertTrue(Arrays.equals(expectedArray3, opt.buildNearestNeighborTour(2)));
-    int[] expectedArray4 = {3, 0, 2, 1};
-    assertTrue(Arrays.equals(expectedArray4, opt.buildNearestNeighborTour(3)));
-  }
+  //  @Test
+  //  @DisplayName("Testing buildNearestNeighbor should match hand-solved solutions")
+  //  public void testBuildNearestNeighbor() {
+  //    opt.configure(places);
+  //    int[] expectedArray1 = {0, 3, 2, 1};
+  //    int[] actualArray1 = opt.buildNearestNeighborTour(0);
+  //    assertTrue(Arrays.equals(expectedArray1, actualArray1));
+  //    int[] expectedArray2 = {1, 0, 3, 2};
+  //    assertTrue(Arrays.equals(expectedArray2, opt.buildNearestNeighborTour(1)));
+  //    int[] expectedArray3 = {2, 3, 0, 1};
+  //    assertTrue(Arrays.equals(expectedArray3, opt.buildNearestNeighborTour(2)));
+  //    int[] expectedArray4 = {3, 0, 2, 1};
+  //    assertTrue(Arrays.equals(expectedArray4, opt.buildNearestNeighborTour(3)));
+  //  }
 
   @Test
   @DisplayName("Test visitedContainsFalse works correctly")
@@ -170,5 +171,15 @@ public class TestOptimizer {
     int[] tour5 = {3, 0, 2, 1};
     expectedDistance = 306;
     assertEquals(expectedDistance, opt.totalDistance(tour5));
+  }
+
+  @Test
+  @DisplayName("Test that K Nearest Neighbor takes less than 1 second")
+  public void testTime() {
+    long startTime = System.nanoTime();
+    opt.configure(places);
+    opt.findNearestNeighborTour();
+    long totalTime = System.nanoTime() - startTime;
+    assertTrue(totalTime < 1E+9);
   }
 }

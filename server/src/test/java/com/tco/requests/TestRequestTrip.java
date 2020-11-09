@@ -19,6 +19,7 @@ public class TestRequestTrip {
     options = new HashMap<>();
     options.put("title", "My Trip");
     options.put("earthRadius", "3959.0");
+    options.put("response", "0.0");
 
     places = new ArrayList<>();
     Map<String, String> placesEntry1 = new HashMap<>();
@@ -97,6 +98,7 @@ public class TestRequestTrip {
     options.clear();
     options.put("title", "My Trip");
     options.put("earthRadius", "20902230");
+    options.put("response", "0.0");
     requestTrip = new RequestTrip(options, places);
     requestTrip.buildResponse();
     List<Long> results = Arrays.asList(156604L, 234273L, 329472L);
@@ -112,6 +114,7 @@ public class TestRequestTrip {
     options.clear();
     options.put("title", "My Trip");
     options.put("earthRadius", "6371008771");
+    options.put("response", "0.0");
     requestTrip = new RequestTrip(options, places);
     requestTrip.buildResponse();
     List<Long> results = Arrays.asList(47733143L, 71406593L, 100420000L);

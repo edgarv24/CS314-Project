@@ -1,6 +1,7 @@
 package com.tco.misc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +100,54 @@ public class Optimizer {
     for (int i = 0; i < size; i++)
       totalDistance += distancesMatrix[currentTour[i % size]][currentTour[(i + 1) % size]];
     return totalDistance;
+  }
+
+  public void performTwoOpt() {
+    int[] tempTour = Arrays.copyOf(tour, tour.length + 1);
+    tempTour[tour.length] = tour[0];
+    cd = CalculateDistance.usingRadius(3959.0);
+    int delta;
+    boolean improvement = true;
+    while (improvement) {
+      improvement = false;
+      for (int i = 0; i <= tour.length - 3; i++) {
+        for (int k = i + 2; k <= tour.length - 1; k++) {
+          delta =
+              -distancesMatrix[tempTour[i]][tempTour[i + 1]]
+                  - distancesMatrix[tempTour[k]][tempTour[k + 1]]
+                  + distancesMatrix[tempTour[i]][tempTour[k]]
+                  + distancesMatrix[tempTour[i + 1]][tempTour[k + 1]];
+          if (delta < 0) {
+            tempTour = twoOptReverse(tempTour, i + 1, k);
+            improvement = true;
+          }
+        }
+      }
+    }
+    copyTempTourAndRemoveLastElement(tempTour);
+  }
+
+  public int[] twoOptReverse(int[] tempTour, int i1, int k) {
+    while (i1 < k) {
+      int temp = tempTour[i1];
+      tempTour[i1] = tempTour[k];
+      tempTour[k] = temp;
+      i1++;
+      k--;
+    }
+    return tempTour;
+  }
+
+  public void copyTempTourAndRemoveLastElement(int[] tempTour) {
+    System.arraycopy(tempTour, 0, tour, 0, places.size());
+  }
+
+  public List<Map<String, String>> getOptimizedPlaces() {
+    List<Map<String, String>> optimizedPlaces = new ArrayList<>(places.size());
+    for (int i : tour) {
+      optimizedPlaces.add(places.get(i));
+    }
+    return optimizedPlaces;
   }
 
   public List<Map<String, String>> getPlaces() {
