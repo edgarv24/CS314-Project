@@ -1,6 +1,7 @@
 package com.tco.requests;
 
 import com.tco.misc.CalculateDistance;
+import com.tco.misc.Optimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,13 @@ public class RequestTrip extends RequestHeader {
 
   @Override
   public void buildResponse() {
+    if (options.get("response").equals("1.0") || options.get("response").equals("1")) {
+      Optimizer opt = new Optimizer();
+      opt.configure(places);
+      opt.findNearestNeighborTour();
+      opt.performTwoOpt();
+      places = opt.getOptimizedPlaces();
+    }
     buildDistanceList(options, places);
     log.trace("buildResponse -> {}", this);
   }
