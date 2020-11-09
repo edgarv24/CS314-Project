@@ -11,6 +11,7 @@ const TRIP = new Trip().loadJSON(peaksTrip);
 
 import TripSettingsModal from '../src/components/Atlas/Modals/TripSettingsModal';
 import {ModalHeader} from "reactstrap";
+import {EARTH_RADIUS_UNITS_DEFAULT} from "../src/utils/constants";
 
 describe('Itinerary', () => {
     let wrapper;
@@ -25,10 +26,6 @@ describe('Itinerary', () => {
         trip = new Trip().loadJSON(peaksTrip);
         isOpen = true;
         wrapper = shallow(<TripSettingsModal trip={TRIP} setTrip={setTrip} updatePlaceData={updatePlaceData} isOpen={isOpen} toggleOpen={toggleOpen}/>);
-    });
-
-    it("renders inputs", () => {
-        expect(wrapper.find('Input').length).toEqual(2);
     });
 
     it("has a functioning close button", () => {
@@ -93,5 +90,57 @@ describe('Itinerary', () => {
         expect(trip.title).toEqual('Popular Peaks Round Trip');
         loadCOBrews.simulate('click');
         expect(trip.title).toEqual('Colorado Brews Tour');
+    });
+
+    it('has a functioning clear trip button', () => {
+        const clearTrip = wrapper.find('#clear-trip-button');
+        expect(trip.places.length).toBeGreaterThan(0);
+        clearTrip.simulate('click');
+        expect(trip.places.length).toEqual(0);
+    });
+
+    it('has a functioning save button', () => {
+        const downloadButton = wrapper.find('#download-button');
+        expect(downloadButton).toBeDefined();
+        downloadButton.simulate('click');
+        expect(trip.places.length).toBeGreaterThan(0);
+        expect(isOpen).toBe(true);
+    });
+
+    it('fails to process an invalid JSON file', () => {
+        expect(wrapper.state().invalidUploadText).toEqual(null);
+        const file = new File(['none'], "file.json", {type: "text/plain" });
+        wrapper.instance().processFile(file);
+        expect(wrapper.state().invalidUploadText).toEqual(null);
+    });
+
+    it('changes state after unit selection', () => {
+        const select = wrapper.find('#unit-selector');
+
+        expect(wrapper.state().selectedUnit).toEqual("miles");
+        select.simulate('change', {target: {value: "kilometers"}});
+        expect(wrapper.state().selectedUnit).toEqual("kilometers");
+
+        expect(trip.units).toEqual("miles");
+        const submit = wrapper.find('#trip-settings-submit');
+        submit.simulate('click');
+        expect(trip.units).toEqual("kilometers");
+    });
+
+    it('updates trip if settings inputs changed', () => {
+        expect(trip.title).toEqual("Popular Peaks Round Trip");
+        let updatedTrip = wrapper.instance().getUpdatedTripFromChanges();
+        expect(updatedTrip).toEqual(trip);
+
+        wrapper.setState({titleInput: "Mexican Food Round Trip"});
+        updatedTrip = wrapper.instance().getUpdatedTripFromChanges();
+        expect(updatedTrip).not.toEqual(trip);
+        expect(updatedTrip.title).toEqual("Mexican Food Round Trip");
+
+        wrapper.setState({selectedUnit: "inches"});
+        updatedTrip = wrapper.instance().getUpdatedTripFromChanges();
+        expect(updatedTrip).not.toEqual(trip);
+        expect(updatedTrip.units).toEqual("inches");
+        expect(updatedTrip.earthRadius).toEqual(EARTH_RADIUS_UNITS_DEFAULT["inches"]);
     });
 });

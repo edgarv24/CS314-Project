@@ -1,4 +1,4 @@
-import React from "react";
+import React, {createRef} from "react";
 import {Button, Container} from "reactstrap";
 import {IconButton, Paper, Tooltip, Zoom} from '@material-ui/core';
 import FlightIcon from "@material-ui/icons/Flight";
@@ -7,12 +7,13 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import {DestinationTable} from "./DestinationTable";
 import TripSettingsModal from '../Modals/TripSettingsModal';
 
-import {LOG} from '../../../utils/constants';
+import {correctUnits, LOG} from '../../../utils/constants';
 
 export default class Itinerary extends React.Component {
     constructor(props) {
         super(props);
 
+        this.tableRef = createRef();
         this.updatePlaceDataOnServerRequestComplete = this.updatePlaceDataOnServerRequestComplete.bind(this);
 
         this.state = {
@@ -26,18 +27,19 @@ export default class Itinerary extends React.Component {
         // When the asynchronous request finishes, the callback will update
         // placeData here and also re-render this component.
         this.props.trip.updateDistance().then(() => {
+            this.tableRef.current.resetState();
             const newPlaceData = this.props.trip.itineraryPlaceData;
             this.setState({placeData: newPlaceData});
         });
     }
 
     render() {
-        LOG.info(JSON.parse(JSON.stringify(this.state.placeData)));
+        //LOG.info(this.state.placeData);
         return (
             <Paper id="itinerary" elevation={3}>
                 {this.renderHeader()}
                 <hr style={{borderWidth: "2px", marginBottom: 0}}/>
-                <DestinationTable data={this.state.placeData}/>
+                <DestinationTable ref={this.tableRef} units={this.props.trip.units} data={this.state.placeData}/>
                 <TripSettingsModal
                     trip={this.props.trip}
                     setTrip={this.props.setTrip}
@@ -88,14 +90,11 @@ export default class Itinerary extends React.Component {
     }
 
     getDistanceLabelText() {
-        const distances = this.props.trip.distances;
-        if (distances.length === 0)
+        const distance = this.props.trip.totalDistance;
+        const units = this.props.trip.units;
+
+        if (distance === 0)
             return "N/A";
-
-        const sum = distances.reduce((partial_sum, next) => partial_sum + next, 0);
-        const plural = (sum === 1) ? "" : "s";
-        const units = "mile";
-
-        return `${sum} ${units}${plural}`;
+        return `${distance} ${correctUnits(units, distance)}`;
     }
 }
