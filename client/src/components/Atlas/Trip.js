@@ -238,4 +238,10 @@ export default class Trip {
         downloadNode.click();
         downloadNode.remove();
     }
+
+    optimize() {
+        const newTrip = this.copy();
+        newTrip.options.response = "1.0";
+        return newTrip;
+    }
 }

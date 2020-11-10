@@ -11,6 +11,7 @@ import {beforeEach, describe, jest, test} from "@jest/globals";
 import DistanceModal from "../src/components/Atlas/Modals/DistanceModal";
 import FindModal from "../src/components/Atlas/Modals/FindModal";
 import Trip from "../src/components/Atlas/Trip";
+import {PROTOCOL_VERSION} from "../src/utils/constants";
 
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
 const MAP_DEFAULT_ZOOM = 15;
@@ -140,9 +141,10 @@ describe('Atlas', () => {
     });
 
     test("Test button that performs optimize function", () => {
-        //expect(atlasMounted.state().trip.options.response).toEqual("0.0");
-        simulateButtonClickEvent(atlasMounted, '#optimize-button')
-        //expect(atlasMounted.state().trip.options.response).toEqual("1.0");
+        atlasMounted.setState({trip: atlasMounted.state().trip.addPlace({'name': 'Place 1', 'latitude': '10', 'longitude': '40'})});
+        expect(atlasMounted.state().trip.options.response).toEqual("0.0");
+        simulateButtonClickEvent(atlasMounted, '#optimize-button');
+        expect(atlasMounted.state().trip.options.response).toEqual("1.0");
     });
 
     test("Test renderDistanceLabel default", () => {
