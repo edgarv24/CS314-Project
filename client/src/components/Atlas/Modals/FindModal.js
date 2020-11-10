@@ -28,6 +28,7 @@ export default class FindModal extends Component {
 
         this.state = {
             places: [],
+            filters: {},
             found: 0,
             inputText: "",
             selectedPlace: null
@@ -36,6 +37,14 @@ export default class FindModal extends Component {
 
     componentDidMount() {
         this.timer = null;
+        this.requestConfigFromServer();
+    }
+
+    requestConfigFromServer() {
+        sendServerRequest({requestType: "config"})
+            .then(responseJSON => {
+                if (responseJSON) this.setState({filters: responseJSON.data.filters});
+            })
     }
 
     render() {
@@ -54,7 +63,7 @@ export default class FindModal extends Component {
     renderInputBox() {
         return (
             <div className="ml-3 mr-3 mb-3 mt-3">
-                <InputGroup >
+                <InputGroup>
                     <InputGroupAddon addonType="prepend">{`Name`}</InputGroupAddon>
                     <Input placeholder="Enter place"
                            onChange={e => this.onInputChange(e.target.value)}
@@ -68,13 +77,12 @@ export default class FindModal extends Component {
     onInputChange(newValue) {
         clearTimeout(this.timer);
         if (newValue) {
-            this.setState({inputText: newValue });
+            this.setState({inputText: newValue});
             this.timer = setTimeout(
                 () => this.requestFindFromServer(newValue),
                 TYPING_REQUEST_DELAY);
-        }
-        else {
-            this.setState({inputText: newValue, places: [], selectedPlace: null });
+        } else {
+            this.setState({inputText: newValue, places: [], selectedPlace: null});
         }
     }
 
@@ -138,12 +146,12 @@ export default class FindModal extends Component {
     }
 
     renderActionButton(id, name, action) {
-        return(
+        return (
             <Button id={id} className="mr-2" color="primary" disabled={!this.state.selectedPlace}
-                onClick={() => {
-                    action();
-                    this.resetModalState();
-                }}
+                    onClick={() => {
+                        action();
+                        this.resetModalState();
+                    }}
             >
                 {name}
             </Button>

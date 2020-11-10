@@ -21,8 +21,6 @@ import DistanceModal from "./Modals/DistanceModal";
 import FindModal from "./Modals/FindModal";
 
 import {correctUnits, LOG} from "../../utils/constants";
-import {options} from "jest-cli/build/cli/args";
-import {optimize} from "webpack";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
