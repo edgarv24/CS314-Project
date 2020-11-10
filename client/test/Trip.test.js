@@ -321,4 +321,10 @@ describe('Trip', () => {
         const unitHasMatch = trip.selectUnitFromRadius("6371.0");
         expect(unitHasMatch).toEqual("kilometers");
     });
+
+    it("optimize function returns options.response is equal to 1.0", () => {
+        expect(trip.options.response).toEqual("0.0");
+        const opt = trip.optimize();
+        expect(opt.options.response).toEqual("1.0");
+    });
 });

@@ -21,6 +21,8 @@ import DistanceModal from "./Modals/DistanceModal";
 import FindModal from "./Modals/FindModal";
 
 import {correctUnits, LOG} from "../../utils/constants";
+import {options} from "jest-cli/build/cli/args";
+import {optimize} from "webpack";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -121,7 +123,7 @@ export default class Atlas extends Component {
             ['toggle-trip-markers', <LocationOn/>, BL, 'Toggle Trip Markers', TOOLTIP_RIGHT, NO_TRIP_DATA, MARKERS_ON,
                 () => this.setState({displayTripMarkers: !this.state.displayTripMarkers})],
             ['optimize-button', <TrendingUp/>, BR, 'Optimize Trip', TOOLTIP_LEFT, NO_TRIP_DATA, true,
-                () => undefined],
+                () => this.setState({trip: this.state.trip.optimize()})],
             ['scroll-down-button', <ArrowDownward/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
                 () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})]
         ];
