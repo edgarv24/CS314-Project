@@ -55,6 +55,16 @@ public class QueryDatabase {
     }
   }
 
+  public static boolean onTravis() {
+    String var = System.getenv("TRAVIS");
+    return var != null && var.equals("true");
+  }
+
+  public static boolean usingTunnel() {
+    String var = System.getenv("CS314_USE_DATABASE_TUNNEL");
+    return var != null && var.equals("true");
+  }
+
   public Integer getCorrectLimit(String match, Integer userLimit) {
     if (match != null)
       return (userLimit != null && userLimit <= 100 && userLimit > 0) ? userLimit : 100;
@@ -236,13 +246,4 @@ public class QueryDatabase {
     return filters;
   }
 
-  public static boolean onTravis() {
-    String var = System.getenv("TRAVIS");
-    return var != null && var.equals("true");
-  }
-
-  public static boolean usingTunnel() {
-    String var = System.getenv("CS314_USE_DATABASE_TUNNEL");
-    return var != null && var.equals("true");
-  }
 }
