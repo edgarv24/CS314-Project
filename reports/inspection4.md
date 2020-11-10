@@ -19,13 +19,10 @@
 
 | file:line | problem | hi/med/low | who found | github#  |
 | --- | --- | :---: | :---: | --- |
-| QueryDatabase.java:9 | class QueryDatabase exceeds the limit of 20 methods with 24 methods | med | ryliedd | |
-| QueryDatabase.java:34 | extra tab before the start of the line | low | cessna17 | |
-| QueryDatabase.java:61 | duplication on limit range check and check for null limit | low | edvarela | |
-| QueryDatabase.java:98 | duplicated rand string | low | edvarela | |
-| QueryDatabase.java:104 | repetitive code from the queryWithFiltersMethod | low | ryliedd, cessna17, darinh | |
-| QueryDatabase.java:138 | unnecessary conditional, for loop is sufficient | low | darinh | |
-| QueryDatabase.java:165 | resulting countries list could be cached for later use, so Config only makes a server request once | low | darinh | |
-| QueryDatabase.java:192 | ununiformed tab sizes to the rest of the document | low | cessna17 | |
-| QueryDatabase.java:239 | move onTravis() to be under configServerUsingLocation() for readability | low | ryliedd | |
-| QueryDatabase.java:244 | move usingTunnel() to be under configServerUsingLocation() for readability | low | ryliedd | |
+| QueryDatabase.java:9 | class QueryDatabase exceeds the limit of 20 methods with 24 methods | med | ryliedd | #345 |
+| QueryDatabase.java:61 | duplication on limit range check and check for null limit | low | edvarela | #346 |
+| QueryDatabase.java:104 | repetitive code from the queryWithFiltersMethod | low | ryliedd, cessna17, darinh | #347 |
+| QueryDatabase.java:138 | unnecessary conditional, for loop is sufficient | low | darinh | #349 |
+| QueryDatabase.java:165 | resulting countries list could be cached for later use, so Config only makes a server request once | low | darinh | #350 |
+| QueryDatabase.java:239 | move onTravis() to be under configServerUsingLocation() for readability | low | ryliedd | #348 |
+| QueryDatabase.java:244 | move usingTunnel() to be under configServerUsingLocation() for readability | low | ryliedd | #348 |
