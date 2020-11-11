@@ -154,16 +154,18 @@ public class QueryDatabase {
   }
 
   public void executeQuery() throws SQLException {
-    ResultSet resultSet = makeQuery();
-    convertResultsToListOfMaps(resultSet);
-    resultsFound = (match == null) ? limit : queryResults.size();
-    trimResultsToLimit(limit);
+    try (ResultSet resultSet = makeQuery()) {
+      convertResultsToListOfMaps(resultSet);
+      resultsFound = (match == null) ? limit : queryResults.size();
+      trimResultsToLimit(limit);
+    }
   }
 
   private ResultSet makeQuery() throws SQLException {
     try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-        Statement query = conn.createStatement() ) {
-      return query.executeQuery(QUERY);
+        Statement query = conn.createStatement();
+        ResultSet results = query.executeQuery(QUERY)) {
+      return results;
     }
   }
 
@@ -171,8 +173,8 @@ public class QueryDatabase {
     configServerUsingLocation();
     if (allCountries.isEmpty()) {
       try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-          Statement query = conn.createStatement() ) {
-        ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
+          Statement query = conn.createStatement();
+          ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country")) {
         while (countryResultSet.next()) {
           String countryName = countryResultSet.getString("country.name");
           allCountries.add(countryName);
