@@ -162,7 +162,7 @@ public class QueryDatabase {
 
   private ResultSet makeQuery() throws SQLException {
     try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-        Statement query = conn.createStatement(); ) {
+        Statement query = conn.createStatement() ) {
       return query.executeQuery(QUERY);
     }
   }
@@ -170,12 +170,13 @@ public class QueryDatabase {
   public static ArrayList<String> getCountryList() throws SQLException {
     configServerUsingLocation();
     if (allCountries.isEmpty()) {
-      Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-      Statement query = conn.createStatement();
-      ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
-      while (countryResultSet.next()) {
-        String countryName = countryResultSet.getString("country.name");
-        allCountries.add(countryName);
+      try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+          Statement query = conn.createStatement() ) {
+        ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
+        while (countryResultSet.next()) {
+          String countryName = countryResultSet.getString("country.name");
+          allCountries.add(countryName);
+        }
       }
     }
     return allCountries;
