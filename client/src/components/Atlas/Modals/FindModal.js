@@ -161,6 +161,7 @@ export default class FindModal extends Component {
         this.props.toggleOpen();
         this.setState({
             places: [],
+            filters: {},
             found: 0,
             inputText: null,
             selectedPlace: null

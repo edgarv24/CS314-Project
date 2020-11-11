@@ -17,7 +17,6 @@ public class TestQueryDatabase {
   private static String expectedPassword;
 
   private static QueryDatabase db;
-  private static Connection conn;
   private static Map<String, ArrayList<String>> narrow;
 
   @BeforeAll
@@ -46,14 +45,6 @@ public class TestQueryDatabase {
     narrow.put("where", geo);
     db = new QueryDatabase();
     db.configure("denver", 0, narrow);
-    conn = null;
-  }
-
-  @Test
-  @DisplayName("Connection successful")
-  public void testConnection() throws SQLException {
-    conn = DriverManager.getConnection(db.getDbUrl(), db.getDbUser(), db.getDbPassword());
-    assertNotNull(conn);
   }
 
   @Test
