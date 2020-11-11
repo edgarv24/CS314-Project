@@ -37,17 +37,10 @@ export default class FindModal extends Component {
 
     componentDidMount() {
         this.timer = null;
-        this.requestConfigFromServer();
-    }
-
-    requestConfigFromServer() {
-        sendServerRequest({requestType: "config"})
-            .then(responseJSON => {
-                if (responseJSON) this.setState({filters: responseJSON.data.filters});
-            })
     }
 
     render() {
+        if (Object.keys(this.state.filters).length === 0) this.requestConfigFromServer();
         return (
             <Modal id="find-modal" isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
                 {renderModalTitleHeader("Find Places", () => this.resetModalState())}
@@ -179,6 +172,14 @@ export default class FindModal extends Component {
             .then(responseJSON => {
                 if (responseJSON) this.processFindResponse(responseJSON);
             });
+    }
+
+    requestConfigFromServer() {
+        sendServerRequest({requestType: "config"})
+            .then(responseJSON => {
+                if (responseJSON)
+                    this.setState({filters: responseJSON.data.filters});
+            })
     }
 
     constructRequestBody(placeName) {
