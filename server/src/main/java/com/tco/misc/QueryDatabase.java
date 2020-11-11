@@ -73,7 +73,6 @@ public class QueryDatabase {
     else return 1;
   }
 
-
   public String configureQueryString(
       String match, Integer limit, Map<String, ArrayList<String>> filters) {
     if (filters != null) return queryWithFilters(match, limit, filters);
@@ -162,20 +161,22 @@ public class QueryDatabase {
   }
 
   private ResultSet makeQuery() throws SQLException {
-    Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-    Statement query = conn.createStatement();
-    return query.executeQuery(QUERY);
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        Statement query = conn.createStatement() ) {
+      return query.executeQuery(QUERY);
+    }
   }
-  
+
   public static ArrayList<String> getCountryList() throws SQLException {
     configServerUsingLocation();
     if (allCountries.isEmpty()) {
-      Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-      Statement query = conn.createStatement();
-      ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
-      while (countryResultSet.next()) {
-        String countryName = countryResultSet.getString("country.name");
-        allCountries.add(countryName);
+      try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+          Statement query = conn.createStatement() ) {
+        ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
+        while (countryResultSet.next()) {
+          String countryName = countryResultSet.getString("country.name");
+          allCountries.add(countryName);
+        }
       }
     }
     return allCountries;
@@ -246,5 +247,4 @@ public class QueryDatabase {
   public Map<String, ArrayList<String>> getFilters() {
     return filters;
   }
-
 }
