@@ -4,8 +4,6 @@ import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as tripSchema from "../../../schemas/TripResponse.json";
 import * as tripFileSchema from "../../../schemas/TripFile.json";
 
-import {LOG} from '../../utils/constants';
-
 export default class Trip {
     constructor() {
         this.requestVersion = PROTOCOL_VERSION;
@@ -16,7 +14,7 @@ export default class Trip {
     }
 
     async updateDistance() {
-        sendServerRequest(this.constructRequestBody()).then(responseJSON => {
+        await sendServerRequest(this.constructRequestBody()).then(responseJSON => {
             if (responseJSON) this.processTripResponse(responseJSON);
         });
     }
@@ -24,8 +22,7 @@ export default class Trip {
     processTripResponse(responseJSON) {
         const responseBody = responseJSON.data;
         if (isJsonResponseValid(responseBody, tripSchema)) {
-            LOG.info('setting distances');
-            LOG.info(this.places);
+            this.places = responseBody.places;
             this.distances = responseBody.distances;
         }
     }
@@ -49,7 +46,7 @@ export default class Trip {
 
         const newTrip = this.copy();
         newTrip.places = this.places.concat(places);
-        newTrip.updateDistance();
+        newTrip.options.response = '0.0';
         return newTrip;
     }
 
@@ -71,7 +68,7 @@ export default class Trip {
 
         const newTrip = this.copy();
         newTrip.places.splice(index, 1);
-        newTrip.updateDistance();
+        newTrip.options.response = '0.0';
         return newTrip;
     }
 
@@ -98,6 +95,12 @@ export default class Trip {
         let newTrip = this.copy();
         newTrip.options.earthRadius = earthRadius;
         newTrip.options.units = unitName;
+        return newTrip;
+    }
+
+    optimize() {
+        const newTrip = this.copy();
+        newTrip.options.response = "1.0";
         return newTrip;
     }
 
@@ -237,11 +240,5 @@ export default class Trip {
         document.body.appendChild(downloadNode);
         downloadNode.click();
         downloadNode.remove();
-    }
-
-    optimize() {
-        const newTrip = this.copy();
-        newTrip.options.response = "1.0";
-        return newTrip;
     }
 }

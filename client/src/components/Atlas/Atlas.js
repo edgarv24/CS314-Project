@@ -35,7 +35,6 @@ const MAP_MAX_ZOOM = 19;
 const MAP_DEFAULT_ZOOM = 15;
 
 export default class Atlas extends Component {
-
     constructor(props) {
         super(props);
         this.mapRef = createRef();
@@ -43,6 +42,7 @@ export default class Atlas extends Component {
         this.setMarker = this.setMarker.bind(this);
         this.setMapToHome = this.setMapToHome.bind(this);
         this.getHomePosition = this.getHomePosition.bind(this);
+        this.setTrip = this.setTrip.bind(this);
         this.processDistanceRequestSuccess = this.processDistanceRequestSuccess.bind(this);
         this.processFindRequestViewLocation = this.processFindRequestViewLocation.bind(this);
 
@@ -109,6 +109,8 @@ export default class Atlas extends Component {
         const NO_TRIP_DATA = this.state.trip.places.length === 0;
         const MARKERS_ON = !NO_TRIP_DATA && this.state.displayTripMarkers;
         const LINES_ON = !NO_TRIP_DATA && this.state.displayTripLines;
+        const DISABLE_OPTIMIZE = NO_TRIP_DATA || this.state.trip.response && this.state.trip.response === '1.0';
+        const OPTIMIZE_DISABLE_TEXT = this.state.trip.response === '0.0' ? 'Optimize Trip' : 'Already Optimized';
         return [
             ['home-button', <GpsFixed/>, TL, 'Where am I?', TOOLTIP_RIGHT, false, true,
                 () => this.setMapToHome()],
@@ -120,8 +122,8 @@ export default class Atlas extends Component {
                 () => this.setState({displayTripLines: !this.state.displayTripLines})],
             ['toggle-trip-markers', <LocationOn/>, BL, 'Toggle Trip Markers', TOOLTIP_RIGHT, NO_TRIP_DATA, MARKERS_ON,
                 () => this.setState({displayTripMarkers: !this.state.displayTripMarkers})],
-            ['optimize-button', <TrendingUp/>, BR, 'Optimize Trip', TOOLTIP_LEFT, NO_TRIP_DATA, true,
-                () => this.setState({trip: this.state.trip.optimize()})],
+            ['optimize-button', <TrendingUp/>, BR, OPTIMIZE_DISABLE_TEXT, TOOLTIP_LEFT, DISABLE_OPTIMIZE, true,
+                async () => await this.setTrip(this.state.trip.optimize())],
             ['scroll-down-button', <ArrowDownward/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
                 () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})]
         ];
@@ -249,10 +251,15 @@ export default class Atlas extends Component {
         return (
             <Row className="mt-4">
                 <Col sm={12} md={{size: 10, offset: 1}} lg={{size: 8, offset: 2}}>
-                    <Itinerary trip={this.state.trip} setTrip={(newTrip) => this.setState({trip: newTrip})}/>
+                    <Itinerary trip={this.state.trip} setTrip={this.setTrip}/>
                 </Col>
             </Row>
         );
+    }
+
+    async setTrip(newTrip) {
+        await newTrip.updateDistance();
+        this.setState({trip: newTrip});
     }
 
     setMarker(mapClickInfo) {
