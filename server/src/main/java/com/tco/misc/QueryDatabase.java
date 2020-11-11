@@ -29,6 +29,7 @@ public class QueryDatabase {
   private Integer resultsFound;
   private List<Map<String, String>> queryResults;
   private Map<String, ArrayList<String>> filters;
+  private static ArrayList<String> allCountries = new ArrayList<>();
 
   public void configure(
       String userMatch, Integer userLimit, Map<String, ArrayList<String>> narrow) {
@@ -55,12 +56,23 @@ public class QueryDatabase {
     }
   }
 
+  public static boolean onTravis() {
+    String var = System.getenv("TRAVIS");
+    return var != null && var.equals("true");
+  }
+
+  public static boolean usingTunnel() {
+    String var = System.getenv("CS314_USE_DATABASE_TUNNEL");
+    return var != null && var.equals("true");
+  }
+
   public Integer getCorrectLimit(String match, Integer userLimit) {
     if (match != null)
       return (userLimit != null && userLimit <= 100 && userLimit > 0) ? userLimit : 100;
     else if (userLimit != null) return (userLimit <= 100 && userLimit > 0) ? userLimit : 100;
     else return 1;
   }
+
 
   public String configureQueryString(
       String match, Integer limit, Map<String, ArrayList<String>> filters) {
@@ -135,10 +147,8 @@ public class QueryDatabase {
   public String constructGeoFilter(Map<String, ArrayList<String>> filters) {
     ArrayList<String> geos = filters.get("where");
     StringBuilder geoFilter = new StringBuilder("(country.name = \"" + geos.get(0) + "\"");
-    if (geos.size() > 1) {
-      for (int i = 1; i < geos.size(); i++) {
-        geoFilter.append(" OR country.name = \"").append(geos.get(i)).append("\"");
-      }
+    for (int i = 1; i < geos.size(); i++) {
+      geoFilter.append(" OR country.name = \"").append(geos.get(i)).append("\"");
     }
     geoFilter.append(")");
     return geoFilter.toString();
@@ -159,13 +169,14 @@ public class QueryDatabase {
   
   public static ArrayList<String> getCountryList() throws SQLException {
     configServerUsingLocation();
-    Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-    Statement query = conn.createStatement();
-    ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
-    ArrayList<String> allCountries = new ArrayList<>();
-    while (countryResultSet.next()) {
-      String countryName = countryResultSet.getString("country.name");
-      allCountries.add(countryName);
+    if (allCountries.isEmpty()) {
+      Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+      Statement query = conn.createStatement();
+      ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
+      while (countryResultSet.next()) {
+        String countryName = countryResultSet.getString("country.name");
+        allCountries.add(countryName);
+      }
     }
     return allCountries;
   }
@@ -236,13 +247,4 @@ public class QueryDatabase {
     return filters;
   }
 
-  public static boolean onTravis() {
-    String var = System.getenv("TRAVIS");
-    return var != null && var.equals("true");
-  }
-
-  public static boolean usingTunnel() {
-    String var = System.getenv("CS314_USE_DATABASE_TUNNEL");
-    return var != null && var.equals("true");
-  }
 }
