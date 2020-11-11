@@ -25,7 +25,8 @@ describe('Itinerary', () => {
     beforeEach(() => {
         trip = new Trip().loadJSON(peaksTrip);
         isOpen = true;
-        wrapper = shallow(<TripSettingsModal trip={TRIP} setTrip={setTrip} updatePlaceData={updatePlaceData} isOpen={isOpen} toggleOpen={toggleOpen}/>);
+        wrapper = shallow(<TripSettingsModal trip={TRIP} setTrip={setTrip} resetTable={() => undefined}
+                                             updatePlaceData={updatePlaceData} isOpen={isOpen} toggleOpen={toggleOpen}/>);
     });
 
     it("has a functioning close button", () => {
