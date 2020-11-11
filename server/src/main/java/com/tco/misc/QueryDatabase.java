@@ -73,6 +73,7 @@ public class QueryDatabase {
     else return 1;
   }
 
+
   public String configureQueryString(
       String match, Integer limit, Map<String, ArrayList<String>> filters) {
     if (filters != null) return queryWithFilters(match, limit, filters);
@@ -170,10 +171,13 @@ public class QueryDatabase {
   
   public static ArrayList<String> getCountryList() throws SQLException {
     configServerUsingLocation();
-    Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-    Statement query = conn.createStatement();
-    ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
+//    Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+//    Statement query = conn.createStatement();
+//    ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
     if (allCountries.isEmpty()) {
+      Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+      Statement query = conn.createStatement();
+      ResultSet countryResultSet = query.executeQuery("SELECT country.name FROM country");
       while (countryResultSet.next()) {
         String countryName = countryResultSet.getString("country.name");
         allCountries.add(countryName);
