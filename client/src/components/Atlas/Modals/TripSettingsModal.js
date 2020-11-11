@@ -204,8 +204,8 @@ export default class TripSettingsModal extends React.Component {
 
     updateTrip(newTrip) {
         this.props.setTrip(newTrip);
-        this.props.updatePlaceData();
-        this.resetState()
+        this.props.resetTable();
+        this.resetState();
     }
 
     resetState() {

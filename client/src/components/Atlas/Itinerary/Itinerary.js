@@ -12,29 +12,20 @@ import {correctUnits, LOG} from '../../../utils/constants';
 export default class Itinerary extends React.Component {
     constructor(props) {
         super(props);
-
         this.tableRef = createRef();
-        this.updatePlaceDataOnServerRequestComplete = this.updatePlaceDataOnServerRequestComplete.bind(this);
 
         this.state = {
-            placeData: this.props.trip.itineraryPlaceData,
+            placeData: [],
             settingsModalOpen: false
         };
     }
 
-    updatePlaceDataOnServerRequestComplete() {
-        // Send new server request in Trip to make sure values are updated.
-        // When the asynchronous request finishes, the callback will update
-        // placeData here and also re-render this component.
-        this.props.trip.updateDistance().then(() => {
-            this.tableRef.current.resetState();
-            const newPlaceData = this.props.trip.itineraryPlaceData;
-            this.setState({placeData: newPlaceData});
-        });
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+        const newPlaceData = nextProps.trip.itineraryPlaceData;
+        this.setState({placeData: newPlaceData});
     }
 
     render() {
-        //LOG.info(this.state.placeData);
         return (
             <Paper id="itinerary" elevation={3}>
                 {this.renderHeader()}
@@ -44,7 +35,7 @@ export default class Itinerary extends React.Component {
                     trip={this.props.trip}
                     setTrip={this.props.setTrip}
                     isOpen={this.state.settingsModalOpen}
-                    updatePlaceData={this.updatePlaceDataOnServerRequestComplete}
+                    resetTable={() => this.tableRef.current.resetState()}
                     toggleOpen={(isOpen = !this.state.settingsModalOpen) => this.setState({settingsModalOpen: isOpen})}/>
             </Paper>
         );
