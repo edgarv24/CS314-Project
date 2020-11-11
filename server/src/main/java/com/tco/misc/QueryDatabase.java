@@ -147,10 +147,8 @@ public class QueryDatabase {
   public String constructGeoFilter(Map<String, ArrayList<String>> filters) {
     ArrayList<String> geos = filters.get("where");
     StringBuilder geoFilter = new StringBuilder("(country.name = \"" + geos.get(0) + "\"");
-    if (geos.size() > 1) {
-      for (int i = 1; i < geos.size(); i++) {
-        geoFilter.append(" OR country.name = \"").append(geos.get(i)).append("\"");
-      }
+    for (int i = 1; i < geos.size(); i++) {
+      geoFilter.append(" OR country.name = \"").append(geos.get(i)).append("\"");
     }
     geoFilter.append(")");
     return geoFilter.toString();
