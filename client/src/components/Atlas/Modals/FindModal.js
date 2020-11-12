@@ -1,13 +1,5 @@
 import React, {Component} from 'react';
-import {
-    Button,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    Modal,
-    ModalBody,
-    ModalFooter
-} from 'reactstrap';
+import {Button, Modal, ModalBody, ModalFooter} from 'reactstrap';
 
 import {renderModalTitleHeader, renderCancelButton} from "./modalHelper";
 import {ListItem, ListItemText, ListSubheader} from "@material-ui/core";
@@ -58,16 +50,33 @@ export default class FindModal extends Component {
         );
     }
 
-    renderInputBox() {
+    renderComboBox() {
         return (
             <div className="ml-3 mr-3 mb-3 mt-3">
-                <InputGroup>
-                    <InputGroupAddon addonType="prepend">{`Name`}</InputGroupAddon>
-                    <Input placeholder="Enter place"
+                <Autocomplete
+                    id="combo-box"
+                    fullWidth={true}
+                    size="small"
+                    options={this.state.filters.where || []}
+                    onChange={(event, country) => {
+                        this.setState({selectedCountry: country});
+                        this.onInputChange(this.state.inputText);
+                    }}
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => <TextField {...params} label="Filter by Country" variant="outlined"/>}/>
+            </div>
+        )
+    }
+
+    renderInputBox() {
+        return (
+            <div className="ml-3 mr-3 mb-3 mt-4">
+                <TextField id="place-name-input" label="Place Name" variant="outlined"
                            onChange={e => this.onInputChange(e.target.value)}
                            value={this.state.inputText || ""}
-                    />
-                </InputGroup>
+                           fullWidth={true}
+                           size="small"
+                />
             </div>
         );
     }
@@ -141,19 +150,6 @@ export default class FindModal extends Component {
                 {renderCancelButton("close-find-modal", () => this.resetModalState())}
             </ModalFooter>
         );
-    }
-
-    renderComboBox() {
-        return (
-            <Autocomplete
-                id="combo-box"
-                fullWidth={true}
-                size={"small"}
-                options={this.state.filters.where}
-                onChange={(event, country) => this.setState({selectedCountry: country})}
-                getOptionLabel={(option) => option}
-                renderInput={(params) => <TextField {...params} label="Filter by Country" variant="outlined"/>}/>
-        )
     }
 
     renderActionButton(id, name, action) {

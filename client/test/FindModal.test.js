@@ -36,7 +36,7 @@ test("Testing FindModal's Initial State", () => {
 });
 
 test("Testing input box", () => {
-    let input = wrapper.find("Input");
+    let input = wrapper.find("#place-name-input");
     let event = {target: {value: "Denver"}};
 
     input.simulate("change", event);
