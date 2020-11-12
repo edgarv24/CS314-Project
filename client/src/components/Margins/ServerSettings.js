@@ -78,7 +78,7 @@ export default class ServerSettings extends React.Component {
             <Dialog id="filters-dialog" open={this.state.filtersOpen} onClose={() => this.setState({filtersOpen: false})}>
                 <DialogTitle>Server Filters</DialogTitle>
                 <DialogContent dividers>
-                    {this.getGeographicFilters().map(item => <p key={item} className="text-muted">{item}</p>)}
+                    {this.getGeographicFilters().map(item => <div key={item} className="text-muted">{item}</div>)}
                 </DialogContent>
             </Dialog>
         );
