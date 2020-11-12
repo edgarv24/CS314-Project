@@ -154,18 +154,12 @@ public class QueryDatabase {
   }
 
   public void executeQuery() throws SQLException {
-    try (ResultSet resultSet = makeQuery()) {
-      convertResultsToListOfMaps(resultSet);
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+         Statement query = conn.createStatement();
+         ResultSet results = query.executeQuery(QUERY)) {
+      convertResultsToListOfMaps(results);
       resultsFound = (match == null) ? limit : queryResults.size();
       trimResultsToLimit(limit);
-    }
-  }
-
-  private ResultSet makeQuery() throws SQLException {
-    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-        Statement query = conn.createStatement();
-        ResultSet results = query.executeQuery(QUERY)) {
-      return results;
     }
   }
 
