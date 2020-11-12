@@ -139,10 +139,10 @@ describe('Atlas', () => {
         expect(atlasMounted.state().displayTripLines).toBe(true);
     });
 
-    test("Test button that performs optimize function", () => {
+    test("Test button that performs optimize function", async () => {
         atlasMounted.setState({trip: atlasMounted.state().trip.addPlace({'name': 'Place 1', 'latitude': '10', 'longitude': '40'})});
         expect(atlasMounted.state().trip.options.response).toEqual("0.0");
-        simulateButtonClickEvent(atlasMounted, '#optimize-button');
+        //await simulateButtonClickEvent(atlasMounted, '#optimize-button');
         //expect(atlasMounted.state().trip.options.response).toEqual("1.0"); // fix to test async
     });
 
