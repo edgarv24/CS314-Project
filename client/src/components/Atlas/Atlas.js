@@ -20,6 +20,9 @@ import Itinerary from "./Itinerary/Itinerary";
 import DistanceModal from "./Modals/DistanceModal";
 import FindModal from "./Modals/FindModal";
 
+import {hasFlag} from 'country-flag-icons';
+import getUnicodeFlagIcon from 'country-flag-icons/unicode';
+
 import {correctUnits, LOG} from "../../utils/constants";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
@@ -58,7 +61,7 @@ export default class Atlas extends Component {
             findModalOpen: false,
             distanceLabel: null,
             displayTripMarkers: true,
-            displayTripLines: false,
+            displayTripLines: true,
             optimizeEnabled: false
         };
     }
@@ -134,11 +137,11 @@ export default class Atlas extends Component {
         return (
             <>
                 {this.state.displayTripMarkers && this.state.trip.coordinatesList.map((position, index) =>
-                    this.getMarker(position, GOLD_MARKER, false, placeData[index].id)
+                    this.getMarker(position, GOLD_MARKER, false, placeData[index], placeData[index].id)
                 )};
-                {this.getMarker(this.state.markerPosition, BLUE_MARKER, true, "first")}
-                {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, true, "second")}
-                {this.getMarker(this.state.userPosition, RED_MARKER, false, "user")}
+                {this.getMarker(this.state.markerPosition, BLUE_MARKER, true, null, "first")}
+                {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, true, null, "second")}
+                {this.getMarker(this.state.userPosition, RED_MARKER, false, null, "user")}
             </>
         );
     }
@@ -147,12 +150,16 @@ export default class Atlas extends Component {
         const placeData = this.state.trip.itineraryPlaceData;
         return (
             <>
-                {this.state.displayTripLines && this.getPairsForPolylines().map((pair, index) =>
-                    this.renderPolyline(pair[0], pair[1], "green", false, placeData[index].id + "-line")
-                )};
+                {this.state.displayTripLines && this.getPairsForPolylines().map((pair, index) => {
+                    const lineDist = placeData[index + 1].leg_dist;
+                    const unitText = correctUnits(this.state.trip.units, parseInt(lineDist));
+                    return this.renderPolyline(pair[0], pair[1], "green", false,
+                        `${lineDist} ${unitText}`, placeData[index].id + "-line")
+                })};
 
                 {this.state.distanceLabel != null && this.renderPolyline(
-                    this.state.markerPosition, this.state.secondMarkerPosition, "red", true, "twoPoint")}
+                    this.state.markerPosition, this.state.secondMarkerPosition, "red", true,
+                    this.getDistanceLabelText(), "twoPoint")}
             </>
         );
 
@@ -285,7 +292,7 @@ export default class Atlas extends Component {
         });
     }
 
-    getMarker(position, iconStyle, usePopup, key) {
+    getMarker(position, iconStyle, usePopup, placeData, key) {
         const initMarker = ref => {
             if (ref && usePopup) {
                 ref.leafletElement.openPopup()
@@ -295,18 +302,31 @@ export default class Atlas extends Component {
         if (position) {
             return (
                 <Marker key={key} ref={initMarker} position={position} icon={iconStyle}>
-                    <Popup offset={[0, -18]}
-                           className="font-weight-bold">{this.getStringMarkerPosition(position)}</Popup>
+                    <Popup offset={[0, -18]} className="font-weight-bold">{
+                        this.getPopupLabel(position, placeData, key)
+                    }</Popup>
                 </Marker>
             );
         }
+    }
+
+    getPopupLabel(position, placeData, key) {
+        const latLng = this.getStringMarkerPosition(position);
+        if (!placeData) {
+            if (key === 'user')
+                return <div>(You are here)<br />{latLng}</div>;
+            return latLng;
+        }
+
+        const flag = hasFlag(placeData.country_id) ? getUnicodeFlagIcon(placeData.country_id) + ' ' : '';
+        return <div>{flag}{placeData.primary_text}<br /><div className="text-muted">{placeData.location_text}</div></div>;
     }
 
     getStringMarkerPosition(position) {
         return position.lat.toFixed(2) + ', ' + position.lng.toFixed(2);
     }
 
-    renderPolyline(position1, position2, color, usePopup, key) {
+    renderPolyline(position1, position2, color, usePopup, distance, key) {
         const initMarker = ref => {
             if (ref && usePopup) {
                 ref.leafletElement.openPopup()
@@ -317,7 +337,7 @@ export default class Atlas extends Component {
             return (
                 <Polyline key={key} ref={initMarker} color={color} positions={
                     [[position1.lat, position1.lng], [position2.lat, position2.lng]]}>
-                    <Popup offset={[0, -1]} className="font-weight-bold">Distance: {this.getDistanceLabelText()}</Popup>
+                    <Popup offset={[0, -1]} className="font-weight-bold">Distance: {distance}</Popup>
                 </Polyline>
             );
         }
