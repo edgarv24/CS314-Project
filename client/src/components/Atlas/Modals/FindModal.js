@@ -11,6 +11,8 @@ import {
 
 import {renderModalTitleHeader, renderCancelButton} from "./modalHelper";
 import {ListItem, ListItemText, ListSubheader} from "@material-ui/core";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 import {isJsonResponseValid, sendServerRequest} from "../../../utils/restfulAPI";
 import * as findSchema from "../../../../schemas/FindResponse.json";
@@ -21,6 +23,7 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 
 const RESPONSE_LIMIT = 20;
 const TYPING_REQUEST_DELAY = 1000;
+const DEFAULT_PORT_FILTERS = ["airport", "heliport", "balloonport"];
 
 export default class FindModal extends Component {
     constructor(props) {
@@ -31,7 +34,8 @@ export default class FindModal extends Component {
             filters: {},
             found: 0,
             inputText: "",
-            selectedPlace: null
+            selectedPlace: null,
+            selectedCountry: null
         };
     }
 
@@ -45,6 +49,7 @@ export default class FindModal extends Component {
             <Modal id="find-modal" isOpen={this.props.isOpen} toggle={() => this.resetModalState()}>
                 {renderModalTitleHeader("Find Places", () => this.resetModalState())}
                 <ModalBody>
+                    {this.renderComboBox()}
                     {this.renderInputBox()}
                     {this.renderList()}
                 </ModalBody>
@@ -138,6 +143,19 @@ export default class FindModal extends Component {
         );
     }
 
+    renderComboBox() {
+        return (
+            <Autocomplete
+                id="combo-box"
+                fullWidth={true}
+                size={"small"}
+                options={this.state.filters.where}
+                onChange={(event, country) => this.setState({selectedCountry: country})}
+                getOptionLabel={(option) => option}
+                renderInput={(params) => <TextField {...params} label="Filter by Country" variant="outlined"/>}/>
+        )
+    }
+
     renderActionButton(id, name, action) {
         return (
             <Button id={id} className="mr-2" color="primary" disabled={!this.state.selectedPlace}
@@ -184,12 +202,23 @@ export default class FindModal extends Component {
     }
 
     constructRequestBody(placeName) {
-        return {
-            requestVersion: PROTOCOL_VERSION,
-            requestType: "find",
-            match: placeName,
-            limit: RESPONSE_LIMIT
+        if (this.state.selectedCountry) {
+            return {
+                requestVersion: PROTOCOL_VERSION,
+                requestType: "find",
+                match: placeName,
+                narrow: {"type": DEFAULT_PORT_FILTERS, "where": [this.state.selectedCountry]},
+                limit: RESPONSE_LIMIT
+            }
+        } else {
+            return {
+                requestVersion: PROTOCOL_VERSION,
+                requestType: "find",
+                match: placeName,
+                limit: RESPONSE_LIMIT
+            }
         }
+
     }
 
     processFindResponse(responseJSON) {
@@ -201,7 +230,7 @@ export default class FindModal extends Component {
             if (responseBody.match === this.state.inputText)
                 this.setState({places: responseBody.places, found: responseBody.found, selectedPlace: null});
         } else {
-            this.setState({places: [], found: 0, selectedPlace: null});
+            this.setState({places: [], found: 0, selectedPlace: null, selectedCountry: null});
         }
     }
 }
