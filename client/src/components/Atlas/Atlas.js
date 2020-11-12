@@ -300,17 +300,17 @@ export default class Atlas extends Component {
             return (
                 <Marker key={key} ref={initMarker} position={position} icon={iconStyle}>
                     <Popup offset={[0, -18]} className="font-weight-bold">{
-                        this.getPopupLabel(position, placeData, key)
+                        this.getPopupLabel(position, placeData)
                     }</Popup>
                 </Marker>
             );
         }
     }
 
-    getPopupLabel(position, placeData, key) {
+    getPopupLabel(position, placeData) {
         const latLng = this.getStringMarkerPosition(position);
         if (!placeData) {
-            if (key === 'user')
+            if (position === this.getHomePosition())
                 return <div>(You are here)<br />{latLng}</div>;
             return latLng;
         }
