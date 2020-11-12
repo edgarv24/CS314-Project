@@ -20,6 +20,29 @@
       "type":"string",
       "pattern":"^[a-zA-Z0-9_ ]+$"
     },
+    "narrow": {
+      "description": "filters that narrow the search of the data source.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "types of places to choose",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["airport","balloonport","heliport"]
+          }
+        },
+        "where": {
+          "description": "a list of items from the config where filters.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern":"^[a-zA-Z0-9_ ]+$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "limit": {
       "description":"the maximum number of matching places that may be returned.",
       "type":"integer",
