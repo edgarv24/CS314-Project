@@ -2,7 +2,6 @@ import './jestConfig/enzyme.config.js'
 import {mount, shallow} from 'enzyme'
 
 import React from 'react'
-import {Button} from 'reactstrap';
 import Itinerary from "../src/components/Atlas/Itinerary/Itinerary";
 import TripSettingsModal from "../src/components/Atlas/Modals/TripSettingsModal";
 import {DestinationTable, DestinationTableRow, TableActions} from "../src/components/Atlas/Itinerary/DestinationTable";
@@ -66,13 +65,27 @@ describe('Itinerary', () => {
 
 describe('Destination Table', () => {
     let wrapper;
+    let trip;
+
+    const setTrip = (newTrip) => trip = newTrip;
 
     beforeEach(() => {
-        wrapper = shallow(<DestinationTable data={TRIP.itineraryPlaceData}/>);
+        trip = TRIP;
+        wrapper = shallow(<DestinationTable
+            trip={trip}
+            setTrip={setTrip}
+            data={trip.itineraryPlaceData}
+            units={trip.units}
+        />);
     });
 
     it('shows the range of rows currently being displayed', () => {
-        wrapper = mount(<DestinationTable data={TRIP.itineraryPlaceData}/>);
+        wrapper = mount(<DestinationTable
+            trip={trip}
+            setTrip={setTrip}
+            data={trip.itineraryPlaceData}
+            units={trip.units}
+        />);
         expect(wrapper.text().includes("1-5 of 7")).toBe(true);
     });
 
@@ -108,14 +121,22 @@ describe('Destination Table', () => {
 describe('Destination Table Row', () => {
     let wrapper;
     let openRow;
+    let trip;
+
+    const setTrip = (newTrip) => trip = newTrip;
 
     beforeEach(() => {
+        trip = TRIP;
         openRow = 0;
         wrapper = shallow(
             <DestinationTableRow
                 key='destination-3'
-                rowData={TRIP.itineraryPlaceData[2]}
+                trip={trip}
+                setTrip={setTrip}
+                rowData={trip.itineraryPlaceData[2]}
                 index={2}
+                units={trip.units}
+                canEditRow={true}
                 collapseIsOpen={false}
                 setOpenRow={(row) => openRow = row} />);
     });
@@ -132,8 +153,15 @@ describe('Destination Table Row', () => {
     });
 
     it('has functioning buttons', () => {
-        wrapper.find(Button).at(0).simulate('click');
-        wrapper.find(Button).at(1).simulate('click');
+        expect(trip.itineraryPlaceData[2].id).toEqual('destination-3');
+        const editButton = wrapper.find('#edit-destination-3');
+        const removeButton = wrapper.find('#remove-destination-3');
+
+        expect(trip.places.length).toEqual(TRIP.places.length);
+        removeButton.simulate('click');
+        expect(trip.places.length).toEqual(TRIP.places.length - 1);
+
+        editButton.simulate('click');
     });
 });
 

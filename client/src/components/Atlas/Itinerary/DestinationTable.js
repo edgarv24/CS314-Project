@@ -39,10 +39,13 @@ export class DestinationTable extends React.Component {
             <TableBody>
                 {this.calculateRowsToRender().map((_, index) => (
                     <DestinationTableRow key={this.rowData(index).id}
+                                         trip={this.props.trip}
+                                         setTrip={this.props.setTrip}
                                          rowData={this.rowData(index)}
                                          index={this.realIndex(index)}
                                          units={this.props.units}
                                          collapseIsOpen={this.state.openRow === this.realIndex(index)}
+                                         canEditRow={this.realIndex(index) < this.props.trip.places.length}
                                          setOpenRow={(row) => this.setState({openRow: row})}/>
                 ))}
 
@@ -156,14 +159,17 @@ export class DestinationTableRow extends React.Component {
                             <Typography className="d-inline-block" variant="h6" gutterBottom component="div">
                                 Details
                             </Typography>
-                            <Button className="float-right" id={`remove-${this.props.rowData.id}`} outline size="sm"
-                                    color="danger" onClick={() => undefined}>
-                                <Delete/>
-                            </Button>
-                            <Button className="float-right mr-3" id={`edit-${this.props.rowData.id}`} outline size="sm"
-                                    color="primary" onClick={() => undefined}>
-                                <Edit/>
-                            </Button>
+                            {this.props.canEditRow && <>
+                                <Button id={`remove-${this.props.rowData.id}`} className="float-right"
+                                        size="sm" color="danger" outline
+                                        onClick={() => this.props.setTrip(this.props.trip.removeAtIndex(this.props.index))}>
+                                    <Delete/>
+                                </Button>}
+                                <Button className="float-right mr-3" id={`edit-${this.props.rowData.id}`}
+                                        size="sm" color="primary" outline disabled onClick={() => undefined}>
+                                    <Edit/>
+                                </Button>
+                            </>}
                             {this.renderDetailsTable()}
                         </Box>
                     </Collapse>
@@ -176,7 +182,7 @@ export class DestinationTableRow extends React.Component {
         return (
             <Table size="small">
                 <TableBody>
-                    {['name', 'latitude', 'longitude', 'state', 'municipality', 'country', 'altitude', 'url', 'notes']
+                    {['name', 'latitude', 'longitude', 'state', 'municipality', 'country', 'flag', 'altitude', 'url', 'notes']
                         .filter(item => this.props.rowData[item]).map(key =>
                             <TableRow key={key + this.props.index}>
                                 <TableCell component="th" scope="row">
