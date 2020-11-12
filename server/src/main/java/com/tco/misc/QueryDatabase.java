@@ -75,63 +75,39 @@ public class QueryDatabase {
 
   public String configureQueryString(
       String match, Integer limit, Map<String, ArrayList<String>> filters) {
-    if (filters != null) return queryWithFilters(match, limit, filters);
-    else return queryWithNoFilters(match, limit);
-  }
-
-  public String queryWithFilters(
-      String match, Integer limit, Map<String, ArrayList<String>> filters) {
-    String portFilter = constructPortFilter(filters);
-    String geoFilter = constructGeoFilter(filters);
+    String query = "";
+    String portFilter = null;
+    String geoFilter = null;
+    if (filters != null) {
+      if (filters.containsKey("type")) portFilter = constructPortFilter(filters);
+      if (filters.containsKey("where")) geoFilter = constructGeoFilter(filters);
+    }
     if (match != null) {
-      return "SELECT "
-          + COLUMNS
-          + " FROM "
-          + TABLES
-          + " WHERE (("
-          + WHERECLAUSE1
-          + match
-          + "%\" OR "
-          + WHERECLAUSE2
-          + match
-          + "%\" OR "
-          + WHERECLAUSE3
-          + match
-          + "%\" OR "
-          + WHERECLAUSE4
-          + match
-          + "%\") AND "
-          + geoFilter
-          + " AND "
-          + portFilter
-          + ") ORDER BY world.name;";
+      query +=
+          "SELECT "
+              + COLUMNS
+              + " FROM "
+              + TABLES
+              + " WHERE (("
+              + WHERECLAUSE1
+              + match
+              + "%\" OR "
+              + WHERECLAUSE2
+              + match
+              + "%\" OR "
+              + WHERECLAUSE3
+              + match
+              + "%\" OR "
+              + WHERECLAUSE4
+              + match
+              + "%\")";
+      if (geoFilter != null) query += " AND " + geoFilter;
+      if (portFilter != null) query += " AND " + portFilter;
+      query += ") ORDER BY world.name;";
     } else {
       return "SELECT " + COLUMNS + " FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
     }
-  }
-
-  public String queryWithNoFilters(String match, Integer limit) {
-    if (match != null) {
-      return "SELECT "
-          + COLUMNS
-          + " FROM "
-          + TABLES
-          + " WHERE ("
-          + WHERECLAUSE1
-          + match
-          + "%\" OR "
-          + WHERECLAUSE2
-          + match
-          + "%\" OR "
-          + WHERECLAUSE3
-          + match
-          + "%\" OR "
-          + WHERECLAUSE4
-          + match
-          + "%\") ORDER BY world.name;";
-    } else {
-      return "SELECT " + COLUMNS + " FROM " + TABLES + " ORDER BY RAND() LIMIT " + limit + ";";
-    }
+    return query;
   }
 
   public String constructPortFilter(Map<String, ArrayList<String>> filters) {
@@ -155,8 +131,8 @@ public class QueryDatabase {
 
   public void executeQuery() throws SQLException {
     try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-         Statement query = conn.createStatement();
-         ResultSet results = query.executeQuery(QUERY)) {
+        Statement query = conn.createStatement();
+        ResultSet results = query.executeQuery(QUERY)) {
       convertResultsToListOfMaps(results);
       resultsFound = (match == null) ? limit : queryResults.size();
       trimResultsToLimit(limit);
@@ -212,18 +188,6 @@ public class QueryDatabase {
     if (resultsFound > limit) this.queryResults = queryResults.subList(0, limit);
   }
 
-  public String getDbUrl() {
-    return DB_URL;
-  }
-
-  public String getDbUser() {
-    return DB_USER;
-  }
-
-  public String getDbPassword() {
-    return DB_PASSWORD;
-  }
-
   public Integer getTotalResultsFound() {
     return resultsFound;
   }
@@ -234,10 +198,6 @@ public class QueryDatabase {
 
   public Integer getLimit() {
     return limit;
-  }
-
-  public String getQuery() {
-    return QUERY;
   }
 
   public Map<String, ArrayList<String>> getFilters() {
