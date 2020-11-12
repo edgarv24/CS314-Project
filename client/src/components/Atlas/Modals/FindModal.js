@@ -57,7 +57,7 @@ export default class FindModal extends Component {
                     id="combo-box"
                     fullWidth={true}
                     size="small"
-                    options={this.state.filters.where}
+                    options={this.state.filters.where || []}
                     onChange={(event, country) => {
                         this.setState({selectedCountry: country});
                         this.onInputChange(this.state.inputText);
@@ -71,7 +71,7 @@ export default class FindModal extends Component {
     renderInputBox() {
         return (
             <div className="ml-3 mr-3 mb-3 mt-4">
-                <TextField label="Place Name" variant="outlined"
+                <TextField id="place-name-input" label="Place Name" variant="outlined"
                            onChange={e => this.onInputChange(e.target.value)}
                            value={this.state.inputText || ""}
                            fullWidth={true}
