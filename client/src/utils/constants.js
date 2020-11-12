@@ -1,4 +1,5 @@
 import ulog from "ulog";
+import countryNameID from "../static/countryNameID.json";
 
 function setLogLevelIfDefault() {
     const urlString = window.location.search;
@@ -29,6 +30,15 @@ export const correctUnits = (unit, value) => {
 
 export const capitalize = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+export const getCountryID = (countryName) => {
+    const lookingFor = countryName.toLowerCase();
+    for (let i = 0; i < Object.keys(countryNameID).length; i++) {
+        if (countryNameID[i].name.toLowerCase() === lookingFor)
+            return countryNameID[i].id;
+    }
+    return "";
 }
 
 export const HTTP_OK = 200;
