@@ -176,7 +176,7 @@ export class DestinationTableRow extends React.Component {
         return (
             <Table size="small">
                 <TableBody>
-                    {['name', 'latitude', 'longitude', 'state', 'municipality', 'country', 'altitude', 'notes']
+                    {['name', 'latitude', 'longitude', 'state', 'municipality', 'country', 'altitude', 'url', 'notes']
                         .filter(item => this.props.rowData[item]).map(key =>
                             <TableRow key={key + this.props.index}>
                                 <TableCell component="th" scope="row">
