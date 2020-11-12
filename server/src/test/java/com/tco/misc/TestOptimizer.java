@@ -129,20 +129,20 @@ public class TestOptimizer {
     assertTrue(Arrays.equals(actualTour, expectedTour));
   }
 
-  //  @Test
-  //  @DisplayName("Testing buildNearestNeighbor should match hand-solved solutions")
-  //  public void testBuildNearestNeighbor() {
-  //    opt.configure(places);
-  //    int[] expectedArray1 = {0, 3, 2, 1};
-  //    int[] actualArray1 = opt.buildNearestNeighborTour(0);
-  //    assertTrue(Arrays.equals(expectedArray1, actualArray1));
-  //    int[] expectedArray2 = {1, 0, 3, 2};
-  //    assertTrue(Arrays.equals(expectedArray2, opt.buildNearestNeighborTour(1)));
-  //    int[] expectedArray3 = {2, 3, 0, 1};
-  //    assertTrue(Arrays.equals(expectedArray3, opt.buildNearestNeighborTour(2)));
-  //    int[] expectedArray4 = {3, 0, 2, 1};
-  //    assertTrue(Arrays.equals(expectedArray4, opt.buildNearestNeighborTour(3)));
-  //  }
+    @Test
+    @DisplayName("Testing buildNearestNeighbor should match hand-solved solutions")
+    public void testBuildNearestNeighbor() {
+      opt.configure(places);
+      int[] expectedArray1 = {0, 3, 2, 1};
+      int[] actualArray1 = opt.buildNearestNeighborTour(0);
+      assertTrue(Arrays.equals(expectedArray1, actualArray1));
+      int[] expectedArray2 = {1, 0, 3, 2};
+      assertTrue(Arrays.equals(expectedArray2, opt.buildNearestNeighborTour(1)));
+      int[] expectedArray3 = {2, 3, 0, 1};
+      assertTrue(Arrays.equals(expectedArray3, opt.buildNearestNeighborTour(2)));
+      int[] expectedArray4 = {3, 0, 2, 1};
+      assertTrue(Arrays.equals(expectedArray4, opt.buildNearestNeighborTour(3)));
+    }
 
   @Test
   @DisplayName("Test visitedContainsFalse works correctly")
@@ -174,12 +174,25 @@ public class TestOptimizer {
   }
 
   @Test
-  @DisplayName("Test that K Nearest Neighbor takes less than 1 second")
+  @DisplayName("Test that total process takes less than 1 second")
   public void testTime() {
     long startTime = System.nanoTime();
     opt.configure(places);
     opt.findNearestNeighborTour();
+    opt.performTwoOpt();
     long totalTime = System.nanoTime() - startTime;
     assertTrue(totalTime < 1E+9);
+  }
+
+  @Test
+  @DisplayName("Rotate tour to start at original city")
+  public void testRotation() {
+    opt.setStartingCity(0);
+    int[] tour = {1, 2, 5, 4, 0};
+    int[] rotatedTour = opt.rotateTour(tour);
+    assertEquals(0, rotatedTour[0]);
+    opt.setStartingCity(5);
+    int[] rotatedTour2 = opt.rotateTour(tour);
+    assertEquals(5, rotatedTour2[0]);
   }
 }

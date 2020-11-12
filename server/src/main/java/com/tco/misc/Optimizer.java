@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Optimizer {
+  private int startingCity;
   private List<Map<String, String>> places;
   private int[] tour;
   private boolean[] visitedCities;
@@ -15,6 +16,7 @@ public class Optimizer {
   public void configure(List<Map<String, String>> places) {
     setPlaces(places);
     setTour(places);
+    startingCity = tour[0];
     setVisitedCities(places);
     buildDistancesMatrix(places);
   }
@@ -143,11 +145,31 @@ public class Optimizer {
   }
 
   public List<Map<String, String>> getOptimizedPlaces() {
+    int[] rotatedTour = rotateTour(tour);
     List<Map<String, String>> optimizedPlaces = new ArrayList<>(places.size());
-    for (int i : tour) {
+    for (int i : rotatedTour) {
       optimizedPlaces.add(places.get(i));
     }
     return optimizedPlaces;
+  }
+
+  public int[] rotateTour(int[] tour) {
+    int startingIndex = findStartingIndex(tour);
+    int[] rotatedTour = new int[tour.length];
+    for (int i = 0; i < tour.length; i++) {
+      rotatedTour[i] = tour[(i + startingIndex) % tour.length];
+    }
+    return rotatedTour;
+  }
+
+  public int findStartingIndex(int[] tour) {
+    int start = 0;
+    for (int i = 0; i < tour.length; i++)
+      if (tour[i] == startingCity) {
+        start = i;
+        break;
+      }
+    return start;
   }
 
   public List<Map<String, String>> getPlaces() {
@@ -164,5 +186,9 @@ public class Optimizer {
 
   public int[][] getDistancesMatrix() {
     return distancesMatrix;
+  }
+
+  public void setStartingCity(int start) {
+    startingCity = start;
   }
 }
