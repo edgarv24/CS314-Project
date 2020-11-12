@@ -20,9 +20,6 @@ import Itinerary from "./Itinerary/Itinerary";
 import DistanceModal from "./Modals/DistanceModal";
 import FindModal from "./Modals/FindModal";
 
-import {hasFlag} from 'country-flag-icons';
-import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-
 import {correctUnits, LOG} from "../../utils/constants";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
@@ -318,7 +315,7 @@ export default class Atlas extends Component {
             return latLng;
         }
 
-        const flag = hasFlag(placeData.country_id) ? getUnicodeFlagIcon(placeData.country_id) + ' ' : '';
+        const flag = placeData.flag !== "" ? placeData.flag + " " : "";
         return <div>{flag}{placeData.primary_text}<br /><div className="text-muted">{placeData.location_text}</div></div>;
     }
 
@@ -375,12 +372,10 @@ export default class Atlas extends Component {
     }
 
     processFindRequestAddToTrip(placeData) {
-        // do a setState with trip to addDestination
-        // ex) this.setState({setOtherStateVars..., trip: this.state.trip.addDestination(placeData)});
+        //this.setState({trip: this.state.trip.addPlace(placeData)});
     }
 
     processFindRequestViewLocation(selectPlace) {
-        // do a setState to change map center or bounds, or something like setMapToHome to move markers
         this.setState({
             markerPosition: this.state.secondMarkerPosition,
             secondMarkerPosition: selectPlace,
