@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import {isJsonResponseValid, sendServerRequest} from "../../../utils/restfulAPI";
 import * as findSchema from "../../../../schemas/FindResponse.json";
 import {PROTOCOL_VERSION} from "../../../utils/constants";
-import getCountryFlag from "country-flag-icons/modules/unicode";
+import {getFlagIcon} from "../../../utils/constants";
 
 const RESPONSE_LIMIT = 20;
 const TYPING_REQUEST_DELAY = 1000;
@@ -127,7 +127,7 @@ export default class FindModal extends Component {
     }
 
     getAirportText(item) {
-        const flag = getCountryFlag(item.country_id);
+        const flag = getFlagIcon(item.country_id);
         const flagText = flag ? flag + " " : "";
         return `${flagText}${item.name} - [${item.id}]`;
     }

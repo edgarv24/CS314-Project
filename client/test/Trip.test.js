@@ -226,7 +226,7 @@ describe('Trip', () => {
     });
 
     it('returns place data compatible with the itinerary', () => {
-        const p1 = {'name': 'Water Park', 'municipality': 'London', 'country': 'England',
+        const p1 = {'name': 'Water Park', 'municipality': 'Tanga', 'country': 'Tanzania',
             'latitude': '8', 'longitude': '24', 'notes': 'fun'};
         const p2 = {'name': '', 'municipality': 'Denver', 'state': 'Colorado', 'country': 'United States',
             'latitude': '3', 'longitude': '7'};
@@ -234,12 +234,12 @@ describe('Trip', () => {
         const newTrip = trip.addPlaces([p1, p2]);
         const itineraryData = newTrip.itineraryPlaceData;
 
-        const expected1 = {"id": "destination-1", "name": "Water Park", "latitude": "8", "longitude": "24",
-            "municipality": "London", "state": "", "country": "England", "altitude": "", "notes": "fun",
-            "primary_text": "Water Park", "location_text": "London, England", "leg_dist": 0, "cumulative_dist": 0};
-        const expected2 = {"id": "destination-2", "name": "", "latitude": "3", "longitude": "7",
-            "municipality": "Denver", "state": "Colorado", "country": "United States", "altitude": "", "notes": "",
-            "primary_text": "(3.0000, 7.0000)", "location_text": "Denver, Colorado", "leg_dist": 0, "cumulative_dist": 0};
+        const expected1 = {id: "destination-1", name: "Water Park", latitude: "8", longitude: "24", country_id: "TZ", flag: "🇹🇿",
+            municipality: "Tanga", state: "", country: "Tanzania", altitude: "", notes: "fun", url: "",
+            primary_text: "Water Park", location_text: "Tanga, Tanzania", leg_dist: 0, cumulative_dist: 0};
+        const expected2 = {id: "destination-2", name: "", latitude: "3", longitude: "7", country_id: "US", flag: "🇺🇸",
+            municipality: "Denver", state: "Colorado", country: "United States", altitude: "", notes: "", url: "",
+            primary_text: "(3.0000, 7.0000)", location_text: "Denver, Colorado", leg_dist: 0, cumulative_dist: 0};
 
         expect(itineraryData[0]).toEqual(expected1);
         expect(itineraryData[1]).toEqual(expected2);
