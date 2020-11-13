@@ -30,7 +30,12 @@ export default class Itinerary extends React.Component {
             <Paper id="itinerary" elevation={3}>
                 {this.renderHeader()}
                 <hr style={{borderWidth: "2px", marginBottom: 0}}/>
-                <DestinationTable ref={this.tableRef} units={this.props.trip.units} data={this.state.placeData}/>
+                <DestinationTable
+                    ref={this.tableRef}
+                    trip={this.props.trip}
+                    setTrip={this.props.setTrip}
+                    units={this.props.trip.units}
+                    data={this.state.placeData}/>
                 <TripSettingsModal
                     trip={this.props.trip}
                     setTrip={this.props.setTrip}

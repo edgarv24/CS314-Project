@@ -1,8 +1,9 @@
-import {EARTH_RADIUS_UNITS_DEFAULT, PROTOCOL_VERSION} from "../../utils/constants";
+import {EARTH_RADIUS_UNITS_DEFAULT, getCountryID, PROTOCOL_VERSION} from "../../utils/constants";
 import Coordinates from "coordinate-parser";
 import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as tripSchema from "../../../schemas/TripResponse.json";
 import * as tripFileSchema from "../../../schemas/TripFile.json";
+import {getFlagIcon, LOG} from "../../utils/constants";
 
 export default class Trip {
     constructor() {
@@ -191,6 +192,10 @@ export default class Trip {
     }
 
     fullJSON(place, legDist, cumulativeDist, index) {
+        let countryID = place.country_id || "";
+        if (!countryID && place.country)
+            countryID = getCountryID(place.country);
+        const flag = getFlagIcon(countryID) || "";
         return {
             "id": `destination-${index + 1}`,
             "name": place.name,
@@ -199,8 +204,11 @@ export default class Trip {
             "municipality": place.municipality || "",
             "state": place.state || "",
             "country": place.country || "",
+            "country_id": countryID,
+            "flag": flag,
             "altitude": place.altitude || "",
             "notes": place.notes || "",
+            "url": place.url || "",
             "primary_text": this.primaryText(place),
             "location_text": this.locationText(place),
             "leg_dist": legDist,

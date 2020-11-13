@@ -6,11 +6,10 @@ import {mount, shallow} from 'enzyme';
 import peaksTrip from '../test/TripFiles/peaks-trip.json';
 import Atlas from '../src/components/Atlas/Atlas';
 import Itinerary from "../src/components/Atlas/Itinerary/Itinerary";
-import {Polyline} from "react-leaflet";
+import {Polyline, Marker} from "react-leaflet";
 import {beforeEach, describe, jest, test} from "@jest/globals";
 import DistanceModal from "../src/components/Atlas/Modals/DistanceModal";
 import FindModal from "../src/components/Atlas/Modals/FindModal";
-import Trip from "../src/components/Atlas/Trip";
 
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
 const MAP_DEFAULT_ZOOM = 15;
@@ -132,11 +131,11 @@ describe('Atlas', () => {
     });
 
     test("Test button that disables trip lines", () => {
-        expect(atlasMounted.state().displayTripLines).toBe(false);
-        simulateButtonClickEvent(atlasMounted, '#toggle-trip-lines')
-        expect(atlasMounted.state().displayTripLines).toBe(false);
-        atlasMounted.find('#toggle-trip-lines').at(0).props()['onClick']();
         expect(atlasMounted.state().displayTripLines).toBe(true);
+        simulateButtonClickEvent(atlasMounted, '#toggle-trip-lines')
+        expect(atlasMounted.state().displayTripLines).toBe(true);
+        atlasMounted.find('#toggle-trip-lines').at(0).props()['onClick']();
+        expect(atlasMounted.state().displayTripLines).toBe(false);
     });
 
     test("Test button that performs optimize function", async () => {
@@ -167,10 +166,10 @@ describe('Atlas', () => {
         const p1 = {'name': 'Place 1', 'latitude': '0', 'longitude': '0'};
         const p2 = {'name': 'Place 2', 'latitude': '0', 'longitude': '0'};
         const p3 = {'name': 'Place 3', 'latitude': '0', 'longitude': '0'};
-        let newTrip = atlasMounted.state().trip.addPlaces([p1, p2, p3]);
-        atlasMounted.setState({trip: newTrip});
-        atlasMounted.update();
-        expect(atlasMounted.find('Marker').length).toBeGreaterThanOrEqual(3);
+        let newTrip = atlas.state().trip.addPlaces([p1, p2, p3]);
+        atlas.setState({trip: newTrip});
+        atlas.update();
+        expect(atlas.find(Marker).length).toBeGreaterThanOrEqual(3);
     });
 
     test("Test getMapBounds with zero markers", () => {
