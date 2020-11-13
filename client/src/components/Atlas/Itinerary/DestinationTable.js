@@ -164,7 +164,7 @@ export class DestinationTableRow extends React.Component {
                                         size="sm" color="danger" outline
                                         onClick={() => this.props.setTrip(this.props.trip.removeAtIndex(this.props.index))}>
                                     <Delete/>
-                                </Button>}
+                                </Button>
                                 <Button className="float-right mr-3" id={`edit-${this.props.rowData.id}`}
                                         size="sm" color="primary" outline disabled onClick={() => undefined}>
                                     <Edit/>
@@ -182,14 +182,17 @@ export class DestinationTableRow extends React.Component {
         return (
             <Table size="small">
                 <TableBody>
-                    {['name', 'latitude', 'longitude', 'state', 'municipality', 'country', 'flag', 'altitude', 'url', 'notes']
+                    {['name', 'latitude', 'longitude', 'municipality', 'state', 'region', 'country', 'flag', 'altitude', 'url', 'notes']
                         .filter(item => this.props.rowData[item]).map(key =>
                             <TableRow key={key + this.props.index}>
                                 <TableCell component="th" scope="row">
                                     {`${capitalize(key)}`}
                                 </TableCell>
                                 <TableCell>
-                                    {`${this.props.rowData[key]}`}
+                                    {key === 'url' && <a href={this.props.rowData[key]} target="_blank">
+                                        {this.props.rowData[key]}
+                                    </a>}
+                                    {key !== 'url' && `${this.props.rowData[key]}`}
                                 </TableCell>
                             </TableRow>
                         )}
