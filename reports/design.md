@@ -166,22 +166,31 @@ The changes to the class diagram are going to be minor. The Microserver will now
 # Sprint 4 
 ### User Interface
 
-![sprint 4 user interface](../images/Sprint4UserInterface.png)
+![sprint 4 user interface](../images/Sprint4UserInterface(updated).png)
 
-Changes made to the UI will include adding multiple functionalities to existing modals and adding the ability for optimization to the trip itinerary.
-* Add to Trip button will be added to the Find Location modal and allow users to add a selected location to the trip itinerary 
-* The Find Modal will have options to filter results by airport-type and country/region
-* The map marker popups will display more information and button options
-* Clicking on the map will offer an option to add that location to the trip itinerary 
-* An Optimization button will be added to the map that will utilize an optimization algorithm and reorder the trip itinerary when clicked
-* The Add Destination button in the Trip Table will have the option for users to add a location by filling out fields
-* Each location row will retain the user’s coordinate formatting and there will be a collapsible section that will show additional information about the location 
-* Save and Load buttons will be able to save current trip itineraries and load previously saved trip itineraries 
+#### Find Modal
+The Find modal is a popup where users can search for places from the database. This sprint, we added an Add to Trip button so places can be added directly to the trip. We also updated the list of resulting places to show more details about each place. This includes the country flag, airport ID, and location information. Then, we added a label to show the number of matching results for the query. Finally, we added components for filtering by country and airport type. For country filtering, you can search through the 247 supported filters (or more in other servers) and select one to include. For airport type filtering, you can check the box next to the airport type you would like to filter by.
+
+#### Trip Settings Modal
+In this modal, we added more options for the user to choose from. This includes, changing the units, uploading a trip file from disk, downloading a trip as a JSON, and clearing the current trip data. These utilize Reactstrap buttons and inputs, including a built-in select file input.
+
+#### Map Buttons
+The two toggle buttons for markers and polylines were moved to the bottom left for more clarity on their behavior. Two additional buttons were added including the optimize button and zoom on trip button. Some of these now get disabled during certain events, such as when there is no trip data.
+
+#### Itinerary
+A collapsible section was added to each row in the itinerary. When a row is clicked, it uncollapses and shows more information about the current place, such as name, coordinate, altitude, and distance data. There are also buttons in the uncollapsed section for editing or removing the current place.
+
+### Component Hierarchy
+
+![sprint 4 component hierarchy](../images/Sprint4ComponentHierarchy.png)
+
+We updated the diagram to show the Itinerary component that is rendered in Atlas. It lifts state into Atlas such as the current trip, and it holds its own state such as the current place data to render. During this sprint, we added a Trip Settings modal that allows users to update the trip title, change units, download the data as JSON, upload a Trip File, or clear the current trip. This component has state that is lifted into the Itinerary such as whether or not it is open, and it also has its own managed state such as the current title input and the selected unit. We also added a DestinationTable component that is rendered in Itinerary. It lifts state into the parent Itinerary component such as the current place data and units. For its own state, it tracks the current page, the uncollapsed row, and the number of rows per page.
+
 
 ### Class Diagram
 
 ![sprint 4 class diagram](../images/Sprint4ClassDiagram.png)
 
-The changes to the class diagram are going to be minor. The RequestTrip.java will interact with the helper class OptimizeTrip.java, a class that we have to implement that will add optimization to the RequestTrip. The image was also updated to include previously added helper classes QueryDatabase.java and CalculateDistance.java.
+We made a few small changes to the class diagram this sprint. For one, we updated the diagram to include helper classes for RequestFind and RequestDistance, which correspond to QueryDatabase and CalculateDistance respectively. Then, we added OptimizeTrip as a helper class dependency of RequestTrip since it utilizes its functions to optimize the trip path.
 
 # Sprint 5
