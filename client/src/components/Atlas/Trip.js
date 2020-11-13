@@ -203,6 +203,7 @@ export default class Trip {
             "longitude": place.longitude,
             "municipality": place.municipality || "",
             "state": place.state || "",
+            "region": place.region || "",
             "country": place.country || "",
             "country_id": countryID,
             "flag": flag,
