@@ -116,15 +116,15 @@ export default class Atlas extends Component {
             ['home-button', <GpsFixed/>, TL, 'Where am I?', TOOLTIP_RIGHT, false, true,
                 () => this.setMapToHome()],
             ['distance-button', <LinearScale/>, TL, '2 Point Distance', TOOLTIP_RIGHT, false, true,
-                () => this.setState({distModalOpen: true})],
+                () => {this.maintainMapPosition(); this.setState({distModalOpen: true});}],
             ['find-button', <Search/>, TL, 'Find Place by Name', TOOLTIP_RIGHT, false, true,
-                () => this.setState({findModalOpen: true})],
+                () => {this.maintainMapPosition(); this.setState({findModalOpen: true});}],
             ['toggle-trip-lines', <Remove/>, BL, 'Toggle Trip Lines', TOOLTIP_RIGHT, NO_TRIP_DATA, LINES_ON,
-                () => this.setState({displayTripLines: !this.state.displayTripLines})],
+                () => {this.maintainMapPosition(); this.setState({displayTripLines: !this.state.displayTripLines});}],
             ['toggle-trip-markers', <LocationOn/>, BL, 'Toggle Trip Markers', TOOLTIP_RIGHT, NO_TRIP_DATA, MARKERS_ON,
-                () => this.setState({displayTripMarkers: !this.state.displayTripMarkers})],
+                () => {this.maintainMapPosition(); this.setState({displayTripMarkers: !this.state.displayTripMarkers});}],
             ['optimize-button', <TrendingUp/>, BR, OPTIMIZE_DISABLE_TEXT, TOOLTIP_LEFT, DISABLE_OPTIMIZE, true,
-                async () => await this.setTrip(this.state.trip.optimize())],
+                async () => {this.maintainMapPosition(); await this.setTrip(this.state.trip.optimize());}],
             ['scroll-down-button', <ArrowDownward/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
                 () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})]
         ];
@@ -360,6 +360,14 @@ export default class Atlas extends Component {
         if (this.state.userPosition)
             return this.state.userPosition;
         return MAP_CENTER_DEFAULT;
+    }
+
+    maintainMapPosition() {
+        this.setState({
+            mapBounds: null,
+            mapCenter: this.mapRef.current.leafletElement.getCenter(),
+            zoomLevel: this.mapRef.current.leafletElement.getZoom()
+        });
     }
 
     getMapBounds(markerLatLng1, markerLatLng2) {
