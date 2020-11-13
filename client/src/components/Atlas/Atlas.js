@@ -44,6 +44,7 @@ export default class Atlas extends Component {
         this.getHomePosition = this.getHomePosition.bind(this);
         this.setTrip = this.setTrip.bind(this);
         this.processDistanceRequestSuccess = this.processDistanceRequestSuccess.bind(this);
+        this.processFindRequestAddToTrip = this.processFindRequestAddToTrip.bind(this);
         this.processFindRequestViewLocation = this.processFindRequestViewLocation.bind(this);
 
         this.state = {
@@ -247,6 +248,7 @@ export default class Atlas extends Component {
                 isOpen={this.state.findModalOpen}
                 toggleOpen={(isOpen = !this.state.findModalOpen) => this.setState({findModalOpen: isOpen})}
                 processFindRequestViewLocation={this.processFindRequestViewLocation}
+                processFindRequestAddToTrip={this.processFindRequestAddToTrip}
             />
         );
     }
@@ -371,8 +373,10 @@ export default class Atlas extends Component {
         return L.latLngBounds(latLongArray);
     }
 
-    processFindRequestAddToTrip(placeData) {
-        //this.setState({trip: this.state.trip.addPlace(placeData)});
+    async processFindRequestAddToTrip(placeData) {
+        const newTrip = this.state.trip.addPlace(placeData);
+        await newTrip.updateDistance();
+        this.setState({trip: newTrip});
     }
 
     processFindRequestViewLocation(selectPlace) {
