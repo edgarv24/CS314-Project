@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input} from 'reactstrap';
+import {Button, Modal, ModalBody, ModalFooter} from 'reactstrap';
 
 import {renderModalTitleHeader, renderCancelButton} from "./modalHelper";
 import {ListItem, ListItemText, ListSubheader} from "@material-ui/core";
@@ -164,7 +164,7 @@ export default class FindModal extends Component {
                 {this.renderActionButton("locate-button", "Locate",
                     () => this.props.processFindRequestViewLocation(this.getSelectedPlaceLatLng()))}
                 {this.renderActionButton("add-to-trip-button", "Add to Trip",
-                    () => undefined)}
+                    () => this.props.processFindRequestAddToTrip(this.state.selectedPlace))}
                 {renderCancelButton("close-find-modal", () => this.resetModalState())}
             </ModalFooter>
         );
@@ -216,39 +216,21 @@ export default class FindModal extends Component {
     }
 
     constructRequestBody(placeName) {
-        if (this.state.selectedCountry && this.state.selectedAirportType) {
-            return {
-                requestVersion: PROTOCOL_VERSION,
-                requestType: "find",
-                match: placeName,
-                narrow: {"type": [this.state.selectedAirportType], "where": [this.state.selectedCountry]},
-                limit: RESPONSE_LIMIT
-            }
-        } else if (this.state.selectedAirportType){
-            return {
-                requestVersion: PROTOCOL_VERSION,
-                requestType: "find",
-                match: placeName,
-                narrow: {"type": [this.state.selectedAirportType]},
-                limit: RESPONSE_LIMIT
-            }
-        } else if (this.state.selectedCountry){
-            return {
-                requestVersion: PROTOCOL_VERSION,
-                requestType: "find",
-                match: placeName,
-                narrow: {"where": [this.state.selectedCountry]},
-                limit: RESPONSE_LIMIT
-            }
-        } else {
-            return {
-                requestVersion: PROTOCOL_VERSION,
-                requestType: "find",
-                match: placeName,
-                limit: RESPONSE_LIMIT
-            }
+        let request = {
+            requestVersion: PROTOCOL_VERSION,
+            requestType: "find",
+            match: placeName,
+            limit: RESPONSE_LIMIT
         }
 
+        if (this.state.selectedCountry && this.state.selectedAirportType)
+            request.narrow = {type: [this.state.selectedAirportType], where: [this.state.selectedCountry]};
+        else if (this.state.selectedAirportType)
+            request.narrow = {type: [this.state.selectedAirportType]};
+        else if (this.state.selectedCountry)
+            request.narrow = {where: [this.state.selectedCountry]};
+
+        return request;
     }
 
     processFindResponse(responseJSON) {

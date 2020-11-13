@@ -9,6 +9,7 @@ import {ListItem} from "@material-ui/core";
 import Atlas from "../src/components/Atlas/Atlas";
 import {ModalHeader} from "reactstrap";
 import {PROTOCOL_VERSION} from "../src/utils/constants";
+import Trip from "../src/components/Atlas/Trip";
 
 let wrapper;
 let isOpen;
@@ -148,10 +149,21 @@ test("Testing Locate button", () => {
 });
 
 test("Test Add to Trip button", () => {
-    const addButton = wrapper.find('#add-to-trip-button');
+    let trip = new Trip();
+    const processFindRequestAddToTrip = (newPlace) => trip = trip.addPlace(newPlace);
+    const findModal = shallow(<FindModal
+        isOpen={isOpen}
+        toggleOpen={toggleOpen}
+        processFindRequestAddToTrip={processFindRequestAddToTrip}
+    />);
 
+    findModal.setState({selectedPlace: {'name': 'Denver', 'latitude': '0.0', 'longitude': '0.0'}});
+    const addButton = findModal.find('#add-to-trip-button');
+
+    expect(trip.places.length).toEqual(0);
     expect(isOpen).toBe(true);
     addButton.simulate('click');
+    expect(trip.places.length).toEqual(1);
     expect(isOpen).toBe(false);
 });
 

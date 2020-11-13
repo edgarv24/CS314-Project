@@ -89,7 +89,7 @@ export default class Itinerary extends React.Component {
         const distance = this.props.trip.totalDistance;
         const units = this.props.trip.units;
 
-        if (distance === 0)
+        if (distance === 0 && this.props.trip.places.length === 0)
             return "N/A";
         return `${distance} ${correctUnits(units, distance)}`;
     }
