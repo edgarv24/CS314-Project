@@ -183,7 +183,7 @@ public class QueryDatabase {
       map.put(
           "url",
           String.format(
-              "https://aopa.org/destinations/airports/%s/details", resultSet.getString("id")));
+              "https://aopa.org/destinations/airports/%s/details", resultSet.getString("world.id")));
       queryResults.add(map);
     }
   }
