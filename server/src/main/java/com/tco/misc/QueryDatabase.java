@@ -67,10 +67,18 @@ public class QueryDatabase {
   }
 
   public Integer getCorrectLimit(String match, Integer userLimit) {
-    if (match != null)
-      return (userLimit != null && userLimit <= 100 && userLimit > 0) ? userLimit : 100;
-    else if (userLimit != null) return (userLimit <= 100 && userLimit > 0) ? userLimit : 100;
-    else return 1;
+    boolean matchSpecified = match != null;
+    boolean limitSpecified = userLimit != null;
+
+    if(limitSpecified) {
+      if (userLimit > 100 || userLimit <= 0)
+        return 100;
+      return userLimit;
+    }
+    else if(matchSpecified){
+      return 100;
+    }
+    return 1;
   }
 
   public String configureQueryString(
