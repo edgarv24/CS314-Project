@@ -1,10 +1,10 @@
-# Sprint 5 - *your team number* - *your team name*
+# Sprint 5 - *T14* - *The Fourteeners*
 
 ## Goal
 ### User Experience
 
 ## Sprint Leader
-### *firstname lastname*
+### *Edgar Varela*
 
 
 ## Definition of Done
