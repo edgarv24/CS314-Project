@@ -11,7 +11,7 @@
 | Name | Preparation Time |
 | ---- | ---- |
 | Darin | 13:20 - 13:50 |
-|  |  |
+| Edgar | 14:30 - 14:45 |
 
 ### Problems found
 
@@ -21,3 +21,7 @@
 | Atlas.js:227 | Change unit label to match current trip units | med | darinh | |
 | Atlas.js:235 | Pass trip as a prop to DistanceModal so that it can use the current units in the calculation between two points | med | darinh | |
 | Atlas.js:268 | When the trip is set in setTrip, the map should zoom and pan to show the trip markers | med | darinh | |
+| Atlas.js:404 | MapButton could be extracted to separate file | low | edvarela | |
+| Atlas.js:295 | initMarker function duplication | low | edvarela | |
+
+
