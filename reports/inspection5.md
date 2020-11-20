@@ -12,6 +12,7 @@
 | ---- | ---- |
 | Darin | 13:20 - 13:50 |
 | Edgar | 14:30 - 14:45 |
+| Rylie | 14:40 - 15:10 |
 
 ### Problems found
 
@@ -23,5 +24,5 @@
 | Atlas.js:268 | When the trip is set in setTrip, the map should zoom and pan to show the trip markers | med | darinh | |
 | Atlas.js:404 | MapButton could be extracted to separate file | low | edvarela | |
 | Atlas.js:295 | initMarker function duplication | low | edvarela | |
-
-
+| Atlas.js:25 | Atlas.js can be refactored to have less functions | low | rylied | |
+| Atlas.js:122 | repeated code between button format | low | rylied | |
