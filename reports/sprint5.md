@@ -69,6 +69,7 @@ This epic will allow the user to see a location on the map through inputting a l
 | Date | Tasks closed  | Tasks in progress | Impediments |
 | :--- | :--- | :--- | :--- |
 | *11-18-20* | *none* | *#398, #388, #387, #289* | *none* | 
+| *11-20-20* | *#398* | *#387, #388, 289* | *none* | 
 
 
 ## Review
