@@ -12,6 +12,7 @@
 | ---- | ---- |
 | Darin | 13:20 - 13:50 |
 | Edgar | 14:30 - 14:45 |
+| Mikayla | 14:45 - 15:00 |
 
 ### Problems found
 
@@ -23,5 +24,8 @@
 | Atlas.js:268 | When the trip is set in setTrip, the map should zoom and pan to show the trip markers | med | darinh | |
 | Atlas.js:404 | MapButton could be extracted to separate file | low | edvarela | |
 | Atlas.js:295 | initMarker function duplication | low | edvarela | |
+| Atlas.js:412 | const MapButton could be moved for readability or seperated from file | low | cessna17 |
+| Atlas.js:170 | Comment line - modify function for greater readibility | low | cessna17 |
+
 
 
