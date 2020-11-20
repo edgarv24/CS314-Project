@@ -29,9 +29,10 @@ public class RequestTrip extends RequestHeader {
 
   @Override
   public void buildResponse() {
-    if (options.get("response").equals("1.0") || options.get("response").equals("1")) {
+    String response = options.get("response");
+    if (response != null && places.size() > 2 && Double.parseDouble(response) > 0) {
       Optimizer opt = new Optimizer();
-      opt.configure(places);
+      opt.configure(places, Double.parseDouble(response));
       opt.findNearestNeighborTour();
       opt.performTwoOpt();
       places = opt.getOptimizedPlaces();
