@@ -108,7 +108,7 @@ public class TestOptimizer {
   @Test
   @DisplayName("Testing configure method sets all properties at once")
   public void testConfigure() {
-    opt.configure(places);
+    opt.configure(places, 1.0);
     assertEquals(4, opt.getPlaces().size());
     assertEquals(4, opt.getTour().length);
     assertEquals(4, opt.getVisitedCities().length);
@@ -122,7 +122,7 @@ public class TestOptimizer {
   @Test
   @DisplayName("Testing Nearest Neighbor method")
   public void testNearestNeighbor() {
-    opt.configure(places);
+    opt.configure(places, 1.0);
     opt.findNearestNeighborTour();
     int[] actualTour = opt.getTour();
     int[] expectedTour = {0, 1, 2, 3};
@@ -132,7 +132,7 @@ public class TestOptimizer {
     @Test
     @DisplayName("Testing buildNearestNeighbor should match hand-solved solutions")
     public void testBuildNearestNeighbor() {
-      opt.configure(places);
+      opt.configure(places, 1.0);
       int[] expectedArray1 = {0, 3, 2, 1};
       int[] actualArray1 = opt.buildNearestNeighborTour(0);
       assertTrue(Arrays.equals(expectedArray1, actualArray1));
@@ -158,7 +158,7 @@ public class TestOptimizer {
   @Test
   @DisplayName("Test totalDistance returns correct distances")
   public void testTotalDistance() {
-    opt.configure(places);
+    opt.configure(places, 1.0);
     int[] tour1 = {0, 1, 2, 3};
     int expectedDistance = 262;
     assertEquals(expectedDistance, opt.totalDistance(tour1));
@@ -177,7 +177,7 @@ public class TestOptimizer {
   @DisplayName("Test that total process takes less than 1 second")
   public void testTime() {
     long startTime = System.nanoTime();
-    opt.configure(places);
+    opt.configure(places, 1.0);
     opt.findNearestNeighborTour();
     opt.performTwoOpt();
     long totalTime = System.nanoTime() - startTime;

@@ -32,7 +32,7 @@ public class RequestTrip extends RequestHeader {
     String response = options.get("response");
     if (response != null && places.size() > 2 && Double.parseDouble(response) > 0) {
       Optimizer opt = new Optimizer();
-      opt.configure(places);
+      opt.configure(places, Double.parseDouble(response));
       opt.findNearestNeighborTour();
       opt.performTwoOpt();
       places = opt.getOptimizedPlaces();

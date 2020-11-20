@@ -11,9 +11,11 @@ public class Optimizer {
   private int[] tour;
   private boolean[] visitedCities;
   private int[][] distancesMatrix;
+  private double responseTime;
   CalculateDistance cd;
 
-  public void configure(List<Map<String, String>> places) {
+  public void configure(List<Map<String, String>> places, double time) {
+    this.responseTime = time * 1000;
     setPlaces(places);
     setTour(places);
     startingCity = tour[0];
@@ -109,9 +111,10 @@ public class Optimizer {
     tempTour[tour.length] = tour[0];
     cd = CalculateDistance.usingRadius(3959.0);
     int delta;
-    boolean improvement = true;
-    while (improvement) {
-      improvement = false;
+    long start = System.currentTimeMillis();
+    double pad = 150;
+    double end = start + responseTime - pad;
+    while (System.currentTimeMillis() < end) {
       for (int i = 0; i <= tour.length - 3; i++) {
         for (int k = i + 2; k <= tour.length - 1; k++) {
           delta =
@@ -121,7 +124,6 @@ public class Optimizer {
                   + distancesMatrix[tempTour[i + 1]][tempTour[k + 1]];
           if (delta < 0) {
             tempTour = twoOptReverse(tempTour, i + 1, k);
-            improvement = true;
           }
         }
       }
