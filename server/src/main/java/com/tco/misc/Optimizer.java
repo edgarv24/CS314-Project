@@ -112,7 +112,7 @@ public class Optimizer {
     cd = CalculateDistance.usingRadius(3959.0);
     int delta;
     long start = System.currentTimeMillis();
-    double pad = 150;
+    double pad = getPad();
     double end = start + responseTime - pad;
     while (System.currentTimeMillis() < end) {
       for (int i = 0; i <= tour.length - 3; i++) {
@@ -129,6 +129,16 @@ public class Optimizer {
       }
     }
     copyTempTourAndRemoveLastElement(tempTour);
+  }
+
+  public double getPad() {
+    if (places.size() >= 500 && places.size() <= 600)
+      return 300;
+    if (places.size() > 600 && places.size() <= 700)
+      return 400;
+    if (places.size() > 700)
+      return 700;
+    return 150;
   }
 
   public int[] twoOptReverse(int[] tempTour, int i1, int k) {
