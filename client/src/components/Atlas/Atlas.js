@@ -139,8 +139,8 @@ export default class Atlas extends Component {
                 {this.state.displayTripMarkers && this.state.trip.coordinatesList.map((position, index) =>
                     this.getMarker(position, GOLD_MARKER, false, placeData[index], placeData[index].id, index, true)
                 )};
-                {this.getMarker(this.state.markerPosition, BLUE_MARKER, true, null, "first", 2, false)}
-                {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, true, null, "second", 1, false)}
+                {this.getMarker(this.state.markerPosition, BLUE_MARKER, true, null, "first", 1, false)}
+                {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, true, null, "second", 2, false)}
                 {this.getMarker(this.state.userPosition, RED_MARKER, false, null, "user", 0, false)}
             </>
         );
