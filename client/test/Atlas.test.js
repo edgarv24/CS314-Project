@@ -243,4 +243,22 @@ describe('Atlas', () => {
         atlas.setState({userPosition: home});
         expect(atlas.instance().getHomePosition()).toEqual(home);
     });
+
+    test('edit button rendered on trip marker', () => {
+        const p1 = {'name': 'Place 1', 'latitude': '0', 'longitude': '0'};
+        const p2 = {'name': 'Place 2', 'latitude': '0', 'longitude': '0'};
+        const newTrip = atlas.state().trip.addPlaces([p1, p2]);
+
+        atlas.setState({trip: newTrip});
+        expect(atlas.state().trip.places.length).toEqual(2);
+
+        expect(atlas.find(Marker).length).toEqual(2);
+        const firstMarker = atlas.find('#marker-3');
+        expect(firstMarker.props()).not.toBe(null);
+
+        expect(atlas.state().addModalOpen).toEqual(false);
+        const firstMarkerButton = atlas.find('#marker-button-3');
+        firstMarkerButton.simulate('click');
+        expect(atlas.state().addModalOpen).toEqual(true);
+    });
 });
