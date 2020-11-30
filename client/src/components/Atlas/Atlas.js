@@ -1,5 +1,5 @@
 import React, {Component, createRef} from 'react';
-import {Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'reactstrap';
+import {Button, Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 
 import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
 import Control from 'react-leaflet-control';
@@ -57,6 +57,8 @@ export default class Atlas extends Component {
             zoomLevel: MAP_DEFAULT_ZOOM,
             distModalOpen: false,
             findModalOpen: false,
+            addModalOpen: false,
+            addModalSettings: null,
             distanceLabel: null,
             displayTripMarkers: true,
             displayTripLines: true,
@@ -135,11 +137,11 @@ export default class Atlas extends Component {
         return (
             <>
                 {this.state.displayTripMarkers && this.state.trip.coordinatesList.map((position, index) =>
-                    this.getMarker(position, GOLD_MARKER, false, placeData[index], placeData[index].id)
+                    this.getMarker(position, GOLD_MARKER, false, placeData[index], placeData[index].id, index, true)
                 )};
-                {this.getMarker(this.state.markerPosition, BLUE_MARKER, true, null, "first")}
-                {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, true, null, "second")}
-                {this.getMarker(this.state.userPosition, RED_MARKER, false, null, "user")}
+                {this.getMarker(this.state.markerPosition, BLUE_MARKER, true, null, "first", 1, false)}
+                {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, true, null, "second", 2, false)}
+                {this.getMarker(this.state.userPosition, RED_MARKER, false, null, "user", 0, false)}
             </>
         );
     }
@@ -291,7 +293,7 @@ export default class Atlas extends Component {
         });
     }
 
-    getMarker(position, iconStyle, usePopup, placeData, key) {
+    getMarker(position, iconStyle, usePopup, placeData, key, index, isTripMarker) {
         const initMarker = ref => {
             if (ref && usePopup) {
                 ref.leafletElement.openPopup()
@@ -299,11 +301,13 @@ export default class Atlas extends Component {
         };
 
         if (position) {
+            const markerIndex = isTripMarker ? index + 3 : index;
             return (
-                <Marker key={key} ref={initMarker} position={position} icon={iconStyle}>
-                    <Popup offset={[0, -18]} className="font-weight-bold">{
-                        this.getPopupLabel(position, placeData)
-                    }</Popup>
+                <Marker id={`marker-${markerIndex}`} key={key} ref={initMarker} position={position} icon={iconStyle}>
+                    <Popup offset={[0, -18]} className="font-weight-bold">
+                        {this.getPopupLabel(position, placeData)}
+                        {this.getPopupButton(index, position, placeData, isTripMarker)}
+                    </Popup>
                 </Marker>
             );
         }
@@ -314,11 +318,27 @@ export default class Atlas extends Component {
         if (!placeData) {
             if (position === this.getHomePosition())
                 return <div>(You are here)<br />{latLng}</div>;
-            return latLng;
+            return <div>{latLng}</div>;
         }
 
         const flag = placeData.flag !== "" ? placeData.flag + " " : "";
         return <div>{flag}{placeData.primary_text}<br /><div className="text-muted">{placeData.location_text}</div></div>;
+    }
+
+    getPopupButton(index, position, placeData, isTripMarker) {
+        const buttonIndex = isTripMarker ? index + 3 : index;
+        const buttonName = isTripMarker ? 'Edit' : 'Add';
+        const editPlace = () => this.setState({addModalOpen: true,
+            addModalSettings: {placeData: placeData, placeIndex: index, setTrip: this.setTrip}});
+        // either add place to trip directly using position (and reverse geolocation details later),
+        // or open addModal so user can add details first. Remove comment
+        const addPlace = () => undefined;
+        return (
+            <Button id={`marker-button-${buttonIndex}`} className="mt-2" outline size="sm" color="primary"
+                    onClick={isTripMarker ? editPlace : addPlace}>
+                {buttonName}
+            </Button>
+        );
     }
 
     getStringMarkerPosition(position) {
