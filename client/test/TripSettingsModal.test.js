@@ -1,16 +1,13 @@
 import './jestConfig/enzyme.config.js';
 import {shallow} from 'enzyme'
-
-import React from 'react'
-import Itinerary from "../src/components/Atlas/Itinerary/Itinerary";
-import Trip from "../src/components/Atlas/Trip";
-import peaksTrip from "../test/TripFiles/peaks-trip.json";
 import {beforeEach, describe, it, jest} from "@jest/globals";
 
-const TRIP = new Trip().loadJSON(peaksTrip);
-
-import TripSettingsModal from '../src/components/Atlas/Modals/TripSettingsModal';
+import React from 'react'
 import {ModalHeader} from "reactstrap";
+import Itinerary from "../src/components/Atlas/Itinerary/Itinerary";
+import TripSettingsModal from '../src/components/Atlas/Modals/TripSettingsModal';
+import Trip from "../src/components/Atlas/Trip";
+import peaksTrip from "../test/TripFiles/peaks-trip.json";
 import {EARTH_RADIUS_UNITS_DEFAULT} from "../src/utils/constants";
 
 describe('Itinerary', () => {
@@ -25,7 +22,7 @@ describe('Itinerary', () => {
     beforeEach(() => {
         trip = new Trip().loadJSON(peaksTrip);
         isOpen = true;
-        wrapper = shallow(<TripSettingsModal trip={TRIP} setTrip={setTrip} resetTable={() => undefined}
+        wrapper = shallow(<TripSettingsModal trip={trip} setTrip={setTrip} resetTable={() => undefined}
                                              updatePlaceData={updatePlaceData} isOpen={isOpen} toggleOpen={toggleOpen}/>);
     });
 
