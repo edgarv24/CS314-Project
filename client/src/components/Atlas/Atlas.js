@@ -69,6 +69,20 @@ export default class Atlas extends Component {
         };
     }
 
+    componentDidMount() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const homePosition = {lat: position.coords.latitude, lng: position.coords.longitude};
+                this.setState({
+                    userPosition: homePosition,
+                    markerPosition: homePosition,
+                    mapCenter: homePosition,
+                    mapBounds: null
+                })
+            });
+        }
+    }
+
     renderLeafletMap() {
         return (
             <Map
@@ -178,21 +192,6 @@ export default class Atlas extends Component {
         for (let i = 0; i < coordinates.length; i++)
             pairs.push([coordinates[i], coordinates[(i+1) % numCoords]]);
         return pairs;
-    }
-
-    componentDidMount() {
-        // request user location once after first render
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const homePosition = {lat: position.coords.latitude, lng: position.coords.longitude};
-                this.setState({
-                    userPosition: homePosition,
-                    markerPosition: homePosition,
-                    mapCenter: homePosition,
-                    mapBounds: null
-                })
-            });
-        }
     }
 
     render() {
