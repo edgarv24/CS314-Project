@@ -77,24 +77,6 @@ public class TestCalculateDistance {
   }
 
   @Test
-  @DisplayName("Invalid longitude")
-  public void testInvalidLongitude() {
-    double[] locA = {0.0, 181.0};
-    double[] locB = {0.0, 0.0};
-    long dist = calcDist.distBetween(locA, locB);
-    assertEquals(-1, dist, DELTA);
-  }
-
-  @Test
-  @DisplayName("Invalid latitude")
-  public void testInvalidLatitude() {
-    double[] locA = {0.0, 0.0};
-    double[] locB = {-91.0, 0.0};
-    long dist = calcDist.distBetween(locA, locB);
-    assertEquals(-1, dist, DELTA);
-  }
-
-  @Test
   @DisplayName("Far places with Earth radius in millimeters")
   public void testFarPlacesEarthRadiusMillimeters() {
     double[] locA = {40.416775, -3.703790};
@@ -131,5 +113,33 @@ public class TestCalculateDistance {
     double[] locB = {20, 180};
     long dist = calcDist.distBetween(locA, locB);
     assertEquals(0, dist);
+  }
+
+  @Test
+  @DisplayName("Normalizes latitude correctly if out of bounds")
+  public void testNormalizeLatitude() {
+    double[] locA = {95, -40};
+    double[] locB = {-160, 0};
+    long dist1 = calcDist.distBetween(locA, locB);
+
+    double[] locC = {-85, -40};
+    double[] locD = {20, 0};
+    long dist2 = calcDist.distBetween(locC, locD);
+
+    assertEquals(dist1, dist2);
+  }
+
+  @Test
+  @DisplayName("Normalizes longitude correctly if out of bounds")
+  public void testNormalizeLongitude() {
+    double[] locA = {0, 181};
+    double[] locB = {70, -370};
+    long dist1 = calcDist.distBetween(locA, locB);
+
+    double[] locC = {0, -179};
+    double[] locD = {70, -10};
+    long dist2 = calcDist.distBetween(locC, locD);
+
+    assertEquals(dist1, dist2);
   }
 }
