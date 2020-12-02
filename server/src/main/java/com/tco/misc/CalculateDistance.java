@@ -55,20 +55,20 @@ public class CalculateDistance {
     return atan2(numerator, denominator);
   }
 
-  private double normalizeLatitude(double lat) {
-    while (lat < -90)
-      lat += 180;
-    while (lat > 90)
-      lat -= 180;
-    return lat;
+  public double normalizeLatitude(double lat) {
+    return normalize(lat, 90);
   }
 
-  private double normalizeLongitude(double lng) {
-    while (lng < -180)
-      lng += 360;
-    while (lng > 180)
-      lng -= 360;
-    return lng;
+  public double normalizeLongitude(double lng) {
+    return normalize(lng, 180);
+  }
+
+  private double normalize(double val, int limit) {
+    while (val < -limit)
+      val += limit * 2;
+    while (val > limit)
+      val -= limit * 2;
+    return val;
   }
 
   private boolean validCoordinates(double lat1, double long1, double lat2, double long2) {

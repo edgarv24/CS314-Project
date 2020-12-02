@@ -142,4 +142,16 @@ public class TestCalculateDistance {
 
     assertEquals(dist1, dist2);
   }
+
+  @Test
+  @DisplayName("Normalize works correctly")
+  public void testNormalize() {
+    assertEquals(1, calcDist.normalizeLatitude(181));
+    assertEquals(70, calcDist.normalizeLatitude(-110));
+    assertEquals(90, calcDist.normalizeLatitude(90));
+
+    assertEquals(-179, calcDist.normalizeLongitude(181));
+    assertEquals(10, calcDist.normalizeLongitude(-350));
+    assertEquals(-180, calcDist.normalizeLongitude(-180));
+  }
 }
