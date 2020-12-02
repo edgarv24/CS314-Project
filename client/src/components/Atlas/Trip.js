@@ -201,7 +201,7 @@ export default class Trip {
             "name": place.name,
             "latitude": place.latitude,
             "longitude": place.longitude,
-            "coordinates": place.coordinates || "",
+            "coordinates": place.coordinates || `${place.latitude}, ${place.longitude}`,
             "municipality": place.municipality || "",
             "state": place.state || "",
             "region": place.region || "",
