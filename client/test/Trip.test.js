@@ -227,19 +227,19 @@ describe('Trip', () => {
 
     it('returns place data compatible with the itinerary', () => {
         const p1 = {'name': 'Water Park', 'municipality': 'Tanga', 'country': 'Tanzania',
-            'latitude': '8', 'longitude': '24', 'notes': 'fun'};
+            'latitude': '8', 'longitude': '24', 'coordinates': '8,24', 'notes': 'fun'};
         const p2 = {'name': '', 'municipality': 'Denver', 'state': 'Colorado', 'country': 'United States',
-            'latitude': '3', 'longitude': '7'};
+            'latitude': '3', 'longitude': '7', 'coordinates': '3,7'};
 
         const newTrip = trip.addPlaces([p1, p2]);
         const itineraryData = newTrip.itineraryPlaceData;
 
         const expected1 = {id: "destination-1", name: "Water Park", latitude: "8", longitude: "24", country_id: "TZ", flag: "🇹🇿",
             municipality: "Tanga", state: "", region: "", country: "Tanzania", altitude: "", notes: "fun", url: "",
-            primary_text: "Water Park", location_text: "Tanga, Tanzania", leg_dist: 0, cumulative_dist: 0};
+            primary_text: "Water Park", location_text: "Tanga, Tanzania", leg_dist: 0, cumulative_dist: 0, coordinates: "8,24"};
         const expected2 = {id: "destination-2", name: "", latitude: "3", longitude: "7", country_id: "US", flag: "🇺🇸",
             municipality: "Denver", state: "Colorado", region: "", country: "United States", altitude: "", notes: "", url: "",
-            primary_text: "(3.0000, 7.0000)", location_text: "Denver, Colorado", leg_dist: 0, cumulative_dist: 0};
+            primary_text: "(3.0000, 7.0000)", location_text: "Denver, Colorado", leg_dist: 0, cumulative_dist: 0, coordinates: "3,7"};
 
         expect(itineraryData[0]).toEqual(expected1);
         expect(itineraryData[1]).toEqual(expected2);
