@@ -29,6 +29,11 @@ public class CalculateDistance {
   }
 
   public double distBetween(double lat1, double long1, double lat2, double long2) {
+    lat1 = normalizeLatitude(lat1);
+    long1 = normalizeLongitude(long1);
+    lat2 = normalizeLatitude(lat2);
+    long2 = normalizeLongitude(long2);
+
     if (!validCoordinates(lat1, long1, lat2, long2)) return -1;
 
     double rLat1 = toRadians(lat1);
@@ -48,6 +53,22 @@ public class CalculateDistance {
     double denominator = sin(rLat1) * sin(rLat2) + cos(rLat1) * cos(rLat2) * cos(rLongDiff);
 
     return atan2(numerator, denominator);
+  }
+
+  public double normalizeLatitude(double lat) {
+    return normalize(lat, 90);
+  }
+
+  public double normalizeLongitude(double lng) {
+    return normalize(lng, 180);
+  }
+
+  private double normalize(double val, int limit) {
+    while (val < -limit)
+      val += limit * 2;
+    while (val > limit)
+      val -= limit * 2;
+    return val;
   }
 
   private boolean validCoordinates(double lat1, double long1, double lat2, double long2) {

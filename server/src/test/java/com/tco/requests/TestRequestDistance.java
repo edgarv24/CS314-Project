@@ -74,11 +74,4 @@ public class TestRequestDistance {
     Long distance = dist.getDistance();
     assertEquals(20015, distance);
   }
-
-  @Test
-  @DisplayName("BadRequestException thrown after invalid request")
-  public void testDistanceNullWhenInvalid() {
-    dist = new RequestDistance(6371.0, "100f", "0f", "0f", "0f");
-    assertThrows(BadRequestException.class, () -> dist.buildResponse());
-  }
 }

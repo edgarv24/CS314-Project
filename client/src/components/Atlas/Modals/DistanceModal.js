@@ -111,7 +111,7 @@ export default class DistanceModal extends Component {
         return coordinates[BOX_INPUT1] != null && coordinates[BOX_INPUT2] != null;
     }
 
-    requestDistanceFromServer(earthRadius = 3959.0) {
+    requestDistanceFromServer(earthRadius = parseFloat(this.props.trip.earthRadius)) {
         if (this.checkValidCoordinates()) {
             sendServerRequest(this.constructRequestBody(this.state.coordinatePairs, earthRadius))
                 .then(responseJSON => {

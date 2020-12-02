@@ -1,11 +1,14 @@
 import './jestConfig/enzyme.config.js';
-
-import React from 'react';
 import {shallow} from 'enzyme';
 import {beforeEach, describe, it} from "@jest/globals";
 
-import DistanceModal from '../src/components/Atlas/Modals/DistanceModal';
+import React from 'react';
 import {ModalHeader} from "reactstrap";
+import DistanceModal from '../src/components/Atlas/Modals/DistanceModal';
+import Trip from "../src/components/Atlas/Trip";
+import peaksTrip from "../test/TripFiles/peaks-trip.json";
+
+const TRIP = new Trip().loadJSON(peaksTrip);
 
 describe('Distance Modal', () => {
     let wrapper;
@@ -23,6 +26,7 @@ describe('Distance Modal', () => {
                 isOpen={isOpen}
                 toggleOpen={toggleOpen}
                 processDistanceRequestSuccess={processDistanceRequestSuccess}
+                trip={TRIP}
                 input1={"90, 90"}
                 input2={"80, 80"}
             />);

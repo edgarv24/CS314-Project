@@ -229,7 +229,7 @@ export default class Atlas extends Component {
         const distance = this.state.distanceLabel;
         if (distance === null)
             return "N/A";
-        return `${distance} ${correctUnits("miles", parseInt(distance))}`;
+        return `${distance} ${correctUnits(this.state.trip.units, parseInt(distance))}`;
     }
 
     renderDistanceModal() {
@@ -241,6 +241,7 @@ export default class Atlas extends Component {
                 isOpen={this.state.distModalOpen}
                 toggleOpen={(isOpen = !this.state.distModalOpen) => this.setState({distModalOpen: isOpen})}
                 processDistanceRequestSuccess={this.processDistanceRequestSuccess}
+                trip={this.state.trip}
                 input1={pos1 ? `${pos1["lat"]}, ${pos1["lng"]}` : ""}
                 input2={pos2 ? `${pos2["lat"]}, ${pos2["lng"]}` : ""}
             />
@@ -282,9 +283,9 @@ export default class Atlas extends Component {
             return this.state.trip.itineraryPlaceData[index];
 
         if (index === 1)
-            return {latitude: this.state.markerPosition.lat, longitude: this.state.markerPosition.lng};
+            return {name: '', latitude: this.state.markerPosition.lat, longitude: this.state.markerPosition.lng};
         else if (index === 2)
-            return {latitude: this.state.secondMarkerPosition.lat, longitude: this.state.secondMarkerPosition.lng};
+            return {name: '', latitude: this.state.secondMarkerPosition.lat, longitude: this.state.secondMarkerPosition.lng};
         return {name: 'Home', latitude: this.state.userPosition.lat, longitude: this.state.userPosition.lng};
     }
 
@@ -300,7 +301,10 @@ export default class Atlas extends Component {
 
     async setTrip(newTrip) {
         await newTrip.updateDistance();
-        this.setState({trip: newTrip, selectedMarker: {isTripMarker: newTrip.places.length > 0, index: 0}});
+        this.setState({
+            trip: newTrip,
+            distanceLabel: null,
+            selectedMarker: {isTripMarker: newTrip.places.length > 0, index: 0}});
     }
 
     setMarker(mapClickInfo) {
