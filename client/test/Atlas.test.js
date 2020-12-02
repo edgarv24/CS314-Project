@@ -256,9 +256,9 @@ describe('Atlas', () => {
         const firstMarker = atlas.find('#marker-3');
         expect(firstMarker.props()).not.toBe(null);
 
-        expect(atlas.state().addModalOpen).toEqual(false);
+        expect(atlas.state().destinationModalOpen).toEqual(false);
         const firstMarkerButton = atlas.find('#marker-button-3');
         firstMarkerButton.simulate('click');
-        expect(atlas.state().addModalOpen).toEqual(true);
+        expect(atlas.state().destinationModalOpen).toEqual(true);
     });
 });

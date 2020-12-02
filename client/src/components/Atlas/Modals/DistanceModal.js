@@ -15,8 +15,7 @@ import {renderModalTitleHeader, renderCancelButton} from "./modalHelper";
 import {isJsonResponseValid, sendServerRequest} from "../../../utils/restfulAPI";
 import * as distanceSchema from "../../../../schemas/DistanceResponse.json";
 
-import Coordinates from "coordinate-parser";
-import {PROTOCOL_VERSION} from "../../../utils/constants";
+import {getCoordinateOrNull, PROTOCOL_VERSION} from "../../../utils/constants";
 
 const BOX_INPUT1 = 0;
 const BOX_INPUT2 = 1;
@@ -98,25 +97,15 @@ export default class DistanceModal extends Component {
         let newInputValues = this.state.inputValues;
         let newCoordinates = this.state.coordinatePairs;
 
-        if (this.isValidCoordinate(newInputString)) {
-            const coordinate = new Coordinates(newInputString);
-            newCoordinates[index] = {lat: coordinate.getLatitude(), lng: coordinate.getLongitude()};
-        } else {
+        const coordinates = getCoordinateOrNull(newInputString);
+        if (coordinates != null)
+            newCoordinates[index] = {lat: coordinates.getLatitude(), lng: coordinates.getLongitude()};
+        else
             newCoordinates[index] = null;
-        }
 
         newInputValues[index] = newInputString;
         this.setState({ inputValues: newInputValues, coordinatePairs: newCoordinates });
     }
-
-    isValidCoordinate(position) {
-        try {
-            new Coordinates(position);
-            return true;
-        } catch (error) {
-            return false;
-        }
-    };
 
     checkValidCoordinates(coordinates = this.state.coordinatePairs) {
         return coordinates[BOX_INPUT1] != null && coordinates[BOX_INPUT2] != null;

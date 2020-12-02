@@ -3,6 +3,7 @@ import ulog from "ulog";
 import countryNameID from "../static/countryNameID.json";
 import {hasFlag} from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
+import Coordinates from "coordinate-parser";
 
 function setLogLevelIfDefault() {
     const urlString = window.location.search;
@@ -46,6 +47,14 @@ export const getCountryID = (countryName) => {
 
 export const getFlagIcon = (countryID) => {
     return hasFlag(countryID) ? getUnicodeFlagIcon(countryID) : null;
+}
+
+export const getCoordinateOrNull = (coordinateString) => {
+    try {
+        return new Coordinates(coordinateString);
+    } catch (error) {
+        return null;
+    }
 }
 
 export const HTTP_OK = 200;
