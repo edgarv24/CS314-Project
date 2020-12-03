@@ -30,7 +30,6 @@ export default class TripSettingsModal extends React.Component {
             titleInput: "",
             invalidUploadText: null,
             selectedUnit: props.trip.units,
-            dropDownOpen: false,
             selectedFormat: ""
         };
     }
