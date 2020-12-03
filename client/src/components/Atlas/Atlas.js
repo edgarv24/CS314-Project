@@ -375,9 +375,24 @@ export default class Atlas extends Component {
                 destinationModalSettings: {modifyTrip: isTripMarker, index: index}
             });
         };
-        // either add place to trip directly using position (and reverse geolocation details later),
-        // or open addModal so user can add details first. Remove comment
-        const addPlace = () => undefined;
+        const addPlace = async () => {
+            if (placeData == null){
+                placeData = this.getDestinationModalData({index: index, modifyTrip: false});
+            }
+            this.maintainMapPosition();
+            await this.processFindRequestAddToTrip(placeData);
+
+            if (index === 1){
+                this.setState({
+                    markerPosition: null
+                })
+            }
+            if (index === 2){
+                this.setState({
+                    secondMarkerPosition: null
+                })
+            }
+        };
         return (
             <Button id={`marker-button-${buttonIndex}`} className="mt-2" outline size="sm" color="primary"
                     onClick={isTripMarker ? editPlace : addPlace}>
