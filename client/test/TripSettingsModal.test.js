@@ -23,7 +23,8 @@ describe('Itinerary', () => {
         trip = new Trip().loadJSON(peaksTrip);
         isOpen = true;
         wrapper = shallow(<TripSettingsModal trip={trip} setTrip={setTrip} resetTable={() => undefined}
-                                             updatePlaceData={updatePlaceData} isOpen={isOpen} toggleOpen={toggleOpen}/>);
+                                             updatePlaceData={updatePlaceData} isOpen={isOpen}
+                                             toggleOpen={toggleOpen}/>);
     });
 
     it("has a functioning close button", () => {
@@ -55,7 +56,7 @@ describe('Itinerary', () => {
         const input = wrapper.find('#settings-title-input');
         expect(input).toBeDefined();
         expect(wrapper.state().titleInput).toEqual('');
-        input.simulate('change', {target: { value: 'New Trip Title' }});
+        input.simulate('change', {target: {value: 'New Trip Title'}});
         expect(wrapper.state().titleInput).toEqual('New Trip Title');
     });
 
@@ -64,7 +65,7 @@ describe('Itinerary', () => {
         const submitButton = wrapper.find('#trip-settings-submit');
         expect(input).toBeDefined();
 
-        input.simulate('change', {target: { value: 'New Trip Title' }});
+        input.simulate('change', {target: {value: 'New Trip Title'}});
         expect(trip.title).toEqual('Popular Peaks Round Trip');
         submitButton.simulate('click');
         expect(trip.title).toEqual('New Trip Title');
@@ -75,7 +76,7 @@ describe('Itinerary', () => {
         const submitButton = wrapper.find('#trip-settings-submit');
         expect(input).toBeDefined();
 
-        input.simulate('change', {target: { value: '' }});
+        input.simulate('change', {target: {value: ''}});
         expect(trip.title).toEqual('Popular Peaks Round Trip');
         submitButton.simulate('click');
         expect(trip.title).toEqual('Popular Peaks Round Trip');
@@ -97,17 +98,20 @@ describe('Itinerary', () => {
         expect(trip.places.length).toEqual(0);
     });
 
-    it('has a functioning save button', () => {
-        const downloadButton = wrapper.find('#download-button');
-        expect(downloadButton).toBeDefined();
-        downloadButton.simulate('click');
-        expect(trip.places.length).toBeGreaterThan(0);
-        expect(isOpen).toBe(true);
+    it('has a functioning save dropdown menu', () => {
+        const downloadMenu = wrapper.find('#download-menu');
+        expect(downloadMenu.length).toEqual(1);
+        const options = downloadMenu.find("option");
+        expect(options.length).toEqual(5);
+        downloadMenu.simulate('change', {target: {value: "JSON"}});
+        expect(wrapper.state().selectedFormat).toEqual("JSON");
+        downloadMenu.simulate('change', {target: {value: "CSV"}});
+        expect(wrapper.state().selectedFormat).toEqual("CSV");
     });
 
     it('fails to process an invalid JSON file', () => {
         expect(wrapper.state().invalidUploadText).toEqual(null);
-        const file = new File(['none'], "file.json", {type: "text/plain" });
+        const file = new File(['none'], "file.json", {type: "text/plain"});
         wrapper.instance().processFile(file);
         expect(wrapper.state().invalidUploadText).toEqual(null);
     });
