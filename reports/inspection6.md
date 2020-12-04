@@ -2,7 +2,7 @@
  
 | Inspection | Details |
 | ----- | ----- |
-| Subject | *FindModal.js (lines 17-248)* |
+| Subject | *FindModal.js (lines 17-248), Optimizer.java (lines 17-175)* |
 | Meeting | *12-04-2020, 4:00 PM, Microsoft Teams* |
 | Checklist | *[checklist.md](https://github.com/csucs314f20/t14/blob/master/reports/checklist.md)* |
 
@@ -10,7 +10,7 @@
 
 | Name | Preparation Time |
 | ---- | ---- |
-| Darin |  |
+| Darin | 15:20 - 15:45 |
 | Edgar | 13:30 - 13:48 |
 | Rylie | 15:30 - 15:45 |
 | Mikayla | 13:45 - 14:00 |
@@ -19,8 +19,9 @@
 
 | file:line | problem | hi/med/low | who found | github# |
 | --- | --- | :---: | :---: | --- |
-| FindModal.js:52,70 | combine functions due to similar code | med | edvarela, rylied |  |
+| FindModal.js:52,70 | combine functions due to similar code | med | edvarela, rylied, darinh |  |
 | FindModal.js:203,210 | convert to async-await functions | med | edvarela |  |
 | FindModal.js:54,72,90 | turn repeated formatting code into global constant | low | rylied |  |
 | FindModal.is:239 | several comments that could be removed for readability | low | cessna17 |  |
-
+| Optimizer.java:117 | while loop runs until the time is finished, but the end time should be treated as an upper bound | med | darinh |  |
+| Optimizer.java:128 | for loop should be terminated if system time exceeds end-by time | med | darinh |  |
