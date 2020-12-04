@@ -13,7 +13,7 @@
 | Darin | 15:20 - 15:45 |
 | Edgar | 13:30 - 13:48 |
 | Rylie |  |
-| Mikayla |  |
+| Mikayla | 13:45 - 14:00 |
 
 ### Problems found
 
@@ -23,3 +23,4 @@
 | FindModal.js:203,210 | convert to async-await functions | med | edvarela |  |
 | Optimizer.java:117 | while loop runs until the time is finished, but the end time should be treated as an upper bound | med | darinh |  |
 | Optimizer.java:128 | for loop should be terminated if system time exceeds end-by time | med | darinh |  |
+| FindModal.is:239 | several comments that could be removed for readability | low | cessna17 |  |
