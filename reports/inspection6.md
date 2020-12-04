@@ -13,7 +13,7 @@
 | Darin |  |
 | Edgar | 13:30 - 13:48 |
 | Rylie |  |
-| Mikayla |  |
+| Mikayla | 13:45 - 14:00 |
 
 ### Problems found
 
@@ -21,5 +21,5 @@
 | --- | --- | :---: | :---: | --- |
 | FindModal.js:52,70 | combine functions due to similar code | med | edvarela |  |
 | FindModal.js:203,210 | convert to async-await functions | med | edvarela |  |
-|  |  |  |  |  |
+| FindModal.is:239 | several comments that could be removed for readability | low | cessna17 |  |
 
