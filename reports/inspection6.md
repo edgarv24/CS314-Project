@@ -12,14 +12,15 @@
 | ---- | ---- |
 | Darin |  |
 | Edgar | 13:30 - 13:48 |
-| Rylie |  |
+| Rylie | 15:30 - 15:45 |
 | Mikayla | 13:45 - 14:00 |
 
 ### Problems found
 
 | file:line | problem | hi/med/low | who found | github# |
 | --- | --- | :---: | :---: | --- |
-| FindModal.js:52,70 | combine functions due to similar code | med | edvarela |  |
+| FindModal.js:52,70 | combine functions due to similar code | med | edvarela, rylied |  |
 | FindModal.js:203,210 | convert to async-await functions | med | edvarela |  |
+| FindModal.js:54,72,90 | turn repeated formatting code into global constant | low | rylied |  |
 | FindModal.is:239 | several comments that could be removed for readability | low | cessna17 |  |
 
