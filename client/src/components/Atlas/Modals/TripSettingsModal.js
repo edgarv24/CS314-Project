@@ -1,5 +1,16 @@
 import React from "react";
-import {Button, Input, InputGroup, Modal, ModalBody, ModalFooter, Row, Col} from "reactstrap";
+import {
+    Button,
+    Form,
+    Input,
+    InputGroup,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    Row,
+    Col,
+    FormGroup
+} from "reactstrap";
 import {FormFeedback, Label} from "reactstrap";
 
 import {renderModalTitleHeader, renderCancelButton} from "./modalHelper";
@@ -18,7 +29,8 @@ export default class TripSettingsModal extends React.Component {
         this.state = {
             titleInput: "",
             invalidUploadText: null,
-            selectedUnit: props.trip.units
+            selectedUnit: props.trip.units,
+            selectedFormat: ""
         };
     }
 
@@ -54,7 +66,7 @@ export default class TripSettingsModal extends React.Component {
             <div className="mt-1 mb-4">
                 <Label for="settings-title-input">Title</Label>
                 <Input id="settings-title-input" placeholder={this.props.trip.title} value={this.state.titleInput}
-                       onChange={(e) => this.setState({titleInput: e.target.value})} />
+                       onChange={(e) => this.setState({titleInput: e.target.value})}/>
             </div>
         );
     }
@@ -65,13 +77,13 @@ export default class TripSettingsModal extends React.Component {
             <Row className="mb-4">
                 <Col>
                     <Label for="unit-selector">Units</Label>
-                        <Input id="unit-selector" value={this.state.selectedUnit} type="select"
-                               onChange={(e) => this.setState({selectedUnit: e.target.value})}>
-                            {unitOptions.map(item => {
-                                const itemName = capitalize(item);
-                                return <option key={item} value={item}>{itemName}</option>
-                            })}
-                        </Input>
+                    <Input id="unit-selector" value={this.state.selectedUnit} type="select"
+                           onChange={(e) => this.setState({selectedUnit: e.target.value})}>
+                        {unitOptions.map(item => {
+                            const itemName = capitalize(item);
+                            return <option key={item} value={item}>{itemName}</option>
+                        })}
+                    </Input>
                 </Col>
                 <Col>
                     <Label for="radius-display">Earth Radius</Label>
@@ -82,15 +94,29 @@ export default class TripSettingsModal extends React.Component {
     }
 
     renderSave() {
+        const formats = ["Select Format", "JSON", "CSV", "KML", "SVG"];
         return (
-            <div>
-                <Label for="download-button">Save Trip</Label>
-                <Button id="download-button" className="mb-4 float-right" size="sm" color="primary" outline block
-                        onClick={() => this.props.trip.downloadAsJson()}>
-                    Download Trip as JSON
-                </Button>
-            </div>
+            <Form>
+                <FormGroup>
+                    <Label for="download-menu">Save Trip</Label>
+                    <Input id="download-menu" type="select"
+                           onChange={e => this.setState({selectedFormat: e.target.value})}>
+                        {formats.map((value, index) => <option id={index} key={index}>{value}</option>)}
+                    </Input>
+                    <Button outline color="primary" onClick={() => this.downloadSelectedFormat()}
+                            block>Download</Button>
+                </FormGroup>
+            </Form>
         );
+    }
+
+    downloadSelectedFormat() {
+        const format = this.state.selectedFormat;
+        if (format === "JSON") this.props.trip.downloadAsJson();
+        else if (format === "CSV") return; // add trip.downloadAsCsv
+        else if (format === "KML") return; // add trip.downloadAsKml
+        else if (format === "SVG") return; // add trip.downloadAsSvg
+        else return;
     }
 
     renderFileUpload() {
@@ -101,7 +127,8 @@ export default class TripSettingsModal extends React.Component {
                     <Input id="upload-trip-file" type="file" accept=".json"
                            onChange={event => {
                                const loadedFiles = event.target.files;
-                               if (loadedFiles.length > 0) this.processFile(loadedFiles[0]); }}
+                               if (loadedFiles.length > 0) this.processFile(loadedFiles[0]);
+                           }}
                     />
                 </InputGroup>
                 {this.state.invalidUploadText &&
