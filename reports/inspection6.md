@@ -12,7 +12,7 @@
 | ---- | ---- |
 | Darin |  |
 | Edgar | 13:30 - 13:48 |
-| Rylie | 14:30 - 14:50 |
+| Rylie | 15:30 - 15:45 |
 | Mikayla |  |
 
 ### Problems found
