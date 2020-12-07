@@ -13,6 +13,7 @@ import {getFlagIcon} from "../../../utils/constants";
 
 const RESPONSE_LIMIT = 20;
 const TYPING_REQUEST_DELAY = 1000;
+const BOX_FORMAT = "ml-3 mr-3 mb-3 mt-4";
 
 export default class FindModal extends Component {
     constructor(props) {
@@ -51,7 +52,7 @@ export default class FindModal extends Component {
 
     renderComboBox() {
         return (
-            <div className="ml-3 mr-3 mb-3 mt-3">
+            <div className={BOX_FORMAT}>
                 <Autocomplete
                     id="combo-box"
                     fullWidth={true}
@@ -69,7 +70,7 @@ export default class FindModal extends Component {
 
     renderAirportTypeBox(){
         return(
-            <div className="ml-3 mr-3 mb-3 mt-4">
+            <div className={BOX_FORMAT}>
                 <Autocomplete
                     id="airport-type-box"
                     fullWidth={true}
@@ -87,7 +88,7 @@ export default class FindModal extends Component {
 
     renderInputBox() {
         return (
-            <div className="ml-3 mr-3 mb-3 mt-4">
+            <div className={BOX_FORMAT}>
                 <TextField id="place-name-input" label="Place Name" variant="outlined"
                            onChange={e => this.onInputChange(e.target.value)}
                            value={this.state.inputText || ""}
@@ -236,9 +237,6 @@ export default class FindModal extends Component {
     processFindResponse(responseJSON) {
         const responseBody = responseJSON.data;
         if (isJsonResponseValid(responseBody, findSchema)) {
-            // Only update results if the response correlates with what is currently in the input box.
-            // Otherwise, places gets updated with every letter typed, even when the user isn't finished (looks laggy).
-            // It would be better to cancel the unneeded requests, but this is a workaround for now.
             if (responseBody.match === this.state.inputText)
                 this.setState({places: responseBody.places, found: responseBody.found, selectedPlace: null});
         } else {

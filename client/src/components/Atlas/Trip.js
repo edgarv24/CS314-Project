@@ -252,7 +252,6 @@ export default class Trip {
         downloadNode.click();
         downloadNode.remove();
     }
-
     downloadAsKML() {
         const filename = this.title.replace(/ /g,"_").toLowerCase();
         const kmltrip = new KMLTrip().constructKML(this);
