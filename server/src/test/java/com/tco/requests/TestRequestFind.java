@@ -29,10 +29,10 @@ public class TestRequestFind {
   }
 
   @Test
-  @DisplayName("Version number is equal to 4")
+  @DisplayName("Version number is equal to 5")
   public void testVersion() {
     int version = requestFind.getRequestVersion();
-    assertEquals(4, version);
+    assertEquals(5, version);
   }
 
   @Test
