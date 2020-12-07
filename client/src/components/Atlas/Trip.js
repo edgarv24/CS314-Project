@@ -251,4 +251,11 @@ export default class Trip {
         downloadNode.click();
         downloadNode.remove();
     }
+
+    downloadAsCSV(){
+        const fileName = this.title.replace(/ /g,"_").toLowerCase();
+        const savedCSV = this.build();
+        //need to find
+
+    }
 }

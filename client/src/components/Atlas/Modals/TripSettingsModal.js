@@ -113,7 +113,7 @@ export default class TripSettingsModal extends React.Component {
     downloadSelectedFormat() {
         const format = this.state.selectedFormat;
         if (format === "JSON") this.props.trip.downloadAsJson();
-        else if (format === "CSV") return; // add trip.downloadAsCsv
+        else if (format === "CSV") this.props.trip.downloadAsCSV(); // add trip.downloadAsCsv
         else if (format === "KML") return; // add trip.downloadAsKml
         else if (format === "SVG") return; // add trip.downloadAsSvg
         else return;
