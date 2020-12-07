@@ -4,6 +4,7 @@ import {isJsonResponseValid, sendServerRequest} from "../../utils/restfulAPI";
 import * as tripSchema from "../../../schemas/TripResponse.json";
 import * as tripFileSchema from "../../../schemas/TripFile.json";
 import {getFlagIcon, LOG} from "../../utils/constants";
+import KMLTrip from "./KMLTrip";
 
 export default class Trip {
     constructor() {
@@ -247,6 +248,18 @@ export default class Trip {
         const downloadNode = document.createElement('a');
         downloadNode.setAttribute("href", fileData);
         downloadNode.setAttribute("download", fileName + ".json");
+        document.body.appendChild(downloadNode);
+        downloadNode.click();
+        downloadNode.remove();
+    }
+
+    downloadAsKML() {
+        const filename = this.title.replace(/ /g,"_").toLowerCase();
+        const kmltrip = new KMLTrip().constructKML(this);
+        const fileData = "data:application/vnd.google-earth.kml+xml;charset=UTF-8," + encodeURIComponent(kmltrip);
+        const downloadNode = document.createElement('a');
+        downloadNode.setAttribute("href", fileData);
+        downloadNode.setAttribute("download", filename + ".kml");
         document.body.appendChild(downloadNode);
         downloadNode.click();
         downloadNode.remove();
