@@ -65,7 +65,13 @@ export default class Trip {
     }
 
     editAtIndex(index, newData) {
+        if (index < 0 || index >= this.places.length)
+            return this;
 
+        const newTrip = this.copy();
+        newTrip.places[index] = newData;
+        newTrip.options.response = '0.0';
+        return newTrip;
     }
 
     removeAtIndex(index) {
@@ -230,7 +236,8 @@ export default class Trip {
     }
 
     locationText(place) {
-        const potentialItems = [place.municipality, place.state, place.country];
+        const regionOrState = place.region ? place.region : place.state;
+        const potentialItems = [place.municipality, regionOrState, place.country];
         let items = [];
         for (let i = 0; i < potentialItems.length; i++) {
             if (potentialItems[i] && items.length < 2)
