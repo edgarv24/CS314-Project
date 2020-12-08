@@ -7,7 +7,7 @@ import {Box, Collapse, IconButton, ListItemText, Paper, Typography} from '@mater
 import {FirstPage, LastPage, Edit, Delete} from '@material-ui/icons';
 import {KeyboardArrowUp, KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight} from '@material-ui/icons';
 
-import {capitalize, correctUnits} from "../../../utils/constants";
+import {capitalize, correctUnits, LOG} from "../../../utils/constants";
 
 export class DestinationTable extends React.Component {
     constructor(props) {
@@ -41,6 +41,7 @@ export class DestinationTable extends React.Component {
                     <DestinationTableRow key={this.rowData(index).id}
                                          trip={this.props.trip}
                                          setTrip={this.props.setTrip}
+                                         editPlace={this.props.editPlace}
                                          rowData={this.rowData(index)}
                                          index={this.realIndex(index)}
                                          units={this.props.units}
@@ -166,7 +167,8 @@ export class DestinationTableRow extends React.Component {
                                     <Delete/>
                                 </Button>
                                 <Button className="float-right mr-3" id={`edit-${this.props.rowData.id}`}
-                                        size="sm" color="primary" outline disabled onClick={() => undefined}>
+                                        size="sm" color="primary" outline
+                                        onClick={() => this.props.editPlace(this.props.index)}>
                                     <Edit/>
                                 </Button>
                             </>}

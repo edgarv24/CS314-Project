@@ -270,12 +270,12 @@ describe('Atlas', () => {
         atlas.setState({userPosition: p1, markerPosition: p2, secondMarkerPosition: p3});
 
         const r1 = atlas.instance().getDestinationModalData({index: 0, modifyTrip: false});
-        expect(r1).toEqual({'latitude': 0, 'longitude': 0, 'name': 'Home'});
+        expect(r1).toEqual({'latitude': '0', 'longitude': '0', 'name': 'Home'});
 
         const r2 = atlas.instance().getDestinationModalData({index: 1, modifyTrip: false});
-        expect(r2).toEqual({'latitude': 10, 'longitude': -10, 'name': ''});
+        expect(r2).toEqual({'latitude': '10', 'longitude': '-10', 'name': ''});
 
         const r3 = atlas.instance().getDestinationModalData({index: 2, modifyTrip: false});
-        expect(r3).toEqual({'latitude': -90, 'longitude': 90, 'name': ''});
+        expect(r3).toEqual({'latitude': '-90', 'longitude': '90', 'name': ''});
     });
 });

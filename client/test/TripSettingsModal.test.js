@@ -102,7 +102,7 @@ describe('Itinerary', () => {
         const downloadMenu = wrapper.find('#download-menu');
         expect(downloadMenu.length).toEqual(1);
         const options = downloadMenu.find("option");
-        expect(options.length).toEqual(5);
+        expect(options.length).toEqual(4);
         downloadMenu.simulate('change', {target: {value: "JSON"}});
         expect(wrapper.state().selectedFormat).toEqual("JSON");
         downloadMenu.simulate('change', {target: {value: "CSV"}});

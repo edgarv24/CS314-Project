@@ -34,6 +34,7 @@ export default class Itinerary extends React.Component {
                     ref={this.tableRef}
                     trip={this.props.trip}
                     setTrip={this.props.setTrip}
+                    editPlace={this.props.editPlace}
                     units={this.props.trip.units}
                     data={this.state.placeData}/>
                 <TripSettingsModal

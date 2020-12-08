@@ -122,17 +122,21 @@ describe('Destination Table Row', () => {
     let wrapper;
     let openRow;
     let trip;
+    let destinationModalOpen;
 
     const setTrip = (newTrip) => trip = newTrip;
 
     beforeEach(() => {
         trip = TRIP;
         openRow = 0;
+        destinationModalOpen = false;
+
         wrapper = shallow(
             <DestinationTableRow
                 key='destination-3'
                 trip={trip}
                 setTrip={setTrip}
+                editPlace={(index) => destinationModalOpen = true}
                 rowData={trip.itineraryPlaceData[2]}
                 index={2}
                 units={trip.units}
