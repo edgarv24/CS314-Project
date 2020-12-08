@@ -30,6 +30,13 @@ describe('Destination Modal', () => {
         );
     });
 
+    it('has a functioning save button', () => {
+        const submitButton = wrapper.find('#destination-submit-button');
+        expect(isOpen).toBe(true);
+        submitButton.simulate('click');
+        expect(isOpen).toBe(false);
+    });
+
     it("has a functioning close button", () => {
         const closeButton = wrapper.find('#destination-close-button');
 
@@ -102,13 +109,6 @@ describe('Destination Modal', () => {
         expect(wrapper.state().notes).toEqual('');
         input.simulate('change', {target: { value: 'This is my favorite place.' }});
         expect(wrapper.state().notes).toEqual('This is my favorite place.');
-    });
-
-    it('has a functioning save button', () => {
-        const submitButton = wrapper.find('#destination-submit-button');
-        expect(isOpen).toBe(true);
-        submitButton.simulate('click');
-        expect(isOpen).toBe(false);
     });
 
     it('updates the trip', () => {
