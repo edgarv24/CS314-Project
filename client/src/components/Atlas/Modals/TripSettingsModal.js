@@ -30,7 +30,7 @@ export default class TripSettingsModal extends React.Component {
             titleInput: "",
             invalidUploadText: null,
             selectedUnit: props.trip.units,
-            selectedFormat: ""
+            selectedFormat: "JSON"
         };
     }
 
@@ -94,7 +94,7 @@ export default class TripSettingsModal extends React.Component {
     }
 
     renderSave() {
-        const formats = ["Select Format", "JSON", "CSV", "KML", "SVG"];
+        const formats = ["JSON", "CSV", "KML", "SVG"];
         return (
             <Form>
                 <FormGroup>
@@ -103,8 +103,9 @@ export default class TripSettingsModal extends React.Component {
                            onChange={e => this.setState({selectedFormat: e.target.value})}>
                         {formats.map((value, index) => <option id={index} key={index}>{value}</option>)}
                     </Input>
-                    <Button outline color="primary" onClick={() => this.downloadSelectedFormat()}
-                            block>Download</Button>
+                    <Button className="mb-4" outline color="primary" block onClick={() => this.downloadSelectedFormat()}>
+                        Download
+                    </Button>
                 </FormGroup>
             </Form>
         );
