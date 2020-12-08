@@ -45,6 +45,8 @@ export default class Atlas extends Component {
         this.setMapToHome = this.setMapToHome.bind(this);
         this.getHomePosition = this.getHomePosition.bind(this);
         this.setTrip = this.setTrip.bind(this);
+        this.editPlace = this.editPlace.bind(this);
+        this.addPlace = this.addPlace.bind(this);
         this.processDistanceRequestSuccess = this.processDistanceRequestSuccess.bind(this);
         this.processFindRequestAddToTrip = this.processFindRequestAddToTrip.bind(this);
         this.processFindRequestViewLocation = this.processFindRequestViewLocation.bind(this);
@@ -135,13 +137,13 @@ export default class Atlas extends Component {
             ['home-button', <GpsFixed/>, TL, 'Where am I?', TOOLTIP_RIGHT, false, true,
                 () => this.setMapToHome()],
             ['distance-button', <LinearScale/>, TL, '2 Point Distance', TOOLTIP_RIGHT, false, true,
-                () => {this.maintainMapPosition(); this.setState({distModalOpen: true});}],
+                () => this.maintainMapPosition({distModalOpen: true})],
             ['find-button', <Search/>, TL, 'Find Place by Name', TOOLTIP_RIGHT, false, true,
-                () => {this.maintainMapPosition(); this.setState({findModalOpen: true});}],
+                () => this.maintainMapPosition({findModalOpen: true})],
             ['toggle-trip-lines', <Remove/>, BL, 'Toggle Trip Lines', TOOLTIP_RIGHT, NO_TRIP_DATA, LINES_ON,
-                () => {this.maintainMapPosition(); this.setState({displayTripLines: !this.state.displayTripLines});}],
+                () => this.maintainMapPosition({displayTripLines: !this.state.displayTripLines})],
             ['toggle-trip-markers', <LocationOn/>, BL, 'Toggle Trip Markers', TOOLTIP_RIGHT, NO_TRIP_DATA, MARKERS_ON,
-                () => {this.maintainMapPosition(); this.setState({displayTripMarkers: !this.state.displayTripMarkers});}],
+                () => this.maintainMapPosition({displayTripMarkers: !this.state.displayTripMarkers})],
             ['optimize-button', <TrendingUp/>, BR, OPTIMIZE_DISABLE_TEXT, TOOLTIP_LEFT, DISABLE_OPTIMIZE, true,
                 async () => {this.maintainMapPosition(); await this.setTrip(this.state.trip.optimize());}],
             ['scroll-down-button', <ArrowDownward/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
@@ -282,18 +284,26 @@ export default class Atlas extends Component {
         if (settings.modifyTrip)
             return this.state.trip.itineraryPlaceData[index];
 
+        const p1 = this.state.markerPosition;
+        const p2 = this.state.secondMarkerPosition;
+        const userPos = this.state.userPosition;
         if (index === 1)
-            return {name: '', latitude: this.state.markerPosition.lat, longitude: this.state.markerPosition.lng};
+            return {name: '', latitude: p1.lat.toString(), longitude: p1.lng.toString()};
         else if (index === 2)
-            return {name: '', latitude: this.state.secondMarkerPosition.lat, longitude: this.state.secondMarkerPosition.lng};
-        return {name: 'Home', latitude: this.state.userPosition.lat, longitude: this.state.userPosition.lng};
+            return {name: '', latitude: p2.lat.toString(), longitude: p2.lng.toString()};
+        return {name: 'Home', latitude: userPos.lat.toString(), longitude: userPos.lng.toString()};
     }
 
     renderItinerary() {
         return (
             <Row className="mt-4">
                 <Col sm={12} md={{size: 10, offset: 1}} lg={{size: 8, offset: 2}}>
-                    <Itinerary trip={this.state.trip} setTrip={this.setTrip}/>
+                    <Itinerary
+                        trip={this.state.trip}
+                        setTrip={this.setTrip}
+                        editPlace={this.editPlace}
+                        addPlace={this.addPlace}
+                    />
                 </Col>
             </Row>
         );
@@ -301,10 +311,18 @@ export default class Atlas extends Component {
 
     async setTrip(newTrip) {
         await newTrip.updateDistance();
+
+        // changes to zoom on trip instead
+        const tripPlaces = newTrip.places;
+        const firstPlace = (tripPlaces.length > 0) ? tripPlaces[0] : null;
+        const newCenter = firstPlace ? {lat: firstPlace.latitude, lng: firstPlace.longitude} : this.state.userPosition;
+
         this.setState({
             trip: newTrip,
             distanceLabel: null,
-            selectedMarker: {isTripMarker: newTrip.places.length > 0, index: 0}});
+            selectedMarker: {isTripMarker: newTrip.places.length > 0, index: 0},
+            mapBounds: this.getMapBounds(newCenter, newCenter)
+        });
     }
 
     setMarker(mapClickInfo) {
@@ -320,13 +338,10 @@ export default class Atlas extends Component {
             newMarkerPosition2 = mapClickInfo.latlng;
         }
 
-        this.setState({
+        this.maintainMapPosition({
             markerPosition: newMarkerPosition,
             secondMarkerPosition: newMarkerPosition2,
-            selectedMarker: {isTripMarker: false, index: 2},
-            mapCenter: mapClickInfo.latlng,
-            mapBounds: this.getMapBounds(newMarkerPosition, newMarkerPosition2),
-            zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM,
+            selectedMarker: {isTripMarker: false, index: newMarkerPosition2 ? 2 : 1},
             distanceLabel: null
         });
     }
@@ -341,8 +356,7 @@ export default class Atlas extends Component {
             return (
                 <Marker id={`marker-${markerIndex}`} key={key} ref={initMarker} position={position} icon={iconStyle}
                         onClick={() => {
-                            this.maintainMapPosition();
-                            this.setState({selectedMarker: {isTripMarker: isTripMarker, index: index}});
+                            this.maintainMapPosition({selectedMarker: {isTripMarker: isTripMarker, index: index}});
                         }}>
                     <Popup offset={[0, -18]} className="font-weight-bold">
                         {this.getPopupLabel(position, placeData)}
@@ -362,44 +376,50 @@ export default class Atlas extends Component {
         }
 
         const flag = placeData.flag !== "" ? placeData.flag + " " : "";
-        return <div>{flag}{placeData.primary_text}<br /><div className="text-muted">{placeData.location_text}</div></div>;
+        const unitText = correctUnits(this.state.trip.units, placeData.cumulative_dist);
+        const distanceText = (placeData.cumulative_dist === 0 && placeData.name === this.state.trip.places[0].name)
+            ? 'Starting Location'
+            : `Cumulative Distance: ${placeData.cumulative_dist} ${unitText}`;
+        return <div>
+            {flag}{`${placeData.primary_text}`}<br />
+            <div className="text-muted">{placeData.location_text}</div>
+            <div className="text-muted">{distanceText}</div>
+            {placeData.altitude && <div className="text-muted">{`Altitude: ${placeData.altitude}`}</div>}
+        </div>;
     }
 
     getPopupButton(index, position, placeData, isTripMarker) {
         const buttonIndex = isTripMarker ? index + NUM_NON_TRIP_MARKERS : index;
         const buttonName = isTripMarker ? 'Edit' : 'Add';
-        const editPlace = () => {
-            this.maintainMapPosition();
-            this.setState({
-                destinationModalOpen: true,
-                destinationModalSettings: {modifyTrip: isTripMarker, index: index}
-            });
-        };
-        const addPlace = async () => {
-            if (placeData == null){
-                placeData = this.getDestinationModalData({index: index, modifyTrip: false});
-            }
-            this.maintainMapPosition();
-            await this.processFindRequestAddToTrip(placeData);
 
-            if (index === 1){
-                this.setState({
-                    markerPosition: null
-                })
-            }
-            if (index === 2){
-                this.setState({
-                    secondMarkerPosition: null
-                })
-            }
-        };
         return (
             <Button id={`marker-button-${buttonIndex}`} className="mt-2" outline size="sm" color="primary"
-                    onClick={isTripMarker ? editPlace : addPlace}>
+                    onClick={isTripMarker
+                        ? () => this.editPlace(index)
+                        : () => this.addPlace(index, placeData)
+                    }>
                 {buttonName}
             </Button>
         );
     }
+
+    editPlace(index) {
+        this.maintainMapPosition({
+            destinationModalOpen: true,
+            destinationModalSettings: {modifyTrip: true, index: index}
+        });
+    };
+
+    async addPlace(index, placeData) {
+        if (!placeData) placeData = this.getDestinationModalData({index: index, modifyTrip: false});
+
+        this.maintainMapPosition();
+        await this.processFindRequestAddToTrip(placeData);
+
+        const selectedMarker = {isTripMarker: true, index: this.state.trip.places.length - 1};
+        if (index === 1) this.setState({markerPosition: null, selectedMarker: selectedMarker});
+        if (index === 2) this.setState({secondMarkerPosition: null, selectedMarker: selectedMarker});
+    };
 
     getStringMarkerPosition(position) {
         return position.lat.toFixed(2) + ', ' + position.lng.toFixed(2);
@@ -438,8 +458,9 @@ export default class Atlas extends Component {
         return MAP_CENTER_DEFAULT;
     }
 
-    maintainMapPosition() {
+    maintainMapPosition(stateProps={}) {
         this.setState({
+            ...stateProps,
             mapBounds: null,
             mapCenter: (this.mapRef.current) ? this.mapRef.current.leafletElement.getCenter() : MAP_CENTER_DEFAULT,
             zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM
