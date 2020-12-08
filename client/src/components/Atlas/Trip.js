@@ -63,6 +63,10 @@ export default class Trip {
         }
     }
 
+    editAtIndex(index, newData) {
+
+    }
+
     removeAtIndex(index) {
         if (index < 0 || index >= this.places.length)
             return this;
