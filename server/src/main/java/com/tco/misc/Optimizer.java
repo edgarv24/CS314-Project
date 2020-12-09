@@ -16,25 +16,17 @@ public class Optimizer {
 
   public void configure(List<Map<String, String>> places, double time) {
     this.responseTime = time * 1000;
-    setPlaces(places);
-    setTour(places);
-    startingCity = tour[0];
-    setVisitedCities(places);
-    buildDistancesMatrix(places);
-  }
-
-  public void setPlaces(List<Map<String, String>> places) {
     this.places = new ArrayList<>();
     this.places = places;
+    setTour(places);
+    startingCity = tour[0];
+    visitedCities = new boolean[places.size()];
+    buildDistancesMatrix(places);
   }
 
   public void setTour(List<Map<String, String>> places) {
     tour = new int[places.size()];
     for (int i = 0; i < places.size(); i++) tour[i] = i;
-  }
-
-  public void setVisitedCities(List<Map<String, String>> places) {
-    visitedCities = new boolean[places.size()];
   }
 
   public void buildDistancesMatrix(List<Map<String, String>> places) {
