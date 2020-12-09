@@ -16,25 +16,17 @@ public class Optimizer {
 
   public void configure(List<Map<String, String>> places, double time) {
     this.responseTime = time * 1000;
-    setPlaces(places);
-    setTour(places);
-    startingCity = tour[0];
-    setVisitedCities(places);
-    buildDistancesMatrix(places);
-  }
-
-  public void setPlaces(List<Map<String, String>> places) {
     this.places = new ArrayList<>();
     this.places = places;
+    setTour(places);
+    startingCity = tour[0];
+    visitedCities = new boolean[places.size()];
+    buildDistancesMatrix(places);
   }
 
   public void setTour(List<Map<String, String>> places) {
     tour = new int[places.size()];
     for (int i = 0; i < places.size(); i++) tour[i] = i;
-  }
-
-  public void setVisitedCities(List<Map<String, String>> places) {
-    visitedCities = new boolean[places.size()];
   }
 
   public void buildDistancesMatrix(List<Map<String, String>> places) {
@@ -114,8 +106,11 @@ public class Optimizer {
     long start = System.currentTimeMillis();
     double pad = getPad();
     double end = start + responseTime - pad;
-    while (System.currentTimeMillis() < end) {
+    boolean improvement = true;
+    while (improvement) {
+      improvement = false;
       for (int i = 0; i <= tour.length - 3; i++) {
+        if (System.currentTimeMillis() >= end) break;
         for (int k = i + 2; k <= tour.length - 1; k++) {
           delta =
               -distancesMatrix[tempTour[i]][tempTour[i + 1]]
@@ -123,6 +118,7 @@ public class Optimizer {
                   + distancesMatrix[tempTour[i]][tempTour[k]]
                   + distancesMatrix[tempTour[i + 1]][tempTour[k + 1]];
           if (delta < 0) {
+            improvement = true;
             tempTour = twoOptReverse(tempTour, i + 1, k);
           }
         }
@@ -132,12 +128,9 @@ public class Optimizer {
   }
 
   public double getPad() {
-    if (places.size() >= 500 && places.size() <= 600)
-      return 300;
-    if (places.size() > 600 && places.size() <= 700)
-      return 400;
-    if (places.size() > 700)
-      return 700;
+    if (places.size() >= 500 && places.size() <= 600) return 300;
+    if (places.size() > 600 && places.size() <= 700) return 400;
+    if (places.size() > 700) return 2000;
     return 150;
   }
 
