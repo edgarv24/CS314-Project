@@ -264,7 +264,7 @@ export default class Atlas extends Component {
 
     renderDestinationModal() {
         const settings = this.state.destinationModalSettings;
-        const placeData = settings ? this.getDestinationModalData(settings) : {};
+        const placeData = settings ? this.getMarkerData(settings.index, settings.modifyTrip) : {};
         const placeIndex = settings ? settings.index : -1;
 
         return (
@@ -280,11 +280,14 @@ export default class Atlas extends Component {
         );
     }
 
-    getDestinationModalData(settings) {
-        const index = settings.index;
-        if (settings.modifyTrip)
+    getMarkerData(index, modifyTrip) {
+        if (modifyTrip)
             return this.state.trip.itineraryPlaceData[index];
 
+        return this.getNonTripMarkerData(index);
+    }
+
+    getNonTripMarkerData(index) {
         const p1 = this.state.markerPosition;
         const p2 = this.state.secondMarkerPosition;
         const userPos = this.state.userPosition;
@@ -421,7 +424,7 @@ export default class Atlas extends Component {
     };
 
     async addPlace(index, placeData) {
-        if (!placeData) placeData = this.getDestinationModalData({index: index, modifyTrip: false});
+        if (!placeData) placeData = this.getMarkerData(index,false);
 
         this.maintainMapPosition();
         await this.processFindRequestAddToTrip(placeData);
