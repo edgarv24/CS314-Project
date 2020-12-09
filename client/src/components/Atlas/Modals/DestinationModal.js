@@ -101,12 +101,10 @@ export default class DestinationModal extends React.Component {
                         onClick={() => {
                             const trip = this.props.trip;
                             const index = this.props.placeIndex;
-                            const data = {}; // fill with fields, make sure to add coordinates field
+                            const data = this.buildDataFromForm();
 
-                            //if (index === -1) this.updateTrip(trip.addPlace(data));
-                            //else this.updateTrip(this.props.trip.editPlace(index, data));
-
-                            this.resetState();
+                            if (index === -1) this.updateTrip(trip.addPlace(data));
+                            else this.updateTrip(this.props.trip.editAtIndex(index, data));
                         }}>
                     {this.props.placeIndex >= 0 ? 'Save' : 'Add to Trip'}
                 </Button>
@@ -115,13 +113,36 @@ export default class DestinationModal extends React.Component {
         );
     }
 
+    buildDataFromForm() {
+        const coordinate = getCoordinateOrNull(this.state.coordinates);
+        const newPlaceData = {
+            name: this.state.name,
+            latitude: coordinate.getLatitude().toString(),
+            longitude: coordinate.getLongitude().toString()
+        };
+
+        // add optional parameters if fields are non-empty
+        const {coordinates, municipality, region, country, altitude, notes} = this.state;
+        coordinates && (newPlaceData.coordinates = coordinates);
+        municipality && (newPlaceData.municipality = municipality);
+        region && (newPlaceData.region = region);
+        country && (newPlaceData.country = country);
+        altitude && (newPlaceData.altitude = altitude);
+        notes && (newPlaceData.notes = notes);
+
+        if (this.props.placeIndex === -1)
+            return newPlaceData;
+
+        return {...this.props.trip.places[this.props.placeIndex], ...newPlaceData};
+    }
+
     updateTrip(newTrip) {
         this.props.setTrip(newTrip);
         this.resetState();
     }
 
     resetState() {
-        this.setState({nameInput: ""});
+        // this.setState({name: ""});
         this.props.toggleOpen();
     };
 }

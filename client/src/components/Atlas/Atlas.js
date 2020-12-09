@@ -312,7 +312,7 @@ export default class Atlas extends Component {
     async setTrip(newTrip) {
         await newTrip.updateDistance();
 
-        // changes to zoom on trip instead
+        // change to zoom on trip instead
         const tripPlaces = newTrip.places;
         const firstPlace = (tripPlaces.length > 0) ? tripPlaces[0] : null;
         const newCenter = firstPlace ? {lat: firstPlace.latitude, lng: firstPlace.longitude} : this.state.userPosition;
@@ -384,7 +384,9 @@ export default class Atlas extends Component {
             {flag}{`${placeData.primary_text}`}<br />
             <div className="text-muted">{placeData.location_text}</div>
             <div className="text-muted">{distanceText}</div>
-            {placeData.altitude && <div className="text-muted">{`Altitude: ${placeData.altitude}`}</div>}
+            {placeData.altitude && <div className="text-muted">
+                {`Altitude: ${placeData.altitude} ${correctUnits("feet", placeData.altitude)}`}
+            </div>}
         </div>;
     }
 

@@ -109,6 +109,24 @@ describe('Trip', () => {
         expect(newTrip.places.length).toEqual(4);
     });
 
+    it('edits place at an index', () => {
+        const places = [{'name': 'Place 1', 'latitude': '0', 'longitude': '0'},
+            {'name': 'Place 2', 'latitude': '0', 'longitude': '0'},
+            {'name': 'Place 3', 'latitude': '0', 'longitude': '0'}];
+        let newTrip = trip.addPlaces(places);
+        expect(newTrip.places[1].name).toEqual('Place 2');
+
+        let newPlaceData = {'name': 'Fort Collins', 'latitude': '40.5853', 'longitude': '-105.0844'};
+        newTrip = newTrip.editAtIndex(1, newPlaceData);
+        expect(newTrip.places[1].name).toEqual('Fort Collins');
+        expect(newTrip.places.length).toEqual(3);
+
+        newPlaceData = {'name': 'Washington', 'latitude': '0', 'longitude': '0'};
+        newTrip = newTrip.editAtIndex(2, newPlaceData);
+        expect(newTrip.places[2].name).toEqual('Washington');
+        expect(newTrip.places.length).toEqual(3);
+    });
+
     it('removes a places at an index', () => {
         const p1 = {'name': 'Place 1', 'latitude': '0', 'longitude': '0'};
         const p2 = {'name': 'Place 2', 'latitude': '0', 'longitude': '0'};
