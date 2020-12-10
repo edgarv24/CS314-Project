@@ -55,7 +55,7 @@ export default class Atlas extends Component {
             userPosition: null,
             markerPosition: null,
             secondMarkerPosition: null,
-            markerGeocodeData: null,
+            markerGeocodeData: [{}, {}, {}],
             selectedMarker: {isTripMarker: false, index: 0},
             mapCenter: MAP_CENTER_DEFAULT,
             mapBounds: null,
@@ -76,11 +76,13 @@ export default class Atlas extends Component {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const homePosition = {lat: position.coords.latitude, lng: position.coords.longitude};
                 let homeGeocodeData = null;
-                await this.requestGeocodeData(homePosition).then(result => homeGeocodeData = result);
+                try {
+                    await this.requestGeocodeData(homePosition).then(result => homeGeocodeData = result);
+                } catch (error) {}
                 this.setState({
                     userPosition: homePosition,
                     markerPosition: homePosition,
-                    markerData: [homeGeocodeData, null, null],
+                    markerGeocodeData: [homeGeocodeData, null, null],
                     mapCenter: homePosition,
                     mapBounds: null
                 })
@@ -290,7 +292,7 @@ export default class Atlas extends Component {
     }
 
     getNonTripMarkerData(index) {
-        const markerData = this.state.markerData[index];
+        const markerData = this.state.markerGeocodeData ? this.state.markerGeocodeData[index] : {};
         const p1 = this.state.markerPosition;
         const p2 = this.state.secondMarkerPosition;
         const userPos = this.state.userPosition;
@@ -301,10 +303,11 @@ export default class Atlas extends Component {
             result = {name: '', latitude: p1.lat.toString(), longitude: p1.lng.toString()};
         else if (index === 2)
             result = {name: '', latitude: p2.lat.toString(), longitude: p2.lng.toString()};
-        if (markerData.name) result.name = markerData.name;
-        if (markerData.municipality) result.municipality = markerData.municipality;
-        if (markerData.region) result.region = markerData.region;
-        if (markerData.country) result.country = markerData.country;
+
+        ['name', 'municipality', 'region', 'country'].forEach(key => {
+           if (markerData[key]) result[key] = markerData[key];
+        });
+
         return result;
     }
 
@@ -357,13 +360,17 @@ export default class Atlas extends Component {
             newMarkerPosition2 = clickPosition;
         }
 
-        const markerData = this.state.markerData;
-        markerData[clickIndex] = await this.requestGeocodeData(clickPosition);
+        const markerData = this.state.markerGeocodeData;
+        try {
+            markerData[clickIndex] = await this.requestGeocodeData(clickPosition);
+        } catch (error) {
+            markerData[clickIndex] = null;
+        }
 
         this.maintainMapPosition({
             markerPosition: newMarkerPosition,
             secondMarkerPosition: newMarkerPosition2,
-            markerData: markerData,
+            markerGeocodeData: markerData,
             selectedMarker: {isTripMarker: false, index: newMarkerPosition2 ? 2 : 1},
             distanceLabel: null
         });
@@ -432,7 +439,7 @@ export default class Atlas extends Component {
     }
 
     getNonTripPopupLabel(index, latLng) {
-        const markerData = this.state.markerData[index];
+        const markerData = this.state.markerGeocodeData ? this.state.markerGeocodeData[index] : {};
         const isHomeMarker = index === 0;
 
         if (!markerData) {
