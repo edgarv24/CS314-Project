@@ -279,9 +279,12 @@ export default class Trip {
     buildCSVFormat(){
         const header = "'name', 'type', 'lat', 'lng'\n";
         if (this.places.name === ''){
-            this.places.name = " ";
+            this.places.name = "";
         }
-        const body = this.places.map(e=> `"${e.name}", "${e.type}", "${e.latitude}", "${e.longitude}"\n`);
+        let body = "";
+        for (let i =0; i < this.places.length; i++){
+            body += `"${this.places[i].name}", "${this.places[i].type}", "${this.places[i].latitude}", "${this.places[i].longitude}"\n`;
+        }
         return header + body;
     }
 
