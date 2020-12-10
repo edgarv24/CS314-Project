@@ -48,13 +48,6 @@ public class TestOptimizer {
   }
 
   @Test
-  @DisplayName("Initialize places to number of places in tour")
-  public void testPlacesSize() {
-    opt.setPlaces(places);
-    assertEquals(4, opt.getPlaces().size());
-  }
-
-  @Test
   @DisplayName("It should have an integer array to hold the tour")
   public void testTourArray() {
     assertNotNull(opt.getTour());
@@ -78,13 +71,6 @@ public class TestOptimizer {
   @DisplayName("It should have a boolean array for unvisited cities")
   public void testVisitedCities() {
     assertNotNull(opt.getVisitedCities());
-  }
-
-  @Test
-  @DisplayName("Initialize Visited Cities array to number of places in tour")
-  public void testVisitedCitiesSize() {
-    opt.setVisitedCities(places);
-    assertEquals(4, opt.getVisitedCities().length);
   }
 
   @Test
