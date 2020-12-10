@@ -278,9 +278,12 @@ export default class Trip {
 
     buildCSVFormat(){
         const header = "'name', 'type', 'lat', 'lng'\n";
-        return header + this.places.map(place => '"${place.name}", "${place.type}", "${place.latitude}", "${place.longitude}"\n');
+        if (this.places.name === ''){
+            this.places.name = " ";
+        }
+        const body = this.places.map(e=> `"${e.name}", "${e.type}", "${e.latitude}", "${e.longitude}"\n`);
+        return header + body;
     }
-
 
     downloadAsKML() {
         const filename = this.title.replace(/ /g,"_").toLowerCase();

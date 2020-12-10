@@ -347,23 +347,15 @@ describe('Trip', () => {
     });
 
     it("check convertToCSV turns JSON into CSV", () => {
-        let tripFile = {
-            "requestType": "trip",
-            "requestVersion": 3,
-            "options": {
-                "title": "Shopping Loop",
-                "earthRadius": "3959.0"
-            },
-            "places": [{
-                "name": "Fort Collins",
-                "latitude": "40.5853",
-                "longitude": "-105.0844",
-                "notes": "Home of CSU"
-            }],
-            "distances": [20]
-        }
-        let expectedCSV = "'name', 'type', 'lat', 'lng'\n";
-        let actualCSV = trip.buildCSVFormat();
+        const p1 = {'name': 'Water Park', 'municipality': 'Tanga', 'country': 'Tanzania',
+            'latitude': '8', 'longitude': '24'};
+        const p2 = {'name': '', 'municipality': 'Denver', 'state': 'Colorado', 'country': 'United States',
+            'latitude': '3', 'longitude': '7'};
+
+        const newTrip = trip.addPlaces([p1, p2]);
+
+        let expectedCSV = "'name', 'type', 'lat', 'lng'\n" + '"Water Park", "undefined", "8", "24"\n' + '"", "undefined", "3", "7"\n';
+        let actualCSV = newTrip.buildCSVFormat();
         expect(actualCSV).toEqual(expectedCSV);
     });
 });
