@@ -52,10 +52,10 @@ public class TestRequestTrip {
   }
 
   @Test
-  @DisplayName("Version number is equal to 5")
+  @DisplayName("Version number is equal to 4")
   public void testVersion() {
     int version = requestTrip.getRequestVersion();
-    assertEquals(5, version);
+    assertEquals(4, version);
   }
 
   @Test
