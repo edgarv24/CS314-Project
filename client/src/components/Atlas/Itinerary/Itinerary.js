@@ -65,7 +65,7 @@ export default class Itinerary extends React.Component {
                     Trip Settings
                 </Button>
                 <Button id="add-destination-button" outline className="ml-3" size="sm" color="primary"
-                        onClick={() => undefined} disabled={true}>
+                        onClick={() => this.props.editPlace(-1, false)}>
                     Add Destination
                 </Button>
                 {this.renderScrollUpButton()}

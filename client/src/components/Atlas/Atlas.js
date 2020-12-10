@@ -1,7 +1,8 @@
 import React, {Component, createRef} from 'react';
 import {Button, Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 
-import {Map, Marker, Popup, TileLayer, Polyline} from 'react-leaflet';
+import {Map, Marker, Popup, TileLayer} from 'react-leaflet';
+import Polyline from 'react-leaflet-arrowheads';
 import Control from 'react-leaflet-control';
 import 'leaflet/dist/leaflet.css';
 
@@ -263,7 +264,7 @@ export default class Atlas extends Component {
 
     renderDestinationModal() {
         const settings = this.state.destinationModalSettings;
-        const placeData = settings ? this.getDestinationModalData(settings) : {};
+        const placeData = settings ? this.getMarkerData(settings.index, settings.modifyTrip) : {};
         const placeIndex = settings ? settings.index : -1;
 
         return (
@@ -279,19 +280,24 @@ export default class Atlas extends Component {
         );
     }
 
-    getDestinationModalData(settings) {
-        const index = settings.index;
-        if (settings.modifyTrip)
+    getMarkerData(index, modifyTrip) {
+        if (modifyTrip)
             return this.state.trip.itineraryPlaceData[index];
 
+        return this.getNonTripMarkerData(index);
+    }
+
+    getNonTripMarkerData(index) {
         const p1 = this.state.markerPosition;
         const p2 = this.state.secondMarkerPosition;
         const userPos = this.state.userPosition;
+        if (index === 0)
+            return {name: 'Home', latitude: userPos.lat.toString(), longitude: userPos.lng.toString()};
         if (index === 1)
             return {name: '', latitude: p1.lat.toString(), longitude: p1.lng.toString()};
         else if (index === 2)
             return {name: '', latitude: p2.lat.toString(), longitude: p2.lng.toString()};
-        return {name: 'Home', latitude: userPos.lat.toString(), longitude: userPos.lng.toString()};
+        return {};
     }
 
     renderItinerary() {
@@ -302,7 +308,6 @@ export default class Atlas extends Component {
                         trip={this.state.trip}
                         setTrip={this.setTrip}
                         editPlace={this.editPlace}
-                        addPlace={this.addPlace}
                     />
                 </Col>
             </Row>
@@ -326,16 +331,20 @@ export default class Atlas extends Component {
     }
 
     setMarker(mapClickInfo) {
+        const clickPosition = mapClickInfo.latlng;
+        if (Math.abs(clickPosition.lat) > 90 || Math.abs(clickPosition.lng) > 180)
+            return;
+
         let newMarkerPosition = this.state.markerPosition;
         let newMarkerPosition2 = this.state.secondMarkerPosition;
 
         if (!this.state.markerPosition) {
-            newMarkerPosition = mapClickInfo.latlng;
+            newMarkerPosition = clickPosition;
         } else if (!this.state.secondMarkerPosition) {
-            newMarkerPosition2 = mapClickInfo.latlng;
+            newMarkerPosition2 = clickPosition;
         } else {
             newMarkerPosition = this.state.secondMarkerPosition;
-            newMarkerPosition2 = mapClickInfo.latlng;
+            newMarkerPosition2 = clickPosition;
         }
 
         this.maintainMapPosition({
@@ -377,8 +386,10 @@ export default class Atlas extends Component {
 
         const flag = placeData.flag !== "" ? placeData.flag + " " : "";
         const unitText = correctUnits(this.state.trip.units, placeData.cumulative_dist);
-        const distanceText = (placeData.cumulative_dist === 0 && placeData.name === this.state.trip.places[0].name)
-            ? 'Starting Location'
+        const firstPlace = this.state.trip.places[0];
+        const distanceText = (placeData.cumulative_dist === 0 && placeData.name === firstPlace.name
+            && placeData.latitude === firstPlace.latitude && placeData.longitude === firstPlace.longitude)
+            ? 'Trip Origin'
             : `Cumulative Distance: ${placeData.cumulative_dist} ${unitText}`;
         return <div>
             {flag}{`${placeData.primary_text}`}<br />
@@ -405,15 +416,15 @@ export default class Atlas extends Component {
         );
     }
 
-    editPlace(index) {
+    editPlace(index, modifyTrip=true) {
         this.maintainMapPosition({
             destinationModalOpen: true,
-            destinationModalSettings: {modifyTrip: true, index: index}
+            destinationModalSettings: {modifyTrip: modifyTrip, index: index}
         });
     };
 
     async addPlace(index, placeData) {
-        if (!placeData) placeData = this.getDestinationModalData({index: index, modifyTrip: false});
+        if (!placeData) placeData = this.getMarkerData(index,false);
 
         this.maintainMapPosition();
         await this.processFindRequestAddToTrip(placeData);
@@ -428,12 +439,13 @@ export default class Atlas extends Component {
     }
 
     renderPolyline(position1, position2, color, openPopup, distance, key) {
-        const initMarker = ref => ref && openPopup && ref.leafletElement.openPopup();
+        const initMarker = ref => ref && openPopup && ref.polylineRef.leafletElement.openPopup();
 
         if (position1 && position2) {
             return (
-                <Polyline key={key} ref={initMarker} color={color} positions={
-                    [[position1.lat, position1.lng], [position2.lat, position2.lng]]}>
+                <Polyline key={key} ref={initMarker} color={color}
+                          arrowheads={{ fill: true, yawn: '60', size: '6px', frequency: '2' }}
+                          positions={[[position1.lat, position1.lng], [position2.lat, position2.lng]]}>
                     <Popup offset={[0, -1]} className="font-weight-bold">Distance: {distance}</Popup>
                 </Polyline>
             );

@@ -14,9 +14,13 @@ const TRIP = new Trip().loadJSON(peaksTrip);
 
 describe('Itinerary', () => {
     let wrapper;
+    let destinationModalOpen;
+
+    const editPlace = (index, modifyTrip=false) => { destinationModalOpen = true; }
 
     beforeEach(() => {
-        wrapper = shallow(<Itinerary trip={TRIP}/>);
+        destinationModalOpen = false;
+        wrapper = shallow(<Itinerary trip={TRIP} editPlace={editPlace}/>);
     });
 
     it('renders header text', () => {
@@ -45,7 +49,9 @@ describe('Itinerary', () => {
         wrapper.find('#trip-settings-button').simulate('click');
         expect(wrapper.state().settingsModalOpen).toBe(true);
 
+        expect(destinationModalOpen).toEqual(false);
         wrapper.find('#add-destination-button').simulate('click');
+        expect(destinationModalOpen).toEqual(true);
     });
 
     it('gets the correct distance label', () => {
