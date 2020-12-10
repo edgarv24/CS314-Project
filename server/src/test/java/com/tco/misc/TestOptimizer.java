@@ -47,12 +47,12 @@ public class TestOptimizer {
     assertNotNull(opt.getPlaces());
   }
 
-  @Test
+  /*@Test
   @DisplayName("Initialize places to number of places in tour")
   public void testPlacesSize() {
     opt.setPlaces(places);
     assertEquals(4, opt.getPlaces().size());
-  }
+  }*/
 
   @Test
   @DisplayName("It should have an integer array to hold the tour")
@@ -80,12 +80,12 @@ public class TestOptimizer {
     assertNotNull(opt.getVisitedCities());
   }
 
-  @Test
+ /* @Test
   @DisplayName("Initialize Visited Cities array to number of places in tour")
   public void testVisitedCitiesSize() {
     opt.setVisitedCities(places);
     assertEquals(4, opt.getVisitedCities().length);
-  }
+  }*/
 
   @Test
   @DisplayName("It should have a 2D int matrix for distances")

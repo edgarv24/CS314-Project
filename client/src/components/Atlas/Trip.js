@@ -263,6 +263,25 @@ export default class Trip {
         downloadNode.click();
         downloadNode.remove();
     }
+
+    downloadAsCSV = () => {
+        const fileName = this.title.replace(/ /g,"_").toLowerCase();
+        const csv = this.buildCSVFormat();
+        const fileData = "data:text/json;charset=utf-8," + encodeURIComponent(csv);
+        const downloadNode = document.createElement('a');
+        downloadNode.setAttribute("href", fileData);
+        downloadNode.setAttribute("download", fileName + ".json");
+        document.body.appendChild(downloadNode);
+        downloadNode.click();
+        downloadNode.remove();
+    }
+
+    buildCSVFormat = () => {
+        const header = "'name', 'type', 'lat', 'lng'\n";
+        return header + this.places.map(place => {'"${place.name}", "${place.type}", "${place.latitude}", "${place.longitude}"\n'});
+    }
+
+
     downloadAsKML() {
         const filename = this.title.replace(/ /g,"_").toLowerCase();
         const kmltrip = new KMLTrip().constructKML(this);

@@ -51,6 +51,7 @@
     "jest": "^26.0.1",
     "jest-cli": "^26.0.1",
     "jest-fetch-mock": "^3.0.3",
+    "json-2-csv": "^3.8.0",
     "postcss-loader": "^3.0.0",
     "precss": "^4.0.0",
     "react-leaflet-control": "^2.1.2",

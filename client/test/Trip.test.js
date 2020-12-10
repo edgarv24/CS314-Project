@@ -345,4 +345,25 @@ describe('Trip', () => {
         const opt = trip.optimize();
         expect(opt.options.response).toEqual("1.0");
     });
+
+    it("check convertToCSV turns JSON into CSV", () => {
+        let tripFile = {
+            "requestType": "trip",
+            "requestVersion": 3,
+            "options": {
+                "title": "Shopping Loop",
+                "earthRadius": "3959.0"
+            },
+            "places": [{
+                "name": "Fort Collins",
+                "latitude": "40.5853",
+                "longitude": "-105.0844",
+                "notes": "Home of CSU"
+            }],
+            "distances": [20]
+        }
+        let expectedCSV = "'name', 'type', 'lat', 'lng'\n";
+        let actualCSV = trip.buildCSVFormat();
+        expect(actualCSV).toEqual(expectedCSV);
+    });
 });
