@@ -346,6 +346,28 @@ describe('Trip', () => {
         expect(opt.options.response).toEqual("1.0");
     });
 
+    it('reverses the trip', () => {
+        const places = [{'name': 'Place 1', 'latitude': '0', 'longitude': '0'},
+            {'name': 'Place 2', 'latitude': '0', 'longitude': '0'},
+            {'name': 'Place 3', 'latitude': '0', 'longitude': '0'},
+            {'name': 'Place 4', 'latitude': '0', 'longitude': '0'}];
+        let newTrip = trip.addPlaces(places);
+        expect(newTrip.places.length).toEqual(4);
+
+        newTrip = newTrip.reverse();
+        expect(newTrip.places.length).toEqual(4);
+        expect(newTrip.places[0].name).toEqual('Place 1');
+        expect(newTrip.places[1].name).toEqual('Place 4');
+        expect(newTrip.places[2].name).toEqual('Place 3');
+        expect(newTrip.places[3].name).toEqual('Place 2');
+
+        newTrip = newTrip.removeAtIndex(3);
+        newTrip = newTrip.removeAtIndex(0);
+        expect(newTrip.places.length).toEqual(2);
+        const tripNoChange = newTrip.reverse();
+        expect(tripNoChange).toEqual(newTrip);
+    });
+
     it("check convertToCSV turns JSON into CSV", () => {
         const p1 = {'name': 'Water Park', 'municipality': 'Tanga', 'country': 'Tanzania',
             'latitude': '8', 'longitude': '24'};

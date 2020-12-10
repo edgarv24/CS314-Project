@@ -74,6 +74,20 @@ export default class Trip {
         return newTrip;
     }
 
+    reverse() {
+        if (this.places.length <= 2)
+            return this;
+
+        const newTrip = this.copy();
+
+        newTrip.places.reverse();
+        const origin = newTrip.places.pop();
+        newTrip.places.unshift(origin);
+
+        newTrip.options.response = '0.0';
+        return newTrip;
+    }
+
     removeAtIndex(index) {
         if (index < 0 || index >= this.places.length)
             return this;

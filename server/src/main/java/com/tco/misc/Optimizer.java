@@ -16,7 +16,6 @@ public class Optimizer {
 
   public void configure(List<Map<String, String>> places, double time) {
     this.responseTime = time * 1000;
-    this.places = new ArrayList<>();
     this.places = places;
     setTour(places);
     startingCity = tour[0];

@@ -3,6 +3,7 @@ import {Button, Container} from "reactstrap";
 import {IconButton, Paper, Tooltip, Zoom} from '@material-ui/core';
 import FlightIcon from "@material-ui/icons/Flight";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import SwapVertIcon from '@material-ui/icons/SwapVert';
 
 import {DestinationTable} from "./DestinationTable";
 import TripSettingsModal from '../Modals/TripSettingsModal';
@@ -58,6 +59,7 @@ export default class Itinerary extends React.Component {
     }
 
     renderButtons() {
+        const reverseDisabled = this.props.trip.places.length <= 2;
         return (
             <div className="mt-3">
                 <Button id="trip-settings-button" outline size="sm" color="primary"
@@ -68,18 +70,21 @@ export default class Itinerary extends React.Component {
                         onClick={() => this.props.editPlace(-1, false)}>
                     Add Destination
                 </Button>
-                {this.renderScrollUpButton()}
+                {this.renderPaperButton(<ArrowUpwardIcon/>, "scroll-up-button", "Map", false,
+                    () => window.scrollTo({top: 0, behavior: 'smooth'}))}
+                {this.renderPaperButton(<SwapVertIcon/>, "reverse-trip-button",
+                    reverseDisabled ? "Reverse Trip (>2 places)" : "Reverse Trip", reverseDisabled,
+                    () => this.props.setTrip(this.props.trip.reverse()))}
             </div>
         );
     }
 
-    renderScrollUpButton() {
+    renderPaperButton(icon, id, help_text, disabled, onClick) {
         return (
-            <Tooltip title="Map" placement="left" TransitionComponent={Zoom} arrow>
-                <Paper className="float-right" elevation={1}>
-                    <IconButton id="scroll-up-button" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
-                                size="small" color="inherit">
-                        <ArrowUpwardIcon/>
+            <Tooltip title={help_text} placement="top" TransitionComponent={Zoom} arrow>
+                <Paper className="float-right ml-3" elevation={1}>
+                    <IconButton id={id} onClick={onClick} disabled={disabled} size="small" color="inherit">
+                        {icon}
                     </IconButton>
                 </Paper>
             </Tooltip>
