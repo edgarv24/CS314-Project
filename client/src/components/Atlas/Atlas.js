@@ -3,7 +3,6 @@ import {Button, Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'r
 
 import {Map, Marker, Popup, TileLayer} from 'react-leaflet';
 import Polyline from 'react-leaflet-arrowheads';
-import Control from 'react-leaflet-control';
 import 'leaflet/dist/leaflet.css';
 
 import blue_icon from 'leaflet/dist/images/marker-icon.png';
@@ -11,10 +10,7 @@ import red_icon from '../../static/images/markers/marker-icon-red.png';
 import gold_icon from '../../static/images/markers/marker-icon-gold.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-import {Paper} from '@material-ui/core';
-import {IconButton, Tooltip, Zoom} from '@material-ui/core';
 import {ArrowDownward, GpsFixed, LinearScale, LocationOn, Remove, Search, TrendingUp} from '@material-ui/icons';
-import blueGrey from '@material-ui/core/colors/blueGrey';
 
 import Trip from "./Trip";
 import Itinerary from "./Itinerary/Itinerary";
@@ -23,6 +19,7 @@ import FindModal from "./Modals/FindModal";
 import DestinationModal from "./Modals/DestinationModal";
 
 import {correctUnits, LOG} from "../../utils/constants";
+import MapButton from "./MapButton";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
 const MAP_CENTER_DEFAULT = {lat: 40.5734, lng: -105.0865};
@@ -518,21 +515,4 @@ export default class Atlas extends Component {
             zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM
         });
     }
-}
-
-const MapButton = ({buttonID, buttonIcon, mapPosition, tooltipText, tooltipPlacement, disabled, toggledOn, onClick}) => {
-    const disabledText = disabled ? " (disabled)" : "";
-    const ICON_COLOR = toggledOn ? undefined : blueGrey[200];
-    return (
-        <Control position={mapPosition}>
-            <Tooltip title={tooltipText + disabledText} placement={tooltipPlacement} TransitionComponent={Zoom} arrow>
-                <Paper elevation={4}>
-                    <IconButton id={buttonID} onClick={onClick} disabled={disabled} size="small"
-                                color="inherit" style={{ color: ICON_COLOR }}>
-                            {buttonIcon}
-                    </IconButton>
-                </Paper>
-            </Tooltip>
-        </Control>
-    );
 }
