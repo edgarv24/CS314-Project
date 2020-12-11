@@ -18,7 +18,7 @@ import DistanceModal from "./Modals/DistanceModal";
 import FindModal from "./Modals/FindModal";
 import DestinationModal from "./Modals/DestinationModal";
 
-import {correctUnits, LOG} from "../../utils/constants";
+import {correctUnits, getFlagIcon, LOG} from "../../utils/constants";
 import MapButton from "./MapButton";
 
 const MAP_BOUNDS = [[-90, -180], [90, 180]];
@@ -28,6 +28,7 @@ const BLUE_MARKER = L.icon({iconUrl: blue_icon, shadowUrl: iconShadow, iconAncho
 const RED_MARKER = L.icon({iconUrl: red_icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
 const GOLD_MARKER = L.icon({iconUrl: gold_icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
 
+const GEOCODE_API = "https://us1.locationiq.com/v1/reverse.php?key=pk.a50932c38c1f39cafa823d7ac5c13eda&format=json";
 const MAP_LAYER_ATTRIBUTION = "&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors";
 const MAP_LAYER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const MAP_MIN_ZOOM = 1;
@@ -54,6 +55,7 @@ export default class Atlas extends Component {
             userPosition: null,
             markerPosition: null,
             secondMarkerPosition: null,
+            markerGeocodeData: [{}, {}, {}],
             selectedMarker: {isTripMarker: false, index: 0},
             mapCenter: MAP_CENTER_DEFAULT,
             mapBounds: null,
@@ -69,13 +71,18 @@ export default class Atlas extends Component {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
+            navigator.geolocation.getCurrentPosition(async (position) => {
                 const homePosition = {lat: position.coords.latitude, lng: position.coords.longitude};
+                let homeGeocodeData = null;
+                try {
+                    await this.requestGeocodeData(homePosition).then(result => homeGeocodeData = result);
+                } catch (error) {}
                 this.setState({
                     userPosition: homePosition,
                     markerPosition: homePosition,
+                    markerGeocodeData: [homeGeocodeData, null, null],
                     mapCenter: homePosition,
                     mapBounds: null
                 })
@@ -285,16 +292,28 @@ export default class Atlas extends Component {
     }
 
     getNonTripMarkerData(index) {
+        const markerData = this.state.markerGeocodeData ? this.state.markerGeocodeData[index] : {};
         const p1 = this.state.markerPosition;
         const p2 = this.state.secondMarkerPosition;
         const userPos = this.state.userPosition;
+        let result = {};
         if (index === 0)
-            return {name: 'Home', latitude: userPos.lat.toString(), longitude: userPos.lng.toString()};
+            result = {name: 'Home', latitude: userPos.lat.toString(), longitude: userPos.lng.toString()};
         if (index === 1)
-            return {name: '', latitude: p1.lat.toString(), longitude: p1.lng.toString()};
+            result = {name: '', latitude: p1.lat.toString(), longitude: p1.lng.toString()};
         else if (index === 2)
-            return {name: '', latitude: p2.lat.toString(), longitude: p2.lng.toString()};
-        return {};
+            result = {name: '', latitude: p2.lat.toString(), longitude: p2.lng.toString()};
+
+        const loc = markerData.address ? markerData.address : {};
+        const street = [loc.house_number, loc.road].filter(it => it).join(' ');
+        const region = [loc.county, loc.state].filter(it => it).join(', ');
+        if (street) result.name = street;
+        if (loc.city) result.municipality = loc.city;
+        if (region) result.region = region;
+        if (loc.country) result.country = loc.country;
+        if (loc.country_code) result.country_id = loc.country_code.toUpperCase();
+
+        return result;
     }
 
     renderItinerary() {
@@ -327,16 +346,18 @@ export default class Atlas extends Component {
         });
     }
 
-    setMarker(mapClickInfo) {
+    async setMarker(mapClickInfo) {
         const clickPosition = mapClickInfo.latlng;
         if (Math.abs(clickPosition.lat) > 90 || Math.abs(clickPosition.lng) > 180)
             return;
 
+        let clickIndex = 2;
         let newMarkerPosition = this.state.markerPosition;
         let newMarkerPosition2 = this.state.secondMarkerPosition;
 
         if (!this.state.markerPosition) {
             newMarkerPosition = clickPosition;
+            clickIndex = 1;
         } else if (!this.state.secondMarkerPosition) {
             newMarkerPosition2 = clickPosition;
         } else {
@@ -344,12 +365,33 @@ export default class Atlas extends Component {
             newMarkerPosition2 = clickPosition;
         }
 
+        const markerData = this.state.markerGeocodeData;
+        try {
+            markerData[clickIndex] = await this.requestGeocodeData(clickPosition);
+        } catch (error) {
+            markerData[clickIndex] = null;
+        }
+
         this.maintainMapPosition({
             markerPosition: newMarkerPosition,
             secondMarkerPosition: newMarkerPosition2,
+            markerGeocodeData: markerData,
             selectedMarker: {isTripMarker: false, index: newMarkerPosition2 ? 2 : 1},
             distanceLabel: null
         });
+    }
+
+    async requestGeocodeData(latlng) {
+        const latitude = latlng.lat.toString();
+        const longitude = latlng.lng.toString();
+        const link = GEOCODE_API + `&lat=${latitude}&lon=${longitude}`;
+        try {
+            let data = {};
+            await fetch(link).then(response => data = response.json());
+            return data;
+        } catch (error) {
+            return null;
+        }
     }
 
     getMarker(position, iconStyle, placeData, key, index, isTripMarker) {
@@ -365,7 +407,7 @@ export default class Atlas extends Component {
                             this.maintainMapPosition({selectedMarker: {isTripMarker: isTripMarker, index: index}});
                         }}>
                     <Popup offset={[0, -18]} className="font-weight-bold">
-                        {this.getPopupLabel(position, placeData)}
+                        {this.getPopupLabel(index, position, placeData)}
                         {this.getPopupButton(index, position, placeData, isTripMarker)}
                     </Popup>
                 </Marker>
@@ -373,13 +415,10 @@ export default class Atlas extends Component {
         }
     }
 
-    getPopupLabel(position, placeData) {
+    getPopupLabel(index, position, placeData) {
         const latLng = this.getStringMarkerPosition(position);
-        if (!placeData) {
-            if (position === this.getHomePosition())
-                return <div>(You are here)<br />{latLng}</div>;
-            return <div>{latLng}</div>;
-        }
+        if (!placeData)
+            return this.getNonTripPopupLabel(index, latLng);
 
         const flag = placeData.flag !== "" ? placeData.flag + " " : "";
         const unitText = correctUnits(this.state.trip.units, placeData.cumulative_dist);
@@ -396,6 +435,32 @@ export default class Atlas extends Component {
                 {`Altitude: ${placeData.altitude} ${correctUnits("feet", placeData.altitude)}`}
             </div>}
         </div>;
+    }
+
+    getNonTripPopupLabel(index, latLng) {
+        const markerData = this.state.markerGeocodeData ? this.state.markerGeocodeData[index] : {};
+        const isHomeMarker = index === 0;
+
+        if (!markerData) {
+            if (isHomeMarker)
+                return <div>(You are here)<br/>{latLng}</div>;
+            return <div>{latLng}</div>;
+        }
+
+        const locData = markerData.address ? markerData.address : {};
+
+        const flagIcon = getFlagIcon(locData.country_code ? locData.country_code.toUpperCase() : '');
+        const flagText = flagIcon ? flagIcon + " " : "";
+        const name = [locData.house_number, locData.road].filter(item => item).join(' ');
+        const location = [locData.city, locData.county, locData.state, locData.postcode, locData.country].filter(item => item).join(', ');
+
+        return (
+            <div>
+                {isHomeMarker && <div>(You are here)</div>}
+                {<div>{flagText}{name ? name : latLng}</div>}
+                {location && <div className="text-muted">{location}</div>}
+            </div>
+        );
     }
 
     getPopupButton(index, position, placeData, isTripMarker) {
