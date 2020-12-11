@@ -76,12 +76,11 @@ export default class FindModal extends Component {
             onChange={(event, eventType) => {
                 if(id === "combo-box") {
                     this.setState({selectedCountry: eventType});
-                    this.onInputChange(this.state.inputText);
                 }
                 else {
                     this.setState({selectAirportType: eventType});
-                    this.onInputChange(this.state.inputText);
                 }
+                this.onInputChange(this.state.inputText);
             }}
             getOptionLabel={(option) => option}
             renderInput={(params) => <TextField {...params} label={typeLabel} variant="outlined"/>}/>
