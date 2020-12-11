@@ -28,7 +28,7 @@ const BLUE_MARKER = L.icon({iconUrl: blue_icon, shadowUrl: iconShadow, iconAncho
 const RED_MARKER = L.icon({iconUrl: red_icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
 const GOLD_MARKER = L.icon({iconUrl: gold_icon, shadowUrl: iconShadow, iconAnchor: [12, 40]});
 
-const GEOCODE_API = "http://open.mapquestapi.com/geocoding/v1/reverse?key=xGqoyl4sb5Ab1ixaLlJ47BgrnoF1ERvc";
+const GEOCODE_API = "https://us1.locationiq.com/v1/reverse.php?key=pk.a50932c38c1f39cafa823d7ac5c13eda&format=json";
 const MAP_LAYER_ATTRIBUTION = "&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors";
 const MAP_LAYER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const MAP_MIN_ZOOM = 1;
@@ -304,9 +304,13 @@ export default class Atlas extends Component {
         else if (index === 2)
             result = {name: '', latitude: p2.lat.toString(), longitude: p2.lng.toString()};
 
-        ['name', 'municipality', 'region', 'country'].forEach(key => {
-           if (markerData[key]) result[key] = markerData[key];
-        });
+        const loc = markerData.address ? markerData.address : {};
+        const street = [loc.house_number, loc.road].filter(it => it).join(' ');
+        const region = [loc.county, loc.state].filter(it => it).join(', ');
+        if (street) result.name = street;
+        if (loc.city) result.municipality = loc.city;
+        if (region) result.region = region;
+        if (loc.country) result.country = loc.country;
 
         return result;
     }
@@ -379,17 +383,11 @@ export default class Atlas extends Component {
     async requestGeocodeData(latlng) {
         const latitude = latlng.lat.toString();
         const longitude = latlng.lng.toString();
-        const link = GEOCODE_API + `&location=${latitude},${longitude}`;
+        const link = GEOCODE_API + `&lat=${latitude}&lon=${longitude}`;
         try {
             let data = {};
-            await fetch(link).then(response => response.json()).then(result => data = result.results[0].locations[0]);
-            const map = {};
-            data['street'] && (map.name = data['street']);
-            data['adminArea5'] && (map.municipality = data['adminArea5']);
-            data['adminArea3'] && (map.region = data['adminArea3']);
-            data['adminArea1'] && (map.country = data['adminArea1']);
-            data['postalCode'] && (map.postalCode = data['postalCode']);
-            return map;
+            await fetch(link).then(response => data = response.json());
+            return data;
         } catch (error) {
             return null;
         }
@@ -448,15 +446,17 @@ export default class Atlas extends Component {
             return <div>{latLng}</div>;
         }
 
-        const flagIcon = getFlagIcon(markerData.country);
+        const locData = markerData.address ? markerData.address : {};
+
+        const flagIcon = getFlagIcon(locData.country_code);
         const flagText = flagIcon ? flagIcon + " " : "";
-        const location = [markerData.municipality, markerData.region, markerData.country, markerData.postalCode]
-            .filter(item => item).join(', ');
+        const name = [locData.house_number, locData.road, locData.hamlet].filter(item => item).join(', ');
+        const location = [locData.city, locData.county, locData.state, locData.postcode, locData.country].filter(item => item).join(', ');
 
         return (
             <div>
                 {isHomeMarker && <div>(You are here)</div>}
-                {<div>{flagText}{markerData.name ? markerData.name : latLng}</div>}
+                {<div>{flagText}{name ? name : latLng}</div>}
                 {location && <div className="text-muted">{location}</div>}
             </div>
         );
