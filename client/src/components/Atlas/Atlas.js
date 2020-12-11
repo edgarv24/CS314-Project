@@ -311,6 +311,7 @@ export default class Atlas extends Component {
         if (loc.city) result.municipality = loc.city;
         if (region) result.region = region;
         if (loc.country) result.country = loc.country;
+        if (loc.country_code) result.country_id = loc.country_code.toUpperCase();
 
         return result;
     }
@@ -448,9 +449,9 @@ export default class Atlas extends Component {
 
         const locData = markerData.address ? markerData.address : {};
 
-        const flagIcon = getFlagIcon(locData.country_code);
+        const flagIcon = getFlagIcon(locData.country_code ? locData.country_code.toUpperCase() : '');
         const flagText = flagIcon ? flagIcon + " " : "";
-        const name = [locData.house_number, locData.road, locData.hamlet].filter(item => item).join(', ');
+        const name = [locData.house_number, locData.road].filter(item => item).join(' ');
         const location = [locData.city, locData.county, locData.state, locData.postcode, locData.country].filter(item => item).join(', ');
 
         return (
