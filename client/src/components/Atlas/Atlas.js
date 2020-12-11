@@ -1,7 +1,7 @@
 import React, {Component, createRef} from 'react';
 import {Button, Col, Container, Row, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 
-import {Map, Marker, Popup, TileLayer} from 'react-leaflet';
+import {FeatureGroup, Map, Marker, Popup, TileLayer} from 'react-leaflet';
 import Polyline from 'react-leaflet-arrowheads';
 import 'leaflet/dist/leaflet.css';
 
@@ -10,7 +10,7 @@ import red_icon from '../../static/images/markers/marker-icon-red.png';
 import gold_icon from '../../static/images/markers/marker-icon-gold.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-import {ArrowDownward, GpsFixed, LinearScale, LocationOn, Remove, Search, TrendingUp} from '@material-ui/icons';
+import {ArrowDownward, GpsFixed, LinearScale, LocationOn, Remove, Search, TrendingUp, ZoomOutMap} from '@material-ui/icons';
 
 import Trip from "./Trip";
 import Itinerary from "./Itinerary/Itinerary";
@@ -39,6 +39,7 @@ export default class Atlas extends Component {
     constructor(props) {
         super(props);
         this.mapRef = createRef();
+        this.markerGroupRef = createRef();
 
         this.setMarker = this.setMarker.bind(this);
         this.setMapToHome = this.setMapToHome.bind(this);
@@ -106,7 +107,6 @@ export default class Atlas extends Component {
                 minZoom={MAP_MIN_ZOOM}
                 maxZoom={MAP_MAX_ZOOM}
                 maxBounds={MAP_BOUNDS}
-
                 onClick={this.setMarker}
             >
                 <TileLayer url={MAP_LAYER_URL} attribution={MAP_LAYER_ATTRIBUTION}/>
@@ -152,7 +152,9 @@ export default class Atlas extends Component {
             ['optimize-button', <TrendingUp/>, BR, OPTIMIZE_DISABLE_TEXT, TOOLTIP_LEFT, DISABLE_OPTIMIZE, true,
                 async () => {this.maintainMapPosition(); await this.setTrip(this.state.trip.optimize());}],
             ['scroll-down-button', <ArrowDownward/>, TR, 'Itinerary', TOOLTIP_LEFT, false, true,
-                () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})]
+                () => document.getElementById('itinerary').scrollIntoView({'behavior': 'smooth'})],
+            ['zoom-trip-button', <ZoomOutMap/>, TR, 'Zoom on Trip', TOOLTIP_LEFT, NO_TRIP_DATA, true,
+                () => this.setState({mapBounds: this.getTripBounds()})]
         ];
     }
 
@@ -160,9 +162,11 @@ export default class Atlas extends Component {
         const placeData = this.state.trip.itineraryPlaceData;
         return (
             <>
-                {this.state.displayTripMarkers && this.state.trip.coordinatesList.map((position, index) =>
-                    this.getMarker(position, GOLD_MARKER, placeData[index], placeData[index].id, index, true)
-                )};
+                <FeatureGroup ref={this.markerGroupRef}>
+                    {this.state.displayTripMarkers && this.state.trip.coordinatesList.map((position, index) =>
+                        this.getMarker(position, GOLD_MARKER, placeData[index], placeData[index].id, index, true)
+                    )};
+                </FeatureGroup>
                 {this.getMarker(this.state.markerPosition, BLUE_MARKER, null, "first", 1, false)}
                 {this.getMarker(this.state.secondMarkerPosition, BLUE_MARKER, null, "second", 2, false)}
                 {this.getMarker(this.state.userPosition, RED_MARKER, null, "user", 0, false)}
@@ -292,6 +296,9 @@ export default class Atlas extends Component {
     }
 
     getNonTripMarkerData(index) {
+        if (index === -1)
+            return {};
+
         const markerData = this.state.markerGeocodeData ? this.state.markerGeocodeData[index] : {};
         const p1 = this.state.markerPosition;
         const p2 = this.state.secondMarkerPosition;
@@ -333,16 +340,12 @@ export default class Atlas extends Component {
     async setTrip(newTrip) {
         await newTrip.updateDistance();
 
-        // change to zoom on trip instead
-        const tripPlaces = newTrip.places;
-        const firstPlace = (tripPlaces.length > 0) ? tripPlaces[0] : null;
-        const newCenter = firstPlace ? {lat: firstPlace.latitude, lng: firstPlace.longitude} : this.state.userPosition;
-
+        const tripLength = this.state.trip.places.length;
         this.setState({
             trip: newTrip,
             distanceLabel: null,
-            selectedMarker: {isTripMarker: newTrip.places.length > 0, index: 0},
-            mapBounds: this.getMapBounds(newCenter, newCenter)
+            selectedMarker: {isTripMarker: tripLength > 0, index: 0},
+            mapBounds: this.getTripBounds()
         });
     }
 
@@ -351,13 +354,11 @@ export default class Atlas extends Component {
         if (Math.abs(clickPosition.lat) > 90 || Math.abs(clickPosition.lng) > 180)
             return;
 
-        let clickIndex = 2;
         let newMarkerPosition = this.state.markerPosition;
         let newMarkerPosition2 = this.state.secondMarkerPosition;
 
         if (!this.state.markerPosition) {
             newMarkerPosition = clickPosition;
-            clickIndex = 1;
         } else if (!this.state.secondMarkerPosition) {
             newMarkerPosition2 = clickPosition;
         } else {
@@ -367,9 +368,10 @@ export default class Atlas extends Component {
 
         const markerData = this.state.markerGeocodeData;
         try {
-            markerData[clickIndex] = await this.requestGeocodeData(clickPosition);
+            markerData[1] = markerData[2];
+            markerData[2] = await this.requestGeocodeData(clickPosition);
         } catch (error) {
-            markerData[clickIndex] = null;
+            markerData[2] = null;
         }
 
         this.maintainMapPosition({
@@ -541,6 +543,10 @@ export default class Atlas extends Component {
             mapCenter: (this.mapRef.current) ? this.mapRef.current.leafletElement.getCenter() : MAP_CENTER_DEFAULT,
             zoomLevel: (this.mapRef.current) ? this.mapRef.current.leafletElement.getZoom() : MAP_DEFAULT_ZOOM
         });
+    }
+
+    getTripBounds() {
+        return this.markerGroupRef.current.leafletElement.getBounds().pad(-0.08);
     }
 
     getMapBounds(markerLatLng1, markerLatLng2) {
