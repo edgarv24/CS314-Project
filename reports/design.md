@@ -196,26 +196,30 @@ We made a few small changes to the class diagram this sprint. For one, we update
 # Sprint 5
 ### User Interface
 
-![sprint 5 user interface](../images/Sprint5UserInterface.png)
+![sprint 5 user interface](../images/Sprint5UserInterface(updated).png)
 
-#### Find Modal
-We will add a tab inside of the Find Modal that will contain the ability to add a location to the map or to the trip itinerary through valid coordinates.
+#### Destination Modal
+This modal allows the user to add or edit a destination in the trip. It pops up when the user presses “Edit” on a trip marker, “Add” on a non-trip marker, “Edit” on a place in the itinerary, or “Add Destination” on the itinerary (this opens a blank form to create a place with).
 
-#### Map Features
-The map will be updated to support adding a location to the trip itinerary by clicking on the map. Non-trip markers will have an Add button that will allow users to add that marker location to the trip itinerary and will have a popup that will show more information about the marker location. Trip markers will 
+#### Map Changes
+We added “Add” and “Edit” buttons to marker pop ups depending on if they exist in the trip or not. For polylines, we added directional arrowheads that help the user visualize the direction of the trip. This was done with the use of the react-leaflet-arrowheads library. We fixed issues with the map zooming and panning when it shouldn’t have, such as when a new non-trip marker is added by clicking anywhere on the map.
 
-#### Itinerary
-The Trip Settings within the Itinerary Table will have a dropdown list to select from different types of files to download the current trip as. The Add Destination button will open a modal that contains fields for the user to fill out and add that location to the trip itinerary. The Itinerary List will support selecting a new starting location and updating the list, reversing the trip order, and reordering the trip however a user wants. The last feature added to Itinerary Table will be adding Edit buttons to each row in the Itinerary List that will allow users to edit a location’s details and add notes about the location.
+#### Trip Settings
+We added a drop down menu to trip settings that permits the user to choose between JSON, KML, SVG, and CSV for the file type to download the trip data. This includes a download button next to it for usability. 
+
+#### Itinerary  
+We added a button that allows the trip to be reversed from the starting trip location. The addtional information that is in the dropdown boxes for each trip location is now editable.
+
 
 ### Component Hierarchy
 
-![sprint 5 component hierarchy](../images/Sprint4ComponentHierarchy.png)
+![sprint 5 component hierarchy](../images/Sprint5ComponentHierarchy.png)
 
-We updated the diagram to show the Itinerary component that is rendered in Atlas. It lifts state into Atlas such as the current trip, and it holds its own state such as the current place data to render. During this sprint, we added a Trip Settings modal that allows users to update the trip title, change units, download the data as JSON, upload a Trip File, or clear the current trip. This component has state that is lifted into the Itinerary such as whether or not it is open, and it also has its own managed state such as the current title input and the selected unit. We also added a DestinationTable component that is rendered in Itinerary. It lifts state into the parent Itinerary component such as the current place data and units. For its own state, it tracks the current page, the uncollapsed row, and the number of rows per page.
+This sprint, we added a DestinationModal that is used for adding or editing a place in the trip. It has input boxes for fields such as name, coordinates, country, region, municipality, altitude, and notes. On Save button press, the trip is updated or appended to depending on passed in settings. It is rendered in Atlas and lifts state up to its parent such as whether or not it is open, the current trip object, and the settings to use. Depending on the settings, the input boxes can be pre-populated with the data from a destination so that the user can easily edit the fields.
 
 
 ### Class Diagram
 
 ![sprint 5 class diagram](../images/Sprint4ClassDiagram.png)
 
-We made a few small changes to the class diagram this sprint. For one, we updated the diagram to include helper classes for RequestFind and RequestDistance, which correspond to QueryDatabase and CalculateDistance respectively. Then, we added OptimizeTrip as a helper class dependency of RequestTrip since it utilizes its functions to optimize the trip path.
+There were not many significant changes to this diagram during this sprint since the protocol specification remained the same. We made a few small changes to the class diagram this sprint, such as adding OptimizeTrip as a helper class dependency of RequestTrip since it utilizes its functions to optimize the trip path.
