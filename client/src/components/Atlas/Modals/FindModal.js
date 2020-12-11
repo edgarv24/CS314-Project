@@ -53,17 +53,7 @@ export default class FindModal extends Component {
     renderComboBox() {
         return (
             <div className={BOX_FORMAT}>
-                <Autocomplete
-                    id="combo-box"
-                    fullWidth={true}
-                    size="small"
-                    options={this.state.filters.where || []}
-                    onChange={(event, country) => {
-                        this.setState({selectedCountry: country});
-                        this.onInputChange(this.state.inputText);
-                    }}
-                    getOptionLabel={(option) => option}
-                    renderInput={(params) => <TextField {...params} label="Filter by Country" variant="outlined"/>}/>
+                    {this.autocompleteCodeTemplate("combo-box", this.state.filters.where, "Filter by Country")}
             </div>
         )
     }
@@ -71,19 +61,30 @@ export default class FindModal extends Component {
     renderAirportTypeBox(){
         return(
             <div className={BOX_FORMAT}>
-                <Autocomplete
-                    id="airport-type-box"
-                    fullWidth={true}
-                    size="small"
-                    options={this.state.filters.type || []}
-                    onChange={(event, airportType) => {
-                        this.setState({selectedAirportType: airportType });
-                        this.onInputChange(this.state.inputText);
-                    }}
-                    getOptionLabel={(option) => option}
-                    renderInput={(params) => <TextField {...params} label="Filter by Airport Type" variant="outlined"/>}/>
+                    {this.autocompleteCodeTemplate("airport-type-box", this.state.filters.type, "Filter by Airport Type")}
             </div>
         );
+    }
+
+    autocompleteCodeTemplate(id, options, typeLabel){
+        return(
+        <Autocomplete
+            id={id}
+            fullWidth={true}
+            size="small"
+            options={options || []}
+            onChange={(event, eventType) => {
+                if(id === "combo-box") {
+                    this.setState({selectedCountry: eventType});
+                }
+                else {
+                    this.setState({selectAirportType: eventType});
+                }
+                this.onInputChange(this.state.inputText);
+            }}
+            getOptionLabel={(option) => option}
+            renderInput={(params) => <TextField {...params} label={typeLabel} variant="outlined"/>}/>
+            );
     }
 
     renderInputBox() {
