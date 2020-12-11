@@ -53,7 +53,7 @@ export default class FindModal extends Component {
     renderComboBox() {
         return (
             <div className={BOX_FORMAT}>
-                    {this.autocompleteCodeTemplate("combo-box", this.state.filters.where)}
+                    {this.autocompleteCodeTemplate("combo-box", this.state.filters.where, "Filter by Country")}
             </div>
         )
     }
@@ -61,19 +61,12 @@ export default class FindModal extends Component {
     renderAirportTypeBox(){
         return(
             <div className={BOX_FORMAT}>
-                    {this.autocompleteCodeTemplate("airport-type-box", this.state.filters.type)}
+                    {this.autocompleteCodeTemplate("airport-type-box", this.state.filters.type, "Filter by Airport Type")}
             </div>
         );
     }
 
-    autocompleteCodeTemplate(id, options){
-        let typeLabel = "";
-        if(id === "combo-box"){
-            typeLabel = "Filter by Country";
-        }
-        else {
-            typeLabel = "Filter by Airport Type";
-        }
+    autocompleteCodeTemplate(id, options, typeLabel){
         return(
         <Autocomplete
             id={id}
